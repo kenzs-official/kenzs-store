@@ -1,1 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kenzs Official | Premium Footwear</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #FDFBF7; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
 
+    <script>
+        const { useState } = React;
+
+        const initialProducts = [
+            { id: 1, name: 'Kenzs Executive Royal Oxford', price: 3900, category: 'Formal Shoes', image: 'https://images.unsplash.com/photo-1533867617858-e7b97e060509?w=600', sizes: [40, 41, 42, 43], description: 'Handcrafted premium leather shoe designed for modern executives.', reviews: [] },
+            { id: 2, name: 'Kenzs Urban Street Sneaker', price: 2800, category: 'Sneakers', image: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=600', sizes: [39, 40, 41, 42], description: 'Lightweight, ultra-comfortable lifestyle sneakers.', reviews: [] }
+        ];
+
+        function App() {
+            const [products, setProducts] = useState(initialProducts);
+            const [isAdmin, setIsAdmin] = useState(false);
+            const [lang, setLang] = useState('EN');
+            const [currentTab, setCurrentTab] = useState('HOME');
+            
+            const [newName, setNewName] = useState('');
+            const [newPrice, setNewPrice] = useState('');
+            const [newCategory, setNewCategory] = useState('Formal Shoes');
+            const [newDesc, setNewDesc] = useState('');
+
+            const text = {
+                EN: {
+                    title: "Walk with Confidence.",
+                    subtitle: "Premium Men's Shoes Designed for Every Occasion.",
+                    shopNow: "Shop Now",
+                    welcome: "Welcome Back, Nahom Zenebe",
+                    shopAddress: "Shop Address: Addis Ababa/Merkato",
+                    generalAddress: "Address: Addis Ababa",
+                    adminPanel: "Admin Control Panel",
+                    addProduct: "Add New Product",
+                    productName: "Product Name",
+                    price: "Price (ETB)",
+                    category: "Category",
+                    description: "Description",
+                    save: "Save Product"
+                },
+                AM: {
+                    title: "በልበ ሙሉነት ይራመዱ።",
+                    subtitle: "ለሁሉም አጋጣሚዎች የተሰሩ ምርጥ የወንዶች ጫማዎች።",
+                    shopNow: "አሁን ይግዙ",
+                    welcome: "እንኳን ደህና መጡ፣ ናሆም ዘነበ",
+                    shopAddress: "የሱቅ አድራሻ: አዲስ አበባ/መርካቶ",
+                    generalAddress: "አድራሻ: አዲስ አበባ",
+                    adminPanel: "የአስተዳዳሪ መቆጣጠሪያ",
+                    addProduct: "አዲስ ጫማ ጨምር",
+                    productName: "የጫማው ስም",
+                    price: "ዋጋ (ብር)",
+                    category: "አይነት",
+                    description: "መግለጫ",
+                    save: "ጫማውን መዝግብ"
+                }
+            };
+
+            const t = text[lang];
+
+            const handleAddProduct = (e) => {
+                e.preventDefault();
+                if (!newName || !newPrice) return alert("Please fill name and price");
+                const newProd = {
+                    id: Date.now(),
+                    name: newName,
+                    price: Number(newPrice),
+                    category: newCategory,
+                    image: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=600',
+                    sizes: [40, 41, 42],
+                    description: newDesc,
+                    reviews: []
+                };
+                setProducts([newProd, ...products]);
+                setNewName(''); setNewPrice(''); setNewDesc('');
+                alert("Product Added Successfully!");
+            };
+
+            return React.createElement('div', { className: 'min-h-screen text-slate-900 pb-24 relative' },
+                React.createElement('nav', { className: 'bg-white border-b sticky top-0 z-50 px-4 py-3 flex justify-between items-center shadow-sm' },
+                    React.createElement('span', { className: 'font-bold text-xl tracking-wider text-[#8B5A2B]' }, 'KENZS OFFICIAL'),
+                    React.createElement('div', { className: 'flex gap-2' },
+                        React.createElement('button', { onClick: () => setLang(lang === 'EN' ? 'AM' : 'EN'), className: 'bg-stone-100 px-3 py-1 text-xs rounded-full font-bold border' }, '🌐 ' + lang),
+                        React.createElement('button', { onClick: () => setIsAdmin(!isAdmin), className: 'bg-[#8B5A2B] text-white text-xs px-3 py-1 rounded-full' }, isAdmin ? '🛒 Store' : '⚙️ Admin')
+                    )
+                ),
+
+                isAdmin ? 
+                React.createElement('div', { className: 'p-4 max-w-md mx-auto' },
+                    React.createElement('h2', { className: 'text-2xl font-bold text-stone-800 mb-4' }, t.adminPanel),
+                    React.createElement('form', { onSubmit: handleAddProduct, className: 'bg-white p-4 rounded-xl shadow-md border mb-6 flex flex-col gap-3' },
+                        React.createElement('h3', { className: 'font-semibold border-b pb-1 text-[#8B5A2B]' }, t.addProduct),
+                        React.createElement('input', { type: 'text', value: newName, onChange: e => setNewName(e.target.value), className: 'border p-2 rounded text-sm', placeholder: t.productName }),
+                        React.createElement('input', { type: 'number', value: newPrice, onChange: e => setNewPrice(e.target.value), className: 'border p-2 rounded text-sm', placeholder: t.price }),
+                        React.createElement('select', { value: newCategory, onChange: e => setNewCategory(e.target.value), className: 'border p-2 rounded text-sm' },
+                            ['Formal Shoes', 'Sneakers', 'Boots', 'Casual Shoes'].map(cat => React.createElement('option', { key: cat, value: cat }, cat))
+                        ),
+                        React.createElement('textarea', { value: newDesc, onChange: e => setNewDesc(e.target.value), className: 'border p-2 rounded text-sm', placeholder: t.description }),
+                        React.createElement('button', { type: 'submit', className: 'bg-[#8B5A2B] text-white font-bold p-2.5 rounded-lg text-sm' }, t.save)
+                    ),
+                    React.createElement('h3', { className: 'font-bold mb-2' }, 'Current Inventory'),
+                    products.map(p => React.createElement('div', { key: p.id, className: 'bg-white border p-3 rounded-lg mb-2 flex items-center gap-3 justify-between shadow-sm' },
+                        React.createElement('div', { className: 'flex items-center gap-3' },
+                            React.createElement('img', { src: p.image, className: 'w-12 h-12 rounded object-cover' }),
+                            React.createElement('div', null,
+                                React.createElement('p', { className: 'font-semibold text-sm' }, p.name),
+                                React.createElement('p', { className: 'text-xs text-[#8B5A2B] font-bold' }, p.price + ' ETB')
+                            )
+                        ),
+                        React.createElement('button', { onClick: () => setProducts(products.filter(item => item.id !== p.id)), className: 'text-red-500 font-bold text-xs border border-red-200 px-2 py-1 rounded bg-red-5' }, 'Delete')
+                    ))
+                ) : 
+                React.createElement('div', null,
+                    currentTab === 'HOME' && React.createElement('div', null,
+                        React.createElement('div', { className: 'bg-[#F4EFE6] px-6 py-12 text-center border-b border-amber-100' },
+                            React.createElement('h1', { className: 'text-3xl font-bold tracking-tight text-stone-900 mb-2' }, t.title),
+                            React.createElement('p', { className: 'text-sm text-stone-600 mb-6' }, t.subtitle),
+                            React.createElement('button', { onClick: () => setCurrentTab('SHOP'), className: 'bg-[#8B5A2B] text-white px-6 py-3 rounded-full font-bold text-sm' }, t.shopNow)
+                        ),
+                        React.createElement('div', { className: 'p-4' },
+                            React.createElement('h2', { className: 'text-lg font-bold mb-4 text-stone-800' }, 'Featured Footwear'),
+                            React.createElement('div', { className: 'grid grid-cols-1 gap-4' },
+                                products.map(p => React.createElement('div', { key: p.id, className: 'bg-white rounded-xl shadow-sm border overflow-hidden' },
+                                    React.createElement('img', { src: p.image, className: 'w-full h-56 object-cover' }),
+                                    React.createElement('div', { className: 'p-4' },
+                                        React.createElement('span', { className: 'text-[10px] uppercase tracking-wider text-amber-800 bg-amber-50 px-2 py-0.5 rounded font-bold' }, p.category),
+                                        React.createElement('h3', { className: 'font-bold text-md mt-1' }, p.name),
+                                        React.createElement('div', { className: 'mt-3 flex justify-between items-center' },
+                                            React.createElement('span', { className: 'font-bold text-lg text-stone-900' }, p.price + ' ETB'),
+                                            React.createElement('button', { onClick: () => alert('Order placed to WhatsApp for: ' + p.name), className: 'bg-green-600 text-white text-xs px-3 py-2 rounded-lg font-bold' }, 'Order via WhatsApp')
+                                        )
+                                    )
+                                ))
+                            )
+                        )
+                    ),
+
+                    currentTab === 'SHOP' && React.createElement('div', { className: 'p-4' },
+                        React.createElement('h2', { className: 'text-xl font-bold mb-4' }, 'Complete Shoe Catalog'),
+                        React.createElement('div', { className: 'grid grid-cols-1 gap-4' },
+                            products.map(p => React.createElement('div', { key: p.id, className: 'bg-white rounded-xl shadow-sm border p-3 flex gap-3' },
+                                React.createElement('img', { src: p.image, className: 'w-24 h-24 rounded-lg object-cover' }),
+                                React.createElement('div', { className: 'flex-1 flex flex-col justify-between' },
+                                    React.createElement('div', null,
+                                        React.createElement('h3', { className: 'font-bold text-sm' }, p.name),
+                                        React.createElement('p', { className: 'text-xs text-stone-500' }, p.category)
+                                    ),
+                                    React.createElement('div', { className: 'flex justify-between items-center' },
+                                        React.createElement('span', { className: 'font-bold text-sm text-stone-900' }, p.price + ' ETB')
+                                    )
+                                )
+                            ))
+                        )
+                    ),
+
+                    currentTab === 'ACCOUNT' && React.createElement('div', { className: 'p-4 max-w-md mx-auto' },
+                        React.createElement('div', { className: 'bg-white p-6 rounded-2xl shadow-sm border text-center' },
+                            React.createElement('div', { className: 'w-16 h-16 bg-[#F4EFE6] text-[#8B5A2B] font-bold text-xl rounded-full flex items-center justify-center mx-auto mb-3' }, 'NZ'),
+                            React.createElement('h2', { className: 'text-xl font-bold text-stone-800' }, t.welcome),
+                            React.createElement('p', { className: 'text-sm text-stone-500 mt-1' }, t.generalAddress),
+                            React.createElement('p', { className: 'text-xs font-semibold text-amber-800 bg-amber-50 px-3 py-1 rounded-full inline-block mt-2' }, t.shopAddress)
+                        )
+                    )
+                ),
+
+                React.createElement('div', { className: 'fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg flex justify-around py-2.5 z-40' },
+                    React.createElement('button', { onClick: () => { setCurrentTab('HOME'); setIsAdmin(false); }, className: `flex flex-col items-center text-xs ${currentTab === 'HOME' && !isAdmin ? 'text-[#8B5A2B] font-bold' : 'text-stone-400'}` }, '🏠 Home'),
+                    React.createElement('button', { onClick: () => { setCurrentTab('SHOP'); setIsAdmin(false); }, className: `flex flex-col items-center text-xs ${currentTab === 'SHOP' && !isAdmin ? 'text-[#8B5A2B] font-bold' : 'text-stone-400'}` }, '👟 Shop'),
+                    React.createElement('button', { onClick: () => { setCurrentTab('ACCOUNT'); setIsAdmin(false); }, className: `flex flex-col items-center text-xs ${currentTab === 'ACCOUNT' && !isAdmin ? 'text-[#8B5A2B] font-bold' : 'text-stone-400'}` }, '👤 Profile'),
+                    React.createElement('button', { onClick: () => setIsAdmin(!isAdmin), className: `flex flex-col items-center text-xs ${isAdmin ? 'text-[#8B5A2B] font-bold' : 'text-stone-400'}` }, '⚙️ Admin')
+                )
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(React.createElement(App));
+    </script>
+</body>
+</html>
