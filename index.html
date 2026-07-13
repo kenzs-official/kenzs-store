@@ -61,7 +61,13 @@
                 formal: "Formal Shoes",
                 boots: "Boots",
                 sneakers: "Sneakers",
-                loafers: "Loafers"
+                loafers: "Loafers",
+                ordersTracker: "Tracked Orders (Customer Submissions)",
+                noOrders: "No orders placed yet.",
+                orderDate: "Date",
+                customerOrder: "Order Details",
+                clearOrders: "Clear Order Log",
+                customerPhone: "Phone/Contact (Optional)"
             },
             am: {
                 brand: "KENZS OFFICIAL",
@@ -103,7 +109,13 @@
                 formal: "ፎርማል ጫማዎች",
                 boots: "ቡትስ",
                 sneakers: "ስኒከር",
-                loafers: "ሎፈርስ"
+                loafers: "ሎፈርስ",
+                ordersTracker: "የደንበኞች ትዕዛዝ መከታተያ",
+                noOrders: "ምንም የተመዘገበ ትዕዛዝ የለም።",
+                orderDate: "ቀን",
+                customerOrder: "የትዕዛዝ ዝርዝር",
+                clearOrders: "የመከታተያ መዝገብ አጽዳ",
+                customerPhone: "የስልክ ቁጥር (ከተፈለገ)"
             }
         };
 
@@ -119,24 +131,29 @@
         ];
 
         function App() {
-            // Language State: defaults to Amharic
             const [lang, setLang] = useState('am');
             const [view, setView] = useState('home'); 
+            const [phoneInput, setPhoneInput] = useState(''); // Optional contact log
             
             // Safe JSON State initialization
             const [products, setProducts] = useState(() => {
                 try {
                     const saved = localStorage.getItem('kenzs_p');
                     return saved ? JSON.parse(saved) : initialProducts;
-                } catch (e) { 
-                    console.error("Error reading products:", e);
-                    return initialProducts; 
-                }
+                } catch (e) { return initialProducts; }
             });
 
             const [cart, setCart] = useState([]);
             const [selectedSizes, setSelectedSizes] = useState({});
-            const [activeImg, setActiveImg] = useState({});
+            const [activeImg, setActiveImg] = useState({}); // Stores { productId: activeImageIndex }
+
+            // Orders Tracker State
+            const [orders, setOrders] = useState(() => {
+                try {
+                    const savedOrders = localStorage.getItem('kenzs_orders');
+                    return savedOrders ? JSON.parse(savedOrders) : [];
+                } catch (e) { return []; }
+            });
 
             // Admin Access
             const [isAdmin, setIsAdmin] = useState(false);
@@ -144,14 +161,19 @@
             const [err, setErr] = useState('');
             const [newP, setNewP] = useState({ name: '', price: '', category: 'Formal', images: [], description: '' });
 
-            // Watch for changes and save safely
+            // Watch and save products
             useEffect(() => {
                 try {
                     localStorage.setItem('kenzs_p', JSON.stringify(products));
                 } catch (e) {
-                    alert("የማከማቻ ቦታ ሞልቷል! እባክዎ ጥቂት ምርቶችን ወይም ጥራት ያላቸውን ምስሎች ይቀንሱ።");
+                    alert("Storage is full! Try adding smaller images.");
                 }
             }, [products]);
+
+            // Watch and save orders
+            useEffect(() => {
+                localStorage.setItem('kenzs_orders', JSON.stringify(orders));
+            }, [orders]);
 
             const addToCart = (product) => {
                 const size = selectedSizes[product.id] || "40";
@@ -187,7 +209,7 @@
                 }
             };
 
-            // Compresses image uploads before saving to avoid React/Localstorage crashes
+            // Compresses image uploads to keep localStorage clean
             const handleImgUpload = (e) => {
                 const files = Array.from(e.target.files);
                 files.forEach(file => {
@@ -197,7 +219,7 @@
                         img.src = reader.result;
                         img.onload = () => {
                             const canvas = document.createElement('canvas');
-                            const max_width = 400; // Resizes the resolution to save storage
+                            const max_width = 450; 
                             const scale = max_width / img.width;
                             canvas.width = max_width;
                             canvas.height = img.height * scale;
@@ -205,7 +227,7 @@
                             const ctx = canvas.getContext('2d');
                             ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                             
-                            const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.6); // Compress to 60% quality
+                            const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.6); 
                             
                             setNewP(prev => {
                                 const updatedImages = [...prev.images, compressedDataUrl].slice(0, 3);
@@ -230,31 +252,140 @@
                     price: parseFloat(newP.price) 
                 };
 
-                // Add to state instantly
                 setProducts(prevProducts => [newProductObj, ...prevProducts]);
-                
-                // Clear state form
                 setNewP({ name: '', price: '', category: 'Formal', images: [], description: '' });
                 alert(t[lang].successAdd);
             };
 
+            // Image Gallery Controller (Next/Prev)
+            const handlePrevImage = (productId, imagesLength, e) => {
+                e.stopPropagation();
+                const currentIdx = activeImg[productId] || 0;
+                const newIdx = currentIdx === 0 ? imagesLength - 1 : currentIdx - 1;
+                setActiveImg({ ...activeImg, [productId]: newIdx });
+            };
+
+            const handleNextImage = (productId, imagesLength, e) => {
+                e.stopPropagation();
+                const currentIdx = activeImg[productId] || 0;
+                const newIdx = currentIdx === imagesLength - 1 ? 0 : currentIdx + 1;
+                setActiveImg({ ...activeImg, [productId]: newIdx });
+            };
+
             const getOrderMsg = () => {
-                let msg = `New Order from Kenzs Official / አዲስ ትዕዛዝ ከ Kenzs Official:\n\n`;
+                let msg = `New Order from Kenzs Official / አዲስ ትዕዛዝ ከ Kenzs Official:\n`;
+                if (phoneInput) {
+                    msg += `Customer Phone: ${phoneInput}\n`;
+                }
+                msg += `----------------------------------------\n`;
                 cart.forEach(i => {
                     msg += `- ${i.name}\n  Size/መጠን: ${i.size} | Qty/ብዛት: ${i.quantity} | Price/ዋጋ: ${i.price * i.quantity} ETB\n`;
                 });
                 const tot = cart.reduce((s, i) => s + (i.price * i.quantity), 0);
-                msg += `\nTotal/ጠቅላላ ድምር: ${tot} ETB`;
+                msg += `----------------------------------------\nTotal/ጠቅላላ ድምር: ${tot} ETB`;
                 return msg;
+            };
+
+            // Action to submit order, track it, then launch SMS/WA
+            const triggerOrder = (channel) => {
+                const totalAmount = cart.reduce((s, i) => s + (i.price * i.quantity), 0);
+                const orderSummary = cart.map(i => `${i.name} (${t[lang].size}: ${i.size}) x${i.quantity}`).join(', ');
+                
+                const trackingRecord = {
+                    id: Date.now(),
+                    date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+                    items: orderSummary,
+                    phone: phoneInput || 'Not Provided',
+                    total: totalAmount,
+                    method: channel === 'wa' ? 'WhatsApp' : 'SMS'
+                };
+
+                // Track locally so Admin can view it
+                setOrders(prev => [trackingRecord, ...prev]);
+
+                // Open messaging channel
+                const finalMsg = getOrderMsg();
+                if (channel === 'wa') {
+                    window.open(`https://wa.me/?text=${encodeURIComponent(finalMsg)}`, '_blank');
+                } else {
+                    window.open(`sms:?body=${encodeURIComponent(finalMsg)}`, '_blank');
+                }
+
+                // Clear cart after checkout starts
+                setCart([]);
+                setPhoneInput('');
+            };
+
+            const clearOrderLog = () => {
+                if (confirm("Are you sure you want to clear the entire order history?")) {
+                    setOrders([]);
+                }
+            };
+
+            // Product card renderer to prevent repeated design code
+            const renderProductCard = (p) => {
+                const idx = activeImg[p.id] || 0;
+                const images = p.images && p.images.length > 0 ? p.images : ["https://images.unsplash.com/photo-1614252369475-531eba835eb1?w=600&auto=format&fit=crop&q=60"];
+                
+                return (
+                    <div key={p.id} className="bg-white rounded-2xl border border-stone-200 shadow-sm overflow-hidden flex flex-col">
+                        {/* Interactive Image Container */}
+                        <div className="relative w-full h-64 bg-stone-100 flex items-center justify-center group">
+                            <img src={images[idx]} className="w-full h-full object-cover transition-all duration-300" />
+                            
+                            {/* Previous & Next Buttons */}
+                            {images.length > 1 && (
+                                <>
+                                    <button onClick={(e) => handlePrevImage(p.id, images.length, e)} className="absolute left-2 bg-black/40 text-white rounded-full w-8 h-8 flex items-center justify-center text-lg hover:bg-black/70 transition-all">
+                                        ❮
+                                    </button>
+                                    <button onClick={(e) => handleNextImage(p.id, images.length, e)} className="absolute right-2 bg-black/40 text-white rounded-full w-8 h-8 flex items-center justify-center text-lg hover:bg-black/70 transition-all">
+                                        ❯
+                                    </button>
+                                </>
+                            )}
+                        </div>
+
+                        {/* Interactive Color / Multi-Image Previews */}
+                        {images.length > 1 && (
+                            <div className="flex gap-1.5 p-2 bg-stone-50 border-b border-stone-100 justify-center">
+                                {images.map((imgSrc, i) => (
+                                    <button key={i} onClick={() => setActiveImg({...activeImg, [p.id]: i})} className={`w-10 h-10 rounded border overflow-hidden transition-all ${i === idx ? 'border-amber-800 ring-2 ring-amber-800/30' : 'border-stone-300 opacity-70'}`}>
+                                        <img src={imgSrc} className="w-full h-full object-cover" />
+                                    </button>
+                                ))}
+                            </div>
+                        )}
+
+                        <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
+                            <div>
+                                <span className="text-xs font-bold text-amber-800 bg-amber-50 px-2 py-1 rounded">{p.category}</span>
+                                <h4 className="font-bold text-stone-900 text-base mt-2">{p.name}</h4>
+                                <p className="text-stone-500 text-xs mt-1">{p.description}</p>
+                                <div className="mt-3">
+                                    <label className="block text-xs font-bold text-stone-600 mb-1">{t[lang].selectSize}</label>
+                                    <div className="flex gap-1.5 flex-wrap">
+                                        {["39", "40", "41", "42", "43", "44"].map(sz => (
+                                            <button key={sz} onClick={() => setSelectedSizes({...selectedSizes, [p.id]: sz})} className={`px-2.5 py-1 text-xs font-medium rounded-md border ${(selectedSizes[p.id] || "40") === sz ? 'bg-amber-800 text-white border-amber-800' : 'bg-white text-stone-700 border-stone-200'}`}>{sz}</button>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="flex items-center justify-between pt-2 border-t border-stone-100">
+                                <span className="text-base font-bold text-stone-900">{p.price} ETB</span>
+                                <button onClick={() => addToCart(p)} className="bg-stone-900 text-white text-xs font-semibold px-4 py-2 rounded-full">{t[lang].addToCart}</button>
+                            </div>
+                        </div>
+                    </div>
+                );
             };
 
             return (
                 <div className="min-h-screen flex flex-col pb-20 md:pb-0">
-                    {/* Header with Language Switcher */}
+                    {/* Header */}
                     <header className="bg-white border-b border-stone-200 sticky top-0 z-40 px-4 py-4 flex justify-between items-center">
                         <h1 className="text-xl font-bold text-amber-900 cursor-pointer" onClick={() => setView('home')}>KENZS OFFICIAL</h1>
                         <div className="flex items-center gap-3">
-                            {/* Toggle Switch */}
                             <div className="flex items-center bg-stone-100 rounded-full p-1 border border-stone-200">
                                 <button onClick={() => setLang('am')} className={`px-2.5 py-1 text-xs font-bold rounded-full transition-all ${lang === 'am' ? 'bg-amber-800 text-white shadow-sm' : 'text-stone-600'}`}>🇪🇹 AM</button>
                                 <button onClick={() => setLang('en')} className={`px-2.5 py-1 text-xs font-bold rounded-full transition-all ${lang === 'en' ? 'bg-amber-800 text-white shadow-sm' : 'text-stone-600'}`}>🇬🇧 EN</button>
@@ -278,43 +409,8 @@
 
                                 <div>
                                     <h3 className="text-lg font-bold text-stone-900 mb-4">{t[lang].featured}</h3>
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                        {products.slice(0, 4).map(p => {
-                                            const idx = activeImg[p.id] || 0;
-                                            return (
-                                                <div key={p.id} className="bg-white rounded-2xl border border-stone-100 shadow-sm overflow-hidden flex flex-col">
-                                                    <div className="relative w-full h-56 bg-stone-100">
-                                                        <img src={p.images[idx] || p.images[0]} className="w-full h-full object-cover" />
-                                                        {p.images.length > 1 && (
-                                                            <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5">
-                                                                {p.images.map((_, i) => (
-                                                                    <button key={i} onClick={() => setActiveImg({...activeImg, [p.id]: i})} className={`w-2 h-2 rounded-full ${i === idx ? 'bg-amber-800 scale-125' : 'bg-stone-300'}`}></button>
-                                                                ))}
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                    <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
-                                                        <div>
-                                                            <span className="text-xs font-bold text-amber-800 bg-amber-50 px-2 py-1 rounded">{p.category}</span>
-                                                            <h4 className="font-bold text-stone-900 text-base mt-2">{p.name}</h4>
-                                                            <p className="text-stone-500 text-xs mt-1">{p.description}</p>
-                                                            <div className="mt-3">
-                                                                <label className="block text-xs font-bold text-stone-600 mb-1">{t[lang].selectSize}</label>
-                                                                <div className="flex gap-1.5 flex-wrap">
-                                                                    {["39", "40", "41", "42", "43", "44"].map(sz => (
-                                                                        <button key={sz} onClick={() => setSelectedSizes({...selectedSizes, [p.id]: sz})} className={`px-2.5 py-1 text-xs font-medium rounded-md border ${(selectedSizes[p.id] || "40") === sz ? 'bg-amber-800 text-white border-amber-800' : 'bg-white text-stone-700 border-stone-200'}`}>{sz}</button>
-                                                                    ))}
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div className="flex items-center justify-between pt-2 border-t border-stone-100">
-                                                            <span className="text-base font-bold text-stone-900">{p.price} ETB</span>
-                                                            <button onClick={() => addToCart(p)} className="bg-stone-900 text-white text-xs font-semibold px-4 py-2 rounded-full">{t[lang].addToCart}</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            );
-                                        })}
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                        {products.slice(0, 4).map(p => renderProductCard(p))}
                                     </div>
                                 </div>
                             </div>
@@ -323,43 +419,8 @@
                         {view === 'shop' && (
                             <div className="space-y-6">
                                 <h2 className="text-2xl font-bold text-stone-900">{t[lang].catalogTitle}</h2>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                    {products.map(p => {
-                                        const idx = activeImg[p.id] || 0;
-                                        return (
-                                            <div key={p.id} className="bg-white rounded-2xl border border-stone-100 shadow-sm overflow-hidden flex flex-col">
-                                                <div className="relative w-full h-56 bg-stone-100">
-                                                    <img src={p.images[idx] || p.images[0]} className="w-full h-full object-cover" />
-                                                    {p.images.length > 1 && (
-                                                        <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5">
-                                                            {p.images.map((_, i) => (
-                                                                <button key={i} onClick={() => setActiveImg({...activeImg, [p.id]: i})} className={`w-2 h-2 rounded-full ${i === idx ? 'bg-amber-800 scale-125' : 'bg-stone-300'}`}></button>
-                                                            ))}
-                                                        </div>
-                                                    )}
-                                                </div>
-                                                <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
-                                                    <div>
-                                                        <span className="text-xs font-bold text-amber-800 bg-amber-50 px-2 py-1 rounded">{p.category}</span>
-                                                        <h4 className="font-bold text-stone-900 text-base mt-2">{p.name}</h4>
-                                                        <p className="text-stone-500 text-xs mt-1">{p.description}</p>
-                                                        <div className="mt-3">
-                                                            <label className="block text-xs font-bold text-stone-600 mb-1">{t[lang].selectSize}</label>
-                                                            <div className="flex gap-1.5 flex-wrap">
-                                                                {["39", "40", "41", "42", "43", "44"].map(sz => (
-                                                                    <button key={sz} onClick={() => setSelectedSizes({...selectedSizes, [p.id]: sz})} className={`px-2.5 py-1 text-xs font-medium rounded-md border ${(selectedSizes[p.id] || "40") === sz ? 'bg-amber-800 text-white border-amber-800' : 'bg-white text-stone-700 border-stone-200'}`}>{sz}</button>
-                                                                ))}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div className="flex items-center justify-between pt-2 border-t border-stone-100">
-                                                        <span className="text-base font-bold text-stone-900">{p.price} ETB</span>
-                                                        <button onClick={() => addToCart(p)} className="bg-stone-900 text-white text-xs font-semibold px-4 py-2 rounded-full">{t[lang].addToCart}</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        );
-                                    })}
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                    {products.map(p => renderProductCard(p))}
                                 </div>
                             </div>
                         )}
@@ -389,14 +450,20 @@
                                                 </div>
                                             </div>
                                         ))}
+
+                                        <div className="bg-stone-100 p-4 rounded-xl space-y-3">
+                                            <label className="block text-xs font-bold text-stone-700 uppercase">{t[lang].customerPhone}</label>
+                                            <input type="text" value={phoneInput} onChange={(e) => setPhoneInput(e.target.value)} placeholder="0911..." className="w-full px-3 py-2 border border-stone-300 rounded-lg text-sm bg-white" />
+                                        </div>
+
                                         <div className="border-t border-stone-200 pt-4 flex flex-col items-end space-y-3">
                                             <div className="text-right">
                                                 <span className="text-stone-500 text-sm">{t[lang].total}: </span>
                                                 <span className="text-xl font-bold text-stone-900">{cart.reduce((s, i) => s + (i.price * i.quantity), 0)} ETB</span>
                                             </div>
                                             <div className="w-full grid grid-cols-2 gap-2">
-                                                <button onClick={() => window.open(`https://wa.me/?text=${encodeURIComponent(getOrderMsg())}`, '_blank')} className="bg-emerald-600 text-white font-bold py-3 rounded-xl text-center text-xs shadow">{t[lang].orderWhatsapp}</button>
-                                                <button onClick={() => window.open(`sms:?body=${encodeURIComponent(getOrderMsg())}`, '_blank')} className="bg-blue-600 text-white font-bold py-3 rounded-xl text-center text-xs shadow">{t[lang].orderSMS}</button>
+                                                <button onClick={() => triggerOrder('wa')} className="bg-emerald-600 text-white font-bold py-3 rounded-xl text-center text-xs shadow">{t[lang].orderWhatsapp}</button>
+                                                <button onClick={() => triggerOrder('sms')} className="bg-blue-600 text-white font-bold py-3 rounded-xl text-center text-xs shadow">{t[lang].orderSMS}</button>
                                             </div>
                                         </div>
                                     </div>
@@ -418,6 +485,42 @@
                                     </form>
                                 ) : (
                                     <div className="space-y-8">
+                                        {/* Orders Log / Tracker */}
+                                        <div className="bg-white p-5 rounded-2xl border border-stone-200 space-y-4 shadow-sm">
+                                            <div className="flex justify-between items-center border-b pb-2">
+                                                <h3 className="text-base font-bold text-stone-900">📊 {t[lang].ordersTracker}</h3>
+                                                {orders.length > 0 && (
+                                                    <button onClick={clearOrderLog} className="text-xs text-red-600 bg-red-50 px-2 py-1 rounded font-bold">{t[lang].clearOrders}</button>
+                                                )}
+                                            </div>
+                                            {orders.length === 0 ? (
+                                                <p className="text-xs text-stone-500">{t[lang].noOrders}</p>
+                                            ) : (
+                                                <div className="overflow-x-auto">
+                                                    <table className="w-full text-left text-xs border-collapse">
+                                                        <thead>
+                                                            <tr className="bg-stone-50 text-stone-600 border-b border-stone-100">
+                                                                <th className="p-2">{t[lang].orderDate}</th>
+                                                                <th className="p-2">{t[lang].customerPhone}</th>
+                                                                <th className="p-2">{t[lang].customerOrder}</th>
+                                                                <th className="p-2 text-right">{t[lang].total}</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody className="divide-y divide-stone-100">
+                                                            {orders.map(o => (
+                                                                <tr key={o.id} className="hover:bg-stone-50">
+                                                                    <td className="p-2 font-medium text-stone-500 whitespace-nowrap">{o.date}</td>
+                                                                    <td className="p-2 font-bold text-amber-900">{o.phone}</td>
+                                                                    <td className="p-2 text-stone-700">{o.items} <span className="text-[10px] text-stone-400">({o.method})</span></td>
+                                                                    <td className="p-2 text-right font-bold text-stone-900 whitespace-nowrap">{o.total} ETB</td>
+                                                                </tr>
+                                                            ))}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            )}
+                                        </div>
+
                                         <form onSubmit={handleAdd} className="bg-white p-5 rounded-2xl border border-stone-200 space-y-4 shadow-sm">
                                             <h3 className="text-base font-bold text-stone-900 border-b pb-2">{t[lang].addNewProduct}</h3>
                                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
