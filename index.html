@@ -9,8 +9,12 @@
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;600;700&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #FAF8F5; }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background: radial-gradient(circle at 50% 0%, #FAF6F0 0%, #F3ECE3 100%); 
+            background-attachment: fixed;
+        }
     </style>
 </head>
 <body>
@@ -27,16 +31,16 @@
                 shoes: "Shoes",
                 cart: "Cart",
                 admin: "Admin",
-                heroTitle: "Walk with Confidence.",
-                heroSub: "Premium handcrafted men's shoes for any formal or casual occasion.",
-                viewCatalog: "View Catalog",
-                featured: "Featured Shoes",
+                heroTitle: "Walk with confidence.",
+                heroSub: "Premium handicraft men's shoes for any formal or casual occasion.",
+                viewCatalog: "Explore Collection",
+                featured: "Featured Collection",
                 selectSize: "Select Size:",
                 addToCart: "Add to Cart",
-                catalogTitle: "Full Catalog",
-                cartTitle: "Your Shopping Cart",
+                catalogTitle: "Our Master Collection",
+                cartTitle: "Your Shopping Bag",
                 cartEmpty: "Your cart is empty!",
-                backToShop: "Back to Shopping",
+                backToShop: "Continue Browsing",
                 size: "Size",
                 total: "Total",
                 orderWhatsapp: "Order on WhatsApp",
@@ -76,7 +80,7 @@
                 cart: "ቅርጫት",
                 admin: "መቆጣጠሪያ",
                 heroTitle: "በራስ መተማመን ይራመዱ።",
-                heroSub: "ለማንኛውም ዝግጅት የሚሆኑ የክብር ወንዶች ጫማዎች።",
+                heroSub: "ለማንኛውም መደበኛ ወይም ተራ ዝግጅት በእጅ የተሰሩ ምርጥ የክብር ወንዶች ጫማዎች።",
                 viewCatalog: "ካታሎግ ይመልከቱ",
                 featured: "የተመረጡ ጫማዎች",
                 selectSize: "መጠን (Size) ይምረጡ፡",
@@ -133,9 +137,8 @@
         function App() {
             const [lang, setLang] = useState('am');
             const [view, setView] = useState('home'); 
-            const [phoneInput, setPhoneInput] = useState(''); // Optional contact log
+            const [phoneInput, setPhoneInput] = useState('');
             
-            // Safe JSON State initialization
             const [products, setProducts] = useState(() => {
                 try {
                     const saved = localStorage.getItem('kenzs_p');
@@ -145,9 +148,8 @@
 
             const [cart, setCart] = useState([]);
             const [selectedSizes, setSelectedSizes] = useState({});
-            const [activeImg, setActiveImg] = useState({}); // Stores { productId: activeImageIndex }
+            const [activeImg, setActiveImg] = useState({});
 
-            // Orders Tracker State
             const [orders, setOrders] = useState(() => {
                 try {
                     const savedOrders = localStorage.getItem('kenzs_orders');
@@ -155,22 +157,19 @@
                 } catch (e) { return []; }
             });
 
-            // Admin Access
             const [isAdmin, setIsAdmin] = useState(false);
             const [pass, setPass] = useState('');
             const [err, setErr] = useState('');
             const [newP, setNewP] = useState({ name: '', price: '', category: 'Formal', images: [], description: '' });
 
-            // Watch and save products
             useEffect(() => {
                 try {
                     localStorage.setItem('kenzs_p', JSON.stringify(products));
                 } catch (e) {
-                    alert("Storage is full! Try adding smaller images.");
+                    alert("Storage space is full! Try compressing images.");
                 }
             }, [products]);
 
-            // Watch and save orders
             useEffect(() => {
                 localStorage.setItem('kenzs_orders', JSON.stringify(orders));
             }, [orders]);
@@ -209,7 +208,6 @@
                 }
             };
 
-            // Compresses image uploads to keep localStorage clean
             const handleImgUpload = (e) => {
                 const files = Array.from(e.target.files);
                 files.forEach(file => {
@@ -257,7 +255,6 @@
                 alert(t[lang].successAdd);
             };
 
-            // Image Gallery Controller (Next/Prev)
             const handlePrevImage = (productId, imagesLength, e) => {
                 e.stopPropagation();
                 const currentIdx = activeImg[productId] || 0;
@@ -286,7 +283,6 @@
                 return msg;
             };
 
-            // Action to submit order, track it, then launch SMS/WA
             const triggerOrder = (channel) => {
                 const totalAmount = cart.reduce((s, i) => s + (i.price * i.quantity), 0);
                 const orderSummary = cart.map(i => `${i.name} (${t[lang].size}: ${i.size}) x${i.quantity}`).join(', ');
@@ -300,10 +296,8 @@
                     method: channel === 'wa' ? 'WhatsApp' : 'SMS'
                 };
 
-                // Track locally so Admin can view it
                 setOrders(prev => [trackingRecord, ...prev]);
 
-                // Open messaging channel
                 const finalMsg = getOrderMsg();
                 if (channel === 'wa') {
                     window.open(`https://wa.me/?text=${encodeURIComponent(finalMsg)}`, '_blank');
@@ -311,7 +305,6 @@
                     window.open(`sms:?body=${encodeURIComponent(finalMsg)}`, '_blank');
                 }
 
-                // Clear cart after checkout starts
                 setCart([]);
                 setPhoneInput('');
             };
@@ -322,58 +315,54 @@
                 }
             };
 
-            // Product card renderer to prevent repeated design code
             const renderProductCard = (p) => {
                 const idx = activeImg[p.id] || 0;
                 const images = p.images && p.images.length > 0 ? p.images : ["https://images.unsplash.com/photo-1614252369475-531eba835eb1?w=600&auto=format&fit=crop&q=60"];
                 
                 return (
-                    <div key={p.id} className="bg-white rounded-2xl border border-stone-200 shadow-sm overflow-hidden flex flex-col">
-                        {/* Interactive Image Container */}
+                    <div key={p.id} className="bg-white rounded-2xl border border-stone-200/80 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
                         <div className="relative w-full h-64 bg-stone-100 flex items-center justify-center group">
-                            <img src={images[idx]} className="w-full h-full object-cover transition-all duration-300" />
+                            <img src={images[idx]} className="w-full h-full object-cover transition-all duration-500" />
                             
-                            {/* Previous & Next Buttons */}
                             {images.length > 1 && (
                                 <>
-                                    <button onClick={(e) => handlePrevImage(p.id, images.length, e)} className="absolute left-2 bg-black/40 text-white rounded-full w-8 h-8 flex items-center justify-center text-lg hover:bg-black/70 transition-all">
+                                    <button onClick={(e) => handlePrevImage(p.id, images.length, e)} className="absolute left-3 bg-stone-900/80 backdrop-blur-sm text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-stone-900 shadow transition-all">
                                         ❮
                                     </button>
-                                    <button onClick={(e) => handleNextImage(p.id, images.length, e)} className="absolute right-2 bg-black/40 text-white rounded-full w-8 h-8 flex items-center justify-center text-lg hover:bg-black/70 transition-all">
+                                    <button onClick={(e) => handleNextImage(p.id, images.length, e)} className="absolute right-3 bg-stone-900/80 backdrop-blur-sm text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-stone-900 shadow transition-all">
                                         ❯
                                     </button>
                                 </>
                             )}
                         </div>
 
-                        {/* Interactive Color / Multi-Image Previews */}
                         {images.length > 1 && (
-                            <div className="flex gap-1.5 p-2 bg-stone-50 border-b border-stone-100 justify-center">
+                            <div className="flex gap-2 p-2.5 bg-stone-50 border-b border-stone-200/60 justify-center">
                                 {images.map((imgSrc, i) => (
-                                    <button key={i} onClick={() => setActiveImg({...activeImg, [p.id]: i})} className={`w-10 h-10 rounded border overflow-hidden transition-all ${i === idx ? 'border-amber-800 ring-2 ring-amber-800/30' : 'border-stone-300 opacity-70'}`}>
+                                    <button key={i} onClick={() => setActiveImg({...activeImg, [p.id]: i})} className={`w-12 h-12 rounded-lg border overflow-hidden transition-all ${i === idx ? 'border-amber-800 ring-4 ring-amber-800/20' : 'border-stone-300 opacity-60 hover:opacity-100'}`}>
                                         <img src={imgSrc} className="w-full h-full object-cover" />
                                     </button>
                                 ))}
                             </div>
                         )}
 
-                        <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
+                        <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
                             <div>
-                                <span className="text-xs font-bold text-amber-800 bg-amber-50 px-2 py-1 rounded">{p.category}</span>
-                                <h4 className="font-bold text-stone-900 text-base mt-2">{p.name}</h4>
-                                <p className="text-stone-500 text-xs mt-1">{p.description}</p>
-                                <div className="mt-3">
-                                    <label className="block text-xs font-bold text-stone-600 mb-1">{t[lang].selectSize}</label>
+                                <span className="text-[10px] font-bold tracking-wider text-amber-800 bg-amber-50 border border-amber-100 px-2 py-1 rounded-md uppercase">{p.category}</span>
+                                <h4 className="font-bold text-stone-900 text-lg mt-3">{p.name}</h4>
+                                <p className="text-stone-500 text-xs mt-1 leading-relaxed">{p.description}</p>
+                                <div className="mt-4">
+                                    <label className="block text-[11px] font-bold text-stone-500 uppercase tracking-wider mb-2">{t[lang].selectSize}</label>
                                     <div className="flex gap-1.5 flex-wrap">
                                         {["39", "40", "41", "42", "43", "44"].map(sz => (
-                                            <button key={sz} onClick={() => setSelectedSizes({...selectedSizes, [p.id]: sz})} className={`px-2.5 py-1 text-xs font-medium rounded-md border ${(selectedSizes[p.id] || "40") === sz ? 'bg-amber-800 text-white border-amber-800' : 'bg-white text-stone-700 border-stone-200'}`}>{sz}</button>
+                                            <button key={sz} onClick={() => setSelectedSizes({...selectedSizes, [p.id]: sz})} className={`px-3 py-1.5 text-xs font-semibold rounded-lg border transition-all duration-200 ${(selectedSizes[p.id] || "40") === sz ? 'bg-amber-900 text-white border-amber-900 shadow-sm' : 'bg-white text-stone-700 border-stone-200 hover:border-stone-400'}`}>{sz}</button>
                                         ))}
                                     </div>
                                 </div>
                             </div>
-                            <div className="flex items-center justify-between pt-2 border-t border-stone-100">
-                                <span className="text-base font-bold text-stone-900">{p.price} ETB</span>
-                                <button onClick={() => addToCart(p)} className="bg-stone-900 text-white text-xs font-semibold px-4 py-2 rounded-full">{t[lang].addToCart}</button>
+                            <div className="flex items-center justify-between pt-3 border-t border-stone-100">
+                                <span className="text-lg font-bold text-stone-900">{p.price.toLocaleString()} ETB</span>
+                                <button onClick={() => addToCart(p)} className="bg-stone-900 hover:bg-stone-850 text-white text-xs font-bold px-5 py-2.5 rounded-full transition-all shadow-sm">{t[lang].addToCart}</button>
                             </div>
                         </div>
                     </div>
@@ -381,35 +370,37 @@
             };
 
             return (
-                <div className="min-h-screen flex flex-col pb-20 md:pb-0">
+                <div className="min-h-screen flex flex-col pb-24 md:pb-0">
                     {/* Header */}
-                    <header className="bg-white border-b border-stone-200 sticky top-0 z-40 px-4 py-4 flex justify-between items-center">
-                        <h1 className="text-xl font-bold text-amber-900 cursor-pointer" onClick={() => setView('home')}>KENZS OFFICIAL</h1>
+                    <header className="bg-white/95 backdrop-blur-md border-b border-stone-200/80 sticky top-0 z-40 px-4 py-4 flex justify-between items-center shadow-xs">
+                        <h1 className="text-xl font-bold tracking-wider text-stone-900 cursor-pointer" onClick={() => setView('home')}>KENZS OFFICIAL</h1>
                         <div className="flex items-center gap-3">
-                            <div className="flex items-center bg-stone-100 rounded-full p-1 border border-stone-200">
-                                <button onClick={() => setLang('am')} className={`px-2.5 py-1 text-xs font-bold rounded-full transition-all ${lang === 'am' ? 'bg-amber-800 text-white shadow-sm' : 'text-stone-600'}`}>🇪🇹 AM</button>
-                                <button onClick={() => setLang('en')} className={`px-2.5 py-1 text-xs font-bold rounded-full transition-all ${lang === 'en' ? 'bg-amber-800 text-white shadow-sm' : 'text-stone-600'}`}>🇬🇧 EN</button>
+                            <div className="flex items-center bg-stone-100/80 rounded-full p-1 border border-stone-200/60">
+                                <button onClick={() => setLang('am')} className={`px-3 py-1 text-xs font-bold rounded-full transition-all ${lang === 'am' ? 'bg-amber-950 text-white shadow-sm' : 'text-stone-600'}`}>🇪🇹 AM</button>
+                                <button onClick={() => setLang('en')} className={`px-3 py-1 text-xs font-bold rounded-full transition-all ${lang === 'en' ? 'bg-amber-950 text-white shadow-sm' : 'text-stone-600'}`}>🇬🇧 EN</button>
                             </div>
                             
                             <button onClick={() => setView('cart')} className="relative p-2 text-stone-700">
-                                🛒 {cart.length > 0 && <span className="absolute -top-1 -right-1 bg-amber-700 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold">{cart.reduce((a, b) => a + b.quantity, 0)}</span>}
+                                <span className="text-xl">🛒</span> {cart.length > 0 && <span className="absolute -top-0.5 -right-0.5 bg-amber-800 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-black shadow">{cart.reduce((a, b) => a + b.quantity, 0)}</span>}
                             </button>
-                            <button onClick={() => setView('admin')} className="bg-stone-100 text-stone-800 px-3 py-1.5 rounded-full text-xs font-semibold border border-stone-200">⚙️ {t[lang].admin}</button>
+                            <button onClick={() => setView('admin')} className="bg-stone-900 hover:bg-stone-800 text-white px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all">⚙️ {t[lang].admin}</button>
                         </div>
                     </header>
 
-                    <main className="flex-1 max-w-4xl w-full mx-auto p-4">
+                    <main className="flex-1 max-w-4xl w-full mx-auto p-4 md:py-8">
                         {view === 'home' && (
-                            <div className="space-y-8">
-                                <div className="text-center py-12 px-4 space-y-4 bg-stone-100 rounded-3xl">
-                                    <h2 className="text-3xl font-bold text-stone-900 tracking-tight">{t[lang].heroTitle}</h2>
-                                    <p className="text-stone-600 text-sm max-w-sm mx-auto">{t[lang].heroSub}</p>
-                                    <button onClick={() => setView('shop')} className="bg-amber-800 text-white font-medium px-8 py-3 rounded-full text-sm shadow-md">{t[lang].viewCatalog}</button>
+                            <div className="space-y-12">
+                                {/* Luxury Hero Banner */}
+                                <div className="text-center py-16 px-6 space-y-5 bg-gradient-to-br from-stone-900 via-stone-925 to-stone-950 rounded-3xl shadow-xl border border-stone-850 relative overflow-hidden">
+                                    <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px]"></div>
+                                    <h2 className="text-4xl md:text-5xl font-extrabold text-white tracking-tight leading-tight max-w-xl mx-auto">{t[lang].heroTitle}</h2>
+                                    <p className="text-stone-300 text-sm md:text-base max-w-md mx-auto font-light leading-relaxed">{t[lang].heroSub}</p>
+                                    <button onClick={() => setView('shop')} className="bg-amber-800 hover:bg-amber-700 text-white font-semibold px-10 py-3.5 rounded-full text-sm shadow-md hover:shadow-lg transition-all">{t[lang].viewCatalog}</button>
                                 </div>
 
                                 <div>
-                                    <h3 className="text-lg font-bold text-stone-900 mb-4">{t[lang].featured}</h3>
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                    <h3 className="text-2xl font-bold text-stone-900 mb-6 tracking-tight">{t[lang].featured}</h3>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                                         {products.slice(0, 4).map(p => renderProductCard(p))}
                                     </div>
                                 </div>
@@ -417,9 +408,9 @@
                         )}
 
                         {view === 'shop' && (
-                            <div className="space-y-6">
-                                <h2 className="text-2xl font-bold text-stone-900">{t[lang].catalogTitle}</h2>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <div className="space-y-8">
+                                <h2 className="text-3xl font-bold text-stone-900 tracking-tight">{t[lang].catalogTitle}</h2>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                                     {products.map(p => renderProductCard(p))}
                                 </div>
                             </div>
@@ -427,43 +418,43 @@
 
                         {view === 'cart' && (
                             <div className="space-y-6">
-                                <h2 className="text-2xl font-bold text-stone-900">{t[lang].cartTitle}</h2>
+                                <h2 className="text-3xl font-bold text-stone-900 tracking-tight">{t[lang].cartTitle}</h2>
                                 {cart.length === 0 ? (
-                                    <div className="text-center py-12 space-y-4">
-                                        <p className="text-stone-500">{t[lang].cartEmpty}</p>
-                                        <button onClick={() => setView('shop')} className="bg-stone-900 text-white text-xs font-bold px-6 py-2.5 rounded-full">{t[lang].backToShop}</button>
+                                    <div className="text-center py-16 space-y-4 bg-white/60 border border-stone-200 rounded-3xl">
+                                        <p className="text-stone-500 text-sm font-medium">{t[lang].cartEmpty}</p>
+                                        <button onClick={() => setView('shop')} className="bg-stone-900 text-white text-xs font-bold px-8 py-3 rounded-full shadow hover:bg-stone-850 transition-all">{t[lang].backToShop}</button>
                                     </div>
                                 ) : (
                                     <div className="space-y-4">
                                         {cart.map(item => (
-                                            <div key={item.key} className="bg-white p-4 rounded-xl border border-stone-200 flex gap-4 items-center">
-                                                <img src={item.images[0]} className="w-16 h-16 object-cover rounded-lg" />
+                                            <div key={item.key} className="bg-white p-4 rounded-2xl border border-stone-200 flex gap-4 items-center shadow-xs">
+                                                <img src={item.images[0]} className="w-16 h-16 object-cover rounded-xl border border-stone-100 shadow-xs" />
                                                 <div className="flex-1">
                                                     <h4 className="font-bold text-stone-900 text-sm">{item.name}</h4>
-                                                    <p className="text-stone-500 text-xs">{t[lang].size}: <span className="font-bold text-amber-900">{item.size}</span></p>
-                                                    <p className="text-stone-500 text-xs">{item.price} ETB x {item.quantity}</p>
+                                                    <p className="text-stone-500 text-xs">Size: <span className="font-bold text-amber-900">{item.size}</span></p>
+                                                    <p className="text-stone-500 text-xs">{item.price.toLocaleString()} ETB x {item.quantity}</p>
                                                 </div>
                                                 <div className="flex items-center gap-2">
-                                                    <button onClick={() => updateQty(item.key, -1)} className="w-7 h-7 bg-stone-100 rounded-full flex items-center justify-center font-bold">-</button>
-                                                    <span className="text-sm font-semibold">{item.quantity}</span>
-                                                    <button onClick={() => updateQty(item.key, 1)} className="w-7 h-7 bg-stone-100 rounded-full flex items-center justify-center font-bold">+</button>
+                                                    <button onClick={() => updateQty(item.key, -1)} className="w-8 h-8 bg-stone-100 rounded-full flex items-center justify-center font-bold text-stone-600 hover:bg-stone-200 transition-all">-</button>
+                                                    <span className="text-sm font-semibold text-stone-800 w-4 text-center">{item.quantity}</span>
+                                                    <button onClick={() => updateQty(item.key, 1)} className="w-8 h-8 bg-stone-100 rounded-full flex items-center justify-center font-bold text-stone-600 hover:bg-stone-200 transition-all">+</button>
                                                 </div>
                                             </div>
                                         ))}
 
-                                        <div className="bg-stone-100 p-4 rounded-xl space-y-3">
-                                            <label className="block text-xs font-bold text-stone-700 uppercase">{t[lang].customerPhone}</label>
-                                            <input type="text" value={phoneInput} onChange={(e) => setPhoneInput(e.target.value)} placeholder="0911..." className="w-full px-3 py-2 border border-stone-300 rounded-lg text-sm bg-white" />
+                                        <div className="bg-white/80 backdrop-blur-sm p-5 rounded-2xl border border-stone-200/80 space-y-3">
+                                            <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider">{t[lang].customerPhone}</label>
+                                            <input type="text" value={phoneInput} onChange={(e) => setPhoneInput(e.target.value)} placeholder="0911..." className="w-full px-4 py-2.5 border border-stone-300 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-amber-800/20" />
                                         </div>
 
-                                        <div className="border-t border-stone-200 pt-4 flex flex-col items-end space-y-3">
+                                        <div className="pt-6 flex flex-col items-end space-y-4">
                                             <div className="text-right">
-                                                <span className="text-stone-500 text-sm">{t[lang].total}: </span>
-                                                <span className="text-xl font-bold text-stone-900">{cart.reduce((s, i) => s + (i.price * i.quantity), 0)} ETB</span>
+                                                <span className="text-stone-500 text-sm font-medium">{t[lang].total}: </span>
+                                                <span className="text-2xl font-extrabold text-stone-950 block mt-1">{cart.reduce((s, i) => s + (i.price * i.quantity), 0).toLocaleString()} ETB</span>
                                             </div>
-                                            <div className="w-full grid grid-cols-2 gap-2">
-                                                <button onClick={() => triggerOrder('wa')} className="bg-emerald-600 text-white font-bold py-3 rounded-xl text-center text-xs shadow">{t[lang].orderWhatsapp}</button>
-                                                <button onClick={() => triggerOrder('sms')} className="bg-blue-600 text-white font-bold py-3 rounded-xl text-center text-xs shadow">{t[lang].orderSMS}</button>
+                                            <div className="w-full grid grid-cols-2 gap-3">
+                                                <button onClick={() => triggerOrder('wa')} className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-xl text-center text-xs shadow-md transition-all">{t[lang].orderWhatsapp}</button>
+                                                <button onClick={() => triggerOrder('sms')} className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl text-center text-xs shadow-md transition-all">{t[lang].orderSMS}</button>
                                             </div>
                                         </div>
                                     </div>
@@ -472,25 +463,25 @@
                         )}
 
                         {view === 'admin' && (
-                            <div className="space-y-6">
-                                <h2 className="text-2xl font-bold text-stone-900">{t[lang].controlPanel}</h2>
+                            <div className="space-y-8">
+                                <h2 className="text-3xl font-bold text-stone-900 tracking-tight">{t[lang].controlPanel}</h2>
                                 {!isAdmin ? (
-                                    <form onSubmit={handleLogin} className="bg-white p-6 rounded-2xl border border-stone-200 max-w-sm mx-auto space-y-4 shadow-sm">
+                                    <form onSubmit={handleLogin} className="bg-white p-8 rounded-3xl border border-stone-200 max-w-sm mx-auto space-y-5 shadow-lg">
                                         <div>
-                                            <label className="block text-xs font-bold text-stone-700 uppercase mb-1">{t[lang].accessKey}</label>
-                                            <input type="password" value={pass} onChange={(e) => setPass(e.target.value)} className="w-full px-3 py-2 border border-stone-300 rounded-lg text-sm focus:outline-amber-800" placeholder="••••••••" />
+                                            <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-2">{t[lang].accessKey}</label>
+                                            <input type="password" value={pass} onChange={(e) => setPass(e.target.value)} className="w-full px-4 py-3 border border-stone-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-amber-800/20" placeholder="••••••••" />
                                         </div>
                                         {err && <p className="text-xs text-red-600 font-medium">{err}</p>}
-                                        <button type="submit" className="w-full bg-amber-900 text-white text-xs font-bold py-2.5 rounded-lg">{t[lang].unlock}</button>
+                                        <button type="submit" className="w-full bg-amber-950 text-white text-xs font-bold py-3 rounded-xl hover:bg-stone-900 transition-all">{t[lang].unlock}</button>
                                     </form>
                                 ) : (
                                     <div className="space-y-8">
                                         {/* Orders Log / Tracker */}
-                                        <div className="bg-white p-5 rounded-2xl border border-stone-200 space-y-4 shadow-sm">
-                                            <div className="flex justify-between items-center border-b pb-2">
-                                                <h3 className="text-base font-bold text-stone-900">📊 {t[lang].ordersTracker}</h3>
+                                        <div className="bg-white p-6 rounded-3xl border border-stone-200 space-y-4 shadow-sm">
+                                            <div className="flex justify-between items-center border-b pb-3">
+                                                <h3 className="text-lg font-bold text-stone-900">📊 {t[lang].ordersTracker}</h3>
                                                 {orders.length > 0 && (
-                                                    <button onClick={clearOrderLog} className="text-xs text-red-600 bg-red-50 px-2 py-1 rounded font-bold">{t[lang].clearOrders}</button>
+                                                    <button onClick={clearOrderLog} className="text-xs text-red-600 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg font-bold transition-all">{t[lang].clearOrders}</button>
                                                 )}
                                             </div>
                                             {orders.length === 0 ? (
@@ -500,19 +491,19 @@
                                                     <table className="w-full text-left text-xs border-collapse">
                                                         <thead>
                                                             <tr className="bg-stone-50 text-stone-600 border-b border-stone-100">
-                                                                <th className="p-2">{t[lang].orderDate}</th>
-                                                                <th className="p-2">{t[lang].customerPhone}</th>
-                                                                <th className="p-2">{t[lang].customerOrder}</th>
-                                                                <th className="p-2 text-right">{t[lang].total}</th>
+                                                                <th className="p-3">{t[lang].orderDate}</th>
+                                                                <th className="p-3">{t[lang].customerPhone}</th>
+                                                                <th className="p-3">{t[lang].customerOrder}</th>
+                                                                <th className="p-3 text-right">{t[lang].total}</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody className="divide-y divide-stone-100">
                                                             {orders.map(o => (
-                                                                <tr key={o.id} className="hover:bg-stone-50">
-                                                                    <td className="p-2 font-medium text-stone-500 whitespace-nowrap">{o.date}</td>
-                                                                    <td className="p-2 font-bold text-amber-900">{o.phone}</td>
-                                                                    <td className="p-2 text-stone-700">{o.items} <span className="text-[10px] text-stone-400">({o.method})</span></td>
-                                                                    <td className="p-2 text-right font-bold text-stone-900 whitespace-nowrap">{o.total} ETB</td>
+                                                                <tr key={o.id} className="hover:bg-stone-50/50">
+                                                                    <td className="p-3 font-medium text-stone-500 whitespace-nowrap">{o.date}</td>
+                                                                    <td className="p-3 font-bold text-amber-900">{o.phone}</td>
+                                                                    <td className="p-3 text-stone-700">{o.items} <span className="text-[10px] text-stone-400">({o.method})</span></td>
+                                                                    <td className="p-3 text-right font-bold text-stone-900 whitespace-nowrap">{o.total.toLocaleString()} ETB</td>
                                                                 </tr>
                                                             ))}
                                                         </tbody>
@@ -521,20 +512,20 @@
                                             )}
                                         </div>
 
-                                        <form onSubmit={handleAdd} className="bg-white p-5 rounded-2xl border border-stone-200 space-y-4 shadow-sm">
-                                            <h3 className="text-base font-bold text-stone-900 border-b pb-2">{t[lang].addNewProduct}</h3>
+                                        <form onSubmit={handleAdd} className="bg-white p-6 rounded-3xl border border-stone-200 space-y-4 shadow-sm">
+                                            <h3 className="text-lg font-bold text-stone-900 border-b pb-3">{t[lang].addNewProduct}</h3>
                                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                                 <div>
-                                                    <label className="block text-xs font-bold text-stone-700 uppercase mb-1">{t[lang].shoeName}</label>
-                                                    <input type="text" value={newP.name} onChange={(e) => setNewP({...newP, name: e.target.value})} className="w-full px-3 py-2 border border-stone-300 rounded-lg text-sm" placeholder="Classic Oxford" />
+                                                    <label className="block text-xs font-bold text-stone-700 uppercase mb-2">{t[lang].shoeName}</label>
+                                                    <input type="text" value={newP.name} onChange={(e) => setNewP({...newP, name: e.target.value})} className="w-full px-4 py-2.5 border border-stone-300 rounded-xl text-sm" placeholder="Classic Oxford" />
                                                 </div>
                                                 <div>
-                                                    <label className="block text-xs font-bold text-stone-700 uppercase mb-1">{t[lang].price}</label>
-                                                    <input type="number" value={newP.price} onChange={(e) => setNewP({...newP, price: e.target.value})} className="w-full px-3 py-2 border border-stone-300 rounded-lg text-sm" placeholder="3500" />
+                                                    <label className="block text-xs font-bold text-stone-700 uppercase mb-2">{t[lang].price}</label>
+                                                    <input type="number" value={newP.price} onChange={(e) => setNewP({...newP, price: e.target.value})} className="w-full px-4 py-2.5 border border-stone-300 rounded-xl text-sm" placeholder="3500" />
                                                 </div>
                                                 <div>
-                                                    <label className="block text-xs font-bold text-stone-700 uppercase mb-1">{t[lang].category}</label>
-                                                    <select value={newP.category} onChange={(e) => setNewP({...newP, category: e.target.value})} className="w-full px-3 py-2 border border-stone-300 rounded-lg text-sm bg-white">
+                                                    <label className="block text-xs font-bold text-stone-700 uppercase mb-2">{t[lang].category}</label>
+                                                    <select value={newP.category} onChange={(e) => setNewP({...newP, category: e.target.value})} className="w-full px-4 py-2.5 border border-stone-300 rounded-xl text-sm bg-white">
                                                         <option value="Formal">{t[lang].formal}</option>
                                                         <option value="Boots">{t[lang].boots}</option>
                                                         <option value="Sneakers">{t[lang].sneakers}</option>
@@ -542,31 +533,31 @@
                                                     </select>
                                                 </div>
                                                 <div>
-                                                    <label className="block text-xs font-bold text-stone-700 uppercase mb-1">{t[lang].imagesLabel}</label>
+                                                    <label className="block text-xs font-bold text-stone-700 uppercase mb-2">{t[lang].imagesLabel}</label>
                                                     <input type="file" accept="image/*" multiple onChange={handleImgUpload} className="w-full text-xs text-stone-500" />
-                                                    <p className="text-[10px] text-amber-800 mt-1">{t[lang].imagesSelected} {newP.images.length}</p>
+                                                    <p className="text-[10px] text-amber-800 mt-1.5">{t[lang].imagesSelected} {newP.images.length}</p>
                                                 </div>
                                             </div>
                                             <div>
-                                                <label className="block text-xs font-bold text-stone-700 uppercase mb-1">{t[lang].description}</label>
-                                                <textarea value={newP.description} onChange={(e) => setNewP({...newP, description: e.target.value})} rows="2" className="w-full px-3 py-2 border border-stone-300 rounded-lg text-sm"></textarea>
+                                                <label className="block text-xs font-bold text-stone-700 uppercase mb-2">{t[lang].description}</label>
+                                                <textarea value={newP.description} onChange={(e) => setNewP({...newP, description: e.target.value})} rows="2" className="w-full px-4 py-2.5 border border-stone-300 rounded-xl text-sm"></textarea>
                                             </div>
-                                            <button type="submit" className="bg-emerald-600 text-white text-xs font-bold px-6 py-2.5 rounded-lg">{t[lang].registerBtn}</button>
+                                            <button type="submit" className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-8 py-3 rounded-xl transition-all shadow">{t[lang].registerBtn}</button>
                                         </form>
 
                                         <div className="space-y-3">
-                                            <h3 className="text-base font-bold text-stone-900">{t[lang].productList} ({products.length})</h3>
-                                            <div className="space-y-2">
+                                            <h3 className="text-lg font-bold text-stone-900">{t[lang].productList} ({products.length})</h3>
+                                            <div className="space-y-2.5">
                                                 {products.map(p => (
-                                                    <div key={p.id} className="bg-white p-3 rounded-xl border border-stone-200 flex items-center justify-between gap-4">
+                                                    <div key={p.id} className="bg-white p-4 rounded-2xl border border-stone-200 flex items-center justify-between gap-4">
                                                         <div className="flex items-center gap-3">
-                                                            <img src={p.images[0]} className="w-12 h-12 object-cover rounded-lg" />
+                                                            <img src={p.images[0]} className="w-12 h-12 object-cover rounded-xl border border-stone-100" />
                                                             <div>
                                                                 <h4 className="font-bold text-stone-900 text-sm">{p.name}</h4>
-                                                                <p className="text-xs text-stone-500">{p.category} • {p.price} ETB</p>
+                                                                <p className="text-xs text-stone-500">{p.category} • {p.price.toLocaleString()} ETB</p>
                                                             </div>
                                                         </div>
-                                                        <button onClick={() => setProducts(products.filter(item => item.id !== p.id))} className="text-red-600 text-xs font-bold bg-red-50 px-3 py-1.5 rounded-lg">{t[lang].delete}</button>
+                                                        <button onClick={() => setProducts(products.filter(item => item.id !== p.id))} className="text-red-600 text-xs font-bold bg-red-50 hover:bg-red-100 px-4 py-2 rounded-xl transition-all">{t[lang].delete}</button>
                                                     </div>
                                                 ))}
                                             </div>
@@ -577,18 +568,18 @@
                         )}
                     </main>
 
-                    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-stone-200 py-2 px-6 flex justify-between items-center z-40 md:hidden shadow-lg">
-                        <button onClick={() => setView('home')} className={`flex flex-col items-center text-xs ${view === 'home' ? 'text-amber-800 font-bold' : 'text-stone-500'}`}>
-                            <span>🏠</span>{t[lang].home}
+                    <nav className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-stone-200/80 py-3.5 px-8 flex justify-between items-center z-40 md:hidden shadow-xl">
+                        <button onClick={() => setView('home')} className={`flex flex-col items-center gap-1 text-[10px] uppercase font-bold tracking-wider ${view === 'home' ? 'text-amber-800' : 'text-stone-400'}`}>
+                            <span className="text-lg">🏠</span>{t[lang].home}
                         </button>
-                        <button onClick={() => setView('shop')} className={`flex flex-col items-center text-xs ${view === 'shop' ? 'text-amber-800 font-bold' : 'text-stone-500'}`}>
-                            <span>👟</span>{t[lang].shoes}
+                        <button onClick={() => setView('shop')} className={`flex flex-col items-center gap-1 text-[10px] uppercase font-bold tracking-wider ${view === 'shop' ? 'text-amber-800' : 'text-stone-400'}`}>
+                            <span className="text-lg">👟</span>{t[lang].shoes}
                         </button>
-                        <button onClick={() => setView('cart')} className={`flex flex-col items-center text-xs ${view === 'cart' ? 'text-amber-800 font-bold' : 'text-stone-500'}`}>
-                            <span>🛒</span>{t[lang].cart}
+                        <button onClick={() => setView('cart')} className={`flex flex-col items-center gap-1 text-[10px] uppercase font-bold tracking-wider ${view === 'cart' ? 'text-amber-800' : 'text-stone-400'}`}>
+                            <span className="text-lg">🛒</span>{t[lang].cart}
                         </button>
-                        <button onClick={() => setView('admin')} className={`flex flex-col items-center text-xs ${view === 'admin' ? 'text-amber-800 font-bold' : 'text-stone-500'}`}>
-                            <span>⚙️</span>{t[lang].admin}
+                        <button onClick={() => setView('admin')} className={`flex flex-col items-center gap-1 text-[10px] uppercase font-bold tracking-wider ${view === 'admin' ? 'text-amber-800' : 'text-stone-400'}`}>
+                            <span className="text-lg">⚙️</span>{t[lang].admin}
                         </button>
                     </nav>
                 </div>
