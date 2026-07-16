@@ -15,7 +15,6 @@
             font-family: 'Plus Jakarta Sans', sans-serif; 
             transition: background-color 0.3s ease, color 0.3s ease;
         }
-        /* Custom image zoom styling */
         .zoom-overlay {
             backdrop-filter: blur(8px);
         }
@@ -42,6 +41,11 @@
                 heroSub: "Premium handicraft men's shoes for any formal or casual occasion.",
                 viewCatalog: "Explore Collection",
                 categoriesTitle: "Browse by Category",
+                featuredTitle: "Featured Collections",
+                featuredSub: "Handpicked masterpieces available right now",
+                featuredBadge: "Featured",
+                makeFeatured: "Feature on Home Page",
+                removeFeatured: "Remove from Featured",
                 selectSize: "Select Size:",
                 addToCart: "Add to Cart",
                 catalogTitle: "Our Master Collection",
@@ -88,7 +92,7 @@
                 wcuTitle: "Why Kenzs Official?",
                 wcu1Title: "Pay After Delivery",
                 wcu1Desc: "Inspect and test your shoes at your door. Pay only when you are 100% happy.",
-                wcu2Title: "100% Genuine Product",
+                wcu2Title: "100% Genuine Leather",
                 wcu2Desc: "Crafted locally using premium, hand-selected pure leather built to last.",
                 wcu3Title: "Perfect Fit Guarantee",
                 wcu3Desc: "If the size isn't a perfect fit, we exchange it instantly at no extra cost.",
@@ -106,7 +110,7 @@
                 yearSales: "This Year's Sales",
                 analyticsOverview: "Executive Sales Dashboard",
                 // Search & Filter placeholders
-                searchPlaceholder: "Search for shoes (e.g. Oxford, Sneaker, Leather)...",
+                searchPlaceholder: "Search for shoes (e.g. Sneaker, Boot, Oxford, Leather)...",
                 allCategories: "All Styles",
                 tapToZoom: "Touch image to zoom details"
             },
@@ -120,6 +124,11 @@
                 heroSub: "ለማንኛውም መደበኛ ወይም ተራ ዝግጅት በእጅ የተሰሩ ምርጥ የክብር ወንዶች ጫማዎች።",
                 viewCatalog: "ካታሎግ ይመልከቱ",
                 categoriesTitle: "በዓይነት ይመልከቱ",
+                featuredTitle: "የተመረጡ ምርቶች",
+                featuredSub: "በአሁኑ ሰዓት የሚገኙ ምርጥ ተመራጭ ጫማዎች",
+                featuredBadge: "ተመራጭ",
+                makeFeatured: "መነሻ ገጽ ላይ አሳይ",
+                removeFeatured: "ከመነሻ ገጽ ላይ አንሳ",
                 selectSize: "መጠን (Size) ይምረጡ፡",
                 addToCart: "ወደ ቅርጫት ጨምር",
                 catalogTitle: "ሙሉ ካታሎግ",
@@ -166,7 +175,7 @@
                 wcuTitle: "ለምን Kenzs Official ይመርጣሉ?",
                 wcu1Title: "ሲረከቡ ይክፈሉ",
                 wcu1Desc: "ጫማዎን በቤትዎ ወይም በቦታው ሆነው ይመልከቱ እና ይሞክሩ። 100% ሲወዱትና ሲስማማዎት ብቻ ይክፈሉ::",
-                wcu2Title: "100% እውነተኛ እቃ",
+                wcu2Title: "100% እውነተኛ ቆዳ",
                 wcu2Desc: "ለረጅም ጊዜ እንዲያገለግል ተደርጎ ከተመረጠ ምርጥ ንፁህ የቆዳ ጥሬ ዕቃ በእጃችን የተሰራ።",
                 wcu3Title: "ልክ የመሆን ዋስትና",
                 wcu3Desc: "የመረጡት መጠን (Size) ልክ ካልሆነ ያለ ምንም ተጨማሪ ክፍያ ወዲያውኑ እንቀይርልዎታለን።",
@@ -197,12 +206,13 @@
                 price: 3500, 
                 category: "Formal", 
                 images: ["https://images.unsplash.com/photo-1614252369475-531eba835eb1?w=600&auto=format&fit=crop&q=60"], 
-                description: "Handcrafted premium leather shoe designed for formal elegance." 
+                description: "Handcrafted premium leather shoe designed for formal elegance.",
+                is_featured: true 
             }
         ];
 
         function App() {
-            const [lang, setLang] = useState('en'); // Default to English as first language
+            const [lang, setLang] = useState('en'); // Defaults to English
             const [view, setView] = useState('home'); 
             const [products, setProducts] = useState(fallbackProducts);
             const [cart, setCart] = useState([]);
@@ -234,7 +244,7 @@
             const [isAdmin, setIsAdmin] = useState(false);
             const [pass, setPass] = useState('');
             const [err, setErr] = useState('');
-            const [newP, setNewP] = useState({ name: '', price: '', category: 'Formal', images: [], description: '' });
+            const [newP, setNewP] = useState({ name: '', price: '', category: 'Formal', images: [], description: '', is_featured: false });
 
             // Stats States
             const [stats, setStats] = useState({ today: 0, week: 0, month: 0, year: 0 });
@@ -412,7 +422,8 @@
                     price: parseFloat(newP.price),
                     category: newP.category,
                     images: newP.images,
-                    description: newP.description
+                    description: newP.description,
+                    is_featured: newP.is_featured
                 };
 
                 const { data, error } = await supabase
@@ -424,7 +435,20 @@
                     alert("Error registering product: " + error.message);
                 } else {
                     alert(t[lang].successAdd);
-                    setNewP({ name: '', price: '', category: 'Formal', images: [], description: '' });
+                    setNewP({ name: '', price: '', category: 'Formal', images: [], description: '', is_featured: false });
+                    fetchProducts();
+                }
+            };
+
+            const toggleFeaturedStatus = async (productId, currentStatus) => {
+                const { error } = await supabase
+                    .from('products')
+                    .update({ is_featured: !currentStatus })
+                    .eq('id', productId);
+
+                if (error) {
+                    alert("Error updating featured status: " + error.message);
+                } else {
                     fetchProducts();
                 }
             };
@@ -523,9 +547,16 @@
                 });
             };
 
+            // Get exactly up to 3 featured products for the Home page
+            const getFeaturedProductsList = () => {
+                return products.filter(p => p.is_featured === true).slice(0, 3);
+            };
+
             const navigateToCategory = (catName) => {
                 setSelectedCategory(catName);
+                setSearchQuery('');
                 setView('shop');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             };
 
             const renderProductCard = (p) => {
@@ -535,7 +566,7 @@
                 return (
                     <div key={p.id} className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200/80 dark:border-stone-800/80 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
                         
-                        {/* Interactive Touchable Zooming Image Container */}
+                        {/* Touchable Zooming Image Container */}
                         <div className="relative w-full h-64 bg-stone-100 dark:bg-stone-800 flex items-center justify-center group cursor-zoom-in" onClick={() => setZoomedImage(images[idx])}>
                             <img src={images[idx]} className="w-full h-full object-cover transition-all duration-500 hover:scale-105" alt={p.name} />
                             
@@ -589,14 +620,14 @@
             };
 
             return (
-                <div className="min-h-screen flex flex-col pb-24 md:pb-0 bg-[#FAF6F0] dark:bg-stone-950 text-stone-900 dark:text-stone-100">
+                <div className="min-h-screen flex flex-col pb-24 md:pb-0 bg-[#FAF6F0] dark:bg-stone-950 text-stone-900 dark:text-stone-100 animate-fadeIn">
                     
                     {/* FULL SCREEN LIGHTBOX FOR IMAGE ZOOM */}
                     {zoomedImage && (
-                        <div className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4 cursor-zoom-out zoom-overlay" onClick={() => setZoomedImage(null)}>
+                        <div className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center p-4 cursor-zoom-out zoom-overlay" onClick={() => setZoomedImage(null)}>
                             <div className="relative max-w-3xl w-full max-h-[85vh] flex items-center justify-center">
-                                <img src={zoomedImage} className="max-w-full max-h-[80vh] rounded-xl object-contain shadow-2xl transition-transform duration-300 hover:scale-110" alt="Zoomed View" />
-                                <button className="absolute top-[-40px] right-0 text-white text-3xl font-extralight hover:text-stone-300">&times;</button>
+                                <img src={zoomedImage} className="max-w-full max-h-[80vh] rounded-xl object-contain shadow-2xl transition-transform duration-300 hover:scale-105" alt="Zoomed View" />
+                                <button className="absolute top-[-40px] right-0 text-white text-3xl font-light hover:text-stone-300">&times;</button>
                             </div>
                         </div>
                     )}
@@ -628,12 +659,12 @@
                                     <p className="text-stone-300 text-sm md:text-base max-w-md mx-auto font-light leading-relaxed">{t[lang].heroSub}</p>
                                     
                                     {/* Actionable button that transitions view smoothly */}
-                                    <button onClick={() => { setSelectedCategory('All'); setView('shop'); }} className="bg-amber-800 hover:bg-amber-700 text-white font-semibold px-10 py-4 rounded-full text-sm shadow-md hover:shadow-lg transition-all">
+                                    <button onClick={() => { setSelectedCategory('All'); setSearchQuery(''); setView('shop'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="bg-amber-800 hover:bg-amber-700 text-white font-semibold px-10 py-4 rounded-full text-sm shadow-md hover:shadow-lg transition-all">
                                         {t[lang].viewCatalog}
                                     </button>
                                 </div>
 
-                                {/* CATEGORIES EXPLORER (Replacing static featured cards) */}
+                                {/* CATEGORIES EXPLORER */}
                                 <section className="space-y-6">
                                     <h3 className="text-2xl font-extrabold text-stone-900 dark:text-white tracking-tight text-center">{t[lang].categoriesTitle}</h3>
                                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -661,6 +692,41 @@
                                     </div>
                                 </section>
 
+                                {/* DYNAMIC FEATURED PRODUCTS SECTION (Editable by Admin) */}
+                                {getFeaturedProductsList().length > 0 && (
+                                    <section className="space-y-6">
+                                        <div className="text-center">
+                                            <h3 className="text-2xl font-extrabold text-stone-900 dark:text-white tracking-tight">{t[lang].featuredTitle}</h3>
+                                            <p className="text-stone-500 dark:text-stone-400 text-xs mt-1.5">{t[lang].featuredSub}</p>
+                                        </div>
+                                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                                            {getFeaturedProductsList().map(p => {
+                                                const mainImg = p.images && p.images.length > 0 ? p.images[0] : "https://images.unsplash.com/photo-1614252369475-531eba835eb1?w=600&auto=format&fit=crop&q=60";
+                                                return (
+                                                    <div key={p.id} className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200/85 dark:border-stone-800 shadow-xs overflow-hidden flex flex-col hover:shadow-md transition duration-300">
+                                                        <div className="relative h-56 bg-stone-100 dark:bg-stone-800 cursor-zoom-in" onClick={() => setZoomedImage(mainImg)}>
+                                                            <img src={mainImg} className="w-full h-full object-cover" alt={p.name} />
+                                                            <span className="absolute top-2 right-2 text-[9px] bg-amber-800 text-white font-bold px-2 py-0.5 rounded uppercase tracking-wider">{t[lang].featuredBadge}</span>
+                                                        </div>
+                                                        <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
+                                                            <div>
+                                                                <h4 className="font-bold text-stone-900 dark:text-white text-sm">{p.name}</h4>
+                                                                <p className="text-xs text-stone-500 line-clamp-2 mt-1">{p.description}</p>
+                                                            </div>
+                                                            <div className="flex items-center justify-between pt-2.5 border-t border-stone-100 dark:border-stone-800">
+                                                                <span className="text-xs font-extrabold text-stone-900 dark:text-stone-100">{p.price.toLocaleString()} ETB</span>
+                                                                <button onClick={() => { setSelectedCategory('All'); setSearchQuery(p.name); setView('shop'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-950 text-[10px] font-bold px-3.5 py-1.5 rounded-lg hover:opacity-90 transition-all">
+                                                                    View Product
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    </section>
+                                )}
+
                                 {/* Why Choose Us Section */}
                                 <section className="space-y-8">
                                     <h3 className="text-2xl font-extrabold text-center text-stone-900 dark:text-white tracking-tight">{t[lang].wcuTitle}</h3>
@@ -686,7 +752,7 @@
                         )}
 
                         {view === 'shop' && (
-                            <div className="space-y-8">
+                            <div className="space-y-8 animate-fadeIn">
                                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                                     <h2 className="text-3xl font-extrabold text-stone-900 dark:text-white tracking-tight">{t[lang].catalogTitle}</h2>
                                     
@@ -700,7 +766,7 @@
                                     </div>
                                 </div>
 
-                                {/* SEARCH BAR FOR CUSTOMER CONVENIENCE */}
+                                {/* SEARCH BAR */}
                                 <div className="relative">
                                     <span className="absolute left-4 top-3.5 text-stone-400 text-lg">🔍</span>
                                     <input type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder={t[lang].searchPlaceholder} className="w-full pl-12 pr-4 py-3.5 border border-stone-300/80 dark:border-stone-800 bg-white dark:bg-stone-900 text-stone-900 dark:text-white rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-amber-800/20 shadow-sm" />
@@ -723,7 +789,7 @@
                         )}
 
                         {view === 'cart' && (
-                            <div className="space-y-6">
+                            <div className="space-y-6 animate-fadeIn">
                                 <h2 className="text-3xl font-bold text-stone-900 dark:text-white tracking-tight">{t[lang].cartTitle}</h2>
                                 
                                 {orderCompleted ? (
@@ -763,13 +829,13 @@
                                             </div>
                                         </div>
 
-                                        {/* Seamless Multi-option Checkout Block */}
+                                        {/* Multi-option Checkout Block */}
                                         <div className="bg-white dark:bg-stone-900 p-6 rounded-3xl border border-stone-200 dark:border-stone-800 space-y-6 shadow-sm">
                                             {checkoutMode === null ? (
                                                 <div className="space-y-6">
                                                     <h3 className="text-md font-bold text-stone-900 dark:text-white border-b pb-3 text-center">{t[lang].checkoutChoiceTitle}</h3>
                                                     
-                                                    {/* Choice 1: Direct phone call */}
+                                                    {/* Call shop directly */}
                                                     <div className="bg-stone-50 dark:bg-stone-950 p-5 rounded-2xl border border-stone-150 dark:border-stone-850 text-center space-y-3">
                                                         <span className="text-2xl">📞</span>
                                                         <h4 className="font-bold text-stone-900 dark:text-white text-sm">{t[lang].orderMethodPhone}</h4>
@@ -785,7 +851,7 @@
                                                         <div className="h-px bg-stone-200 dark:bg-stone-800 flex-1"></div>
                                                     </div>
 
-                                                    {/* Choice 2: Order on website */}
+                                                    {/* Order online */}
                                                     <button onClick={() => setCheckoutMode('online')} className="w-full bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-950 font-bold py-3.5 rounded-xl text-center text-xs shadow-md transition-all">
                                                         💻 {t[lang].orderMethodOnline}
                                                     </button>
@@ -826,7 +892,7 @@
                         )}
 
                         {view === 'admin' && (
-                            <div className="space-y-8">
+                            <div className="space-y-8 animate-fadeIn">
                                 <h2 className="text-3xl font-bold text-stone-900 dark:text-white tracking-tight">{t[lang].controlPanel}</h2>
                                 {!isAdmin ? (
                                     <form onSubmit={handleLogin} className="bg-white dark:bg-stone-900 p-8 rounded-3xl border border-stone-200 dark:border-stone-800 max-w-sm mx-auto space-y-5 shadow-lg">
@@ -925,6 +991,13 @@
                                                     <p className="text-[10px] text-amber-800 dark:text-amber-500 mt-1.5">{t[lang].imagesSelected} {newP.images.length}</p>
                                                 </div>
                                             </div>
+                                            
+                                            {/* Feature Checkbox inside register form */}
+                                            <div className="flex items-center gap-2 py-2">
+                                                <input type="checkbox" id="is_featured" checked={newP.is_featured} onChange={(e) => setNewP({...newP, is_featured: e.target.checked})} className="w-4 h-4 text-amber-850 accent-amber-850 rounded" />
+                                                <label htmlFor="is_featured" className="text-xs font-bold text-stone-700 dark:text-stone-300 uppercase select-none">{t[lang].makeFeatured}</label>
+                                            </div>
+
                                             <div>
                                                 <label className="block text-xs font-bold text-stone-700 dark:text-stone-300 uppercase mb-2">{t[lang].description}</label>
                                                 <textarea value={newP.description} onChange={(e) => setNewP({...newP, description: e.target.value})} rows="2" className="w-full px-4 py-2.5 border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-white rounded-xl text-sm"></textarea>
@@ -932,20 +1005,25 @@
                                             <button type="submit" className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-8 py-3 rounded-xl transition-all shadow">{t[lang].registerBtn}</button>
                                         </form>
 
-                                        {/* Existing products list */}
+                                        {/* Existing products list with feature-toggle control */}
                                         <div className="space-y-3">
                                             <h3 className="text-lg font-bold text-stone-900 dark:text-white">{t[lang].productList} ({products.length})</h3>
                                             <div className="space-y-2.5">
                                                 {products.map(p => (
-                                                    <div key={p.id} className="bg-white dark:bg-stone-900 p-4 rounded-2xl border border-stone-200 dark:border-stone-800 flex items-center justify-between gap-4">
+                                                    <div key={p.id} className="bg-white dark:bg-stone-900 p-4 rounded-2xl border border-stone-200 dark:border-stone-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                                                         <div className="flex items-center gap-3">
                                                             <img src={p.images[0]} className="w-12 h-12 object-cover rounded-xl border border-stone-100 dark:border-stone-800" />
                                                             <div>
-                                                                <h4 className="font-bold text-stone-900 dark:text-white text-sm">{p.name}</h4>
+                                                                <h4 className="font-bold text-stone-900 dark:text-white text-sm">{p.name} {p.is_featured && <span className="text-[9px] bg-amber-800 text-white font-bold px-1.5 py-0.5 rounded ml-1.5">FEATURED</span>}</h4>
                                                                 <p className="text-xs text-stone-500">{p.category} • {p.price.toLocaleString()} ETB</p>
                                                             </div>
                                                         </div>
-                                                        <button onClick={() => handleDeleteProduct(p.id)} className="text-red-600 text-xs font-bold bg-red-50 hover:bg-red-100 dark:bg-red-950 dark:hover:bg-red-900 px-4 py-2 rounded-xl transition-all">{t[lang].delete}</button>
+                                                        <div className="flex gap-2 justify-end">
+                                                            <button onClick={() => toggleFeaturedStatus(p.id, p.is_featured)} className={`text-[11px] font-bold px-3 py-2 rounded-xl transition-all ${p.is_featured ? 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-400' : 'bg-stone-100 text-stone-700 dark:bg-stone-800 dark:text-stone-300'}`}>
+                                                                {p.is_featured ? t[lang].removeFeatured : t[lang].makeFeatured}
+                                                            </button>
+                                                            <button onClick={() => handleDeleteProduct(p.id)} className="text-red-600 text-xs font-bold bg-red-50 hover:bg-red-100 dark:bg-red-950 dark:hover:bg-red-900 px-4 py-2 rounded-xl transition-all">{t[lang].delete}</button>
+                                                        </div>
                                                     </div>
                                                 ))}
                                             </div>
@@ -956,7 +1034,7 @@
                         )}
                     </main>
 
-                    {/* Footer Navigation Bar */}
+                    {/* Bottom Navigation Bar */}
                     <nav className="fixed bottom-0 left-0 right-0 bg-white/95 dark:bg-stone-900/95 backdrop-blur-md border-t border-stone-200/80 dark:border-stone-800 py-3.5 px-6 flex justify-between items-center z-40 md:hidden shadow-xl">
                         <button onClick={() => setView('home')} className={`flex flex-col items-center gap-1 text-[10px] uppercase font-bold tracking-wider ${view === 'home' ? 'text-amber-800 dark:text-amber-500' : 'text-stone-400'}`}>
                             <span className="text-lg">🏠</span>{t[lang].home}
@@ -965,7 +1043,6 @@
                             <span className="text-lg">👟</span>{t[lang].shoes}
                         </button>
                         
-                        {/* Dark/Light mode switcher */}
                         <button onClick={() => setDarkMode(!darkMode)} className="flex flex-col items-center gap-1 text-[10px] uppercase font-bold tracking-wider text-stone-400">
                             <span className="text-lg">{darkMode ? '☀️' : '🌙'}</span>
                             <span>{darkMode ? 'Light' : 'Dark'}</span>
@@ -976,7 +1053,7 @@
                         </button>
                     </nav>
 
-                    {/* Desktop Floating Mode Button */}
+                    {/* Desktop Mode Toggle */}
                     <button onClick={() => setDarkMode(!darkMode)} className="hidden md:flex fixed bottom-6 right-6 bg-stone-900 dark:bg-white text-white dark:text-stone-950 w-12 h-12 rounded-full items-center justify-center shadow-lg z-50 transition-all">
                         {darkMode ? '☀️' : '🌙'}
                     </button>
