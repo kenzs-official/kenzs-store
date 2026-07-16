@@ -11,7 +11,7 @@
     <!-- Loading the Supabase Database Helper Library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
         body { 
             font-family: 'Plus Jakarta Sans', sans-serif; 
             background: radial-gradient(circle at 50% 0%, #FAF6F0 0%, #F3ECE3 100%); 
@@ -50,8 +50,7 @@
                 backToShop: "Continue Browsing",
                 size: "Size",
                 total: "Total",
-                orderWhatsapp: "Order on WhatsApp",
-                orderSMS: "Order via SMS/Text",
+                placeOrder: "Place Order Now",
                 controlPanel: "Store Control Panel",
                 accessKey: "Access Key",
                 unlock: "Unlock",
@@ -78,7 +77,13 @@
                 orderDate: "Date",
                 customerOrder: "Order Details",
                 clearOrders: "Clear Order Log",
-                customerPhone: "Phone/Contact (Optional)"
+                fullName: "Full Name *",
+                phoneNumber: "Phone Number *",
+                deliveryAddress: "Delivery Address (City / Area) *",
+                orderSuccessTitle: "Order Placed Successfully!",
+                orderSuccessMsg: "Thank you for shopping with Kenzs Official. We will contact you soon to arrange delivery.",
+                submitting: "Processing...",
+                customerInfo: "Customer Info"
             },
             am: {
                 brand: "KENZS OFFICIAL",
@@ -98,8 +103,7 @@
                 backToShop: "ወደ ግብይት ተመለስ",
                 size: "መጠን",
                 total: "ጠቅላላ ድምር",
-                orderWhatsapp: "በ WhatsApp እዘዝ",
-                orderSMS: "በእጅ ስልክ / SMS እዘዝ",
+                placeOrder: "ትዕዛዝ ይፈጽሙ",
                 controlPanel: "የሱቅ መቆጣጠሪያ ፓነል",
                 accessKey: "የመግቢያ ቁልፍ (Access Key)",
                 unlock: "ክፈት",
@@ -126,7 +130,13 @@
                 orderDate: "ቀን",
                 customerOrder: "የትዕዛዝ ዝርዝር",
                 clearOrders: "የመከታተያ መዝገብ አጽዳ",
-                customerPhone: "የስልክ ቁጥር (ከተፈለገ)"
+                fullName: "ሙሉ ስም *",
+                phoneNumber: "የስልክ ቁጥር *",
+                deliveryAddress: "የማድረሻ አድራሻ (ከተማ / ሰፈር) *",
+                orderSuccessTitle: "ትዕዛዝዎ በተሳካ ሁኔታ ተመዝግቧል!",
+                orderSuccessMsg: "ከ Kenzs Official ስለገዙ እናመሰግናለን። ማድረሻውን ለማመቻቸት በቅርቡ በስልክ ቁጥርዎ እንደውላለን።",
+                submitting: "በመከናወን ላይ...",
+                customerInfo: "የደንበኛ መረጃ"
             }
         };
 
@@ -144,24 +154,34 @@
         function App() {
             const [lang, setLang] = useState('am');
             const [view, setView] = useState('home'); 
-            const [phoneInput, setPhoneInput] = useState('');
             const [products, setProducts] = useState(fallbackProducts);
             const [cart, setCart] = useState([]);
             const [selectedSizes, setSelectedSizes] = useState({});
             const [activeImg, setActiveImg] = useState({});
             const [orders, setOrders] = useState([]);
 
+            // Checkout state
+            const [checkoutName, setCheckoutName] = useState('');
+            const [checkoutPhone, setCheckoutPhone] = useState('');
+            const [checkoutAddress, setCheckoutAddress] = useState('');
+            const [isSubmittingOrder, setIsSubmittingOrder] = useState(false);
+            const [orderCompleted, setOrderCompleted] = useState(false);
+
+            // Admin state
             const [isAdmin, setIsAdmin] = useState(false);
             const [pass, setPass] = useState('');
             const [err, setErr] = useState('');
             const [newP, setNewP] = useState({ name: '', price: '', category: 'Formal', images: [], description: '' });
 
-            // 1. Fetch Products from Supabase on Load
+            // Logo Tap tracker for Secret Admin Entry
+            const [logoTapCount, setLogoTapCount] = useState(0);
+
+            // Fetch Products from Supabase on Load
             useEffect(() => {
                 fetchProducts();
             }, []);
 
-            // 2. Fetch Orders from Supabase if admin is logged in
+            // Fetch Orders from Supabase if admin is logged in
             useEffect(() => {
                 if (isAdmin) {
                     fetchOrders();
@@ -191,6 +211,18 @@
                     console.error("Error loading orders: ", error);
                 } else if (data) {
                     setOrders(data);
+                }
+            };
+
+            const handleLogoTap = () => {
+                const nextCount = logoTapCount + 1;
+                if (nextCount >= 2) {
+                    setView('admin');
+                    setLogoTapCount(0); // Reset
+                } else {
+                    setLogoTapCount(nextCount);
+                    // Reset tap count if user doesn't tap again within 1.5 seconds
+                    setTimeout(() => setLogoTapCount(0), 1500);
                 }
             };
 
@@ -257,7 +289,6 @@
                 });
             };
 
-            // 3. Save New Product to Cloud Database
             const handleAdd = async (e) => {
                 e.preventDefault();
                 if (!newP.name || !newP.price || newP.images.length === 0) {
@@ -283,11 +314,10 @@
                 } else {
                     alert(t[lang].successAdd);
                     setNewP({ name: '', price: '', category: 'Formal', images: [], description: '' });
-                    fetchProducts(); // Refresh list
+                    fetchProducts();
                 }
             };
 
-            // 4. Delete Product from Cloud Database
             const handleDeleteProduct = async (id) => {
                 if (confirm("Are you sure you want to delete this product?")) {
                     const { error } = await supabase
@@ -298,7 +328,7 @@
                     if (error) {
                         alert("Error deleting product: " + error.message);
                     } else {
-                        fetchProducts(); // Refresh list
+                        fetchProducts();
                     }
                 }
             };
@@ -317,61 +347,51 @@
                 setActiveImg({ ...activeImg, [productId]: newIdx });
             };
 
-            const getOrderMsg = () => {
-                let msg = `New Order from Kenzs Official / አዲስ ትዕዛዝ ከ Kenzs Official:\n`;
-                if (phoneInput) {
-                    msg += `Customer Phone: ${phoneInput}\n`;
+            // Submit order seamlessly on website and write to database
+            const handlePlaceOrder = async (e) => {
+                e.preventDefault();
+                if (!checkoutName || !checkoutPhone || !checkoutAddress) {
+                    alert(t[lang].fillFields);
+                    return;
                 }
-                msg += `----------------------------------------\n`;
-                cart.forEach(i => {
-                    msg += `- ${i.name}\n  Size/መጠን: ${i.size} | Qty/ብዛት: ${i.quantity} | Price/ዋጋ: ${i.price * i.quantity} ETB\n`;
-                });
-                const tot = cart.reduce((s, i) => s + (i.price * i.quantity), 0);
-                msg += `----------------------------------------\nTotal/ጠቅላላ ድምር: ${tot} ETB`;
-                return msg;
-            };
 
-            // 5. Submit Order to Cloud Database & Open App
-            const triggerOrder = async (channel) => {
+                setIsSubmittingOrder(true);
+
                 const totalAmount = cart.reduce((s, i) => s + (i.price * i.quantity), 0);
-                const orderSummary = cart.map(i => `${i.name} (${t[lang].size}: ${i.size}) x${i.quantity}`).join(', ');
-                
+                const orderSummary = cart.map(i => `${i.name} (Size: ${i.size}) x${i.quantity}`).join(', ');
+                const formattedCustomerDetails = `Name: ${checkoutName} | Address: ${checkoutAddress}`;
+
                 const newOrderObj = {
                     date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
                     items: orderSummary,
-                    phone: phoneInput || 'Not Provided',
+                    phone: checkoutPhone,
                     total: totalAmount,
-                    method: channel === 'wa' ? 'WhatsApp' : 'SMS'
+                    method: formattedCustomerDetails
                 };
 
-                // Save to Cloud Database
                 const { error } = await supabase
                     .from('orders')
                     .insert([newOrderObj]);
 
+                setIsSubmittingOrder(false);
+
                 if (error) {
-                    console.error("Order couldn't be saved on database: ", error.message);
-                }
-
-                // Fire the message
-                const finalMsg = getOrderMsg();
-                if (channel === 'wa') {
-                    window.open(`https://wa.me/?text=${encodeURIComponent(finalMsg)}`, '_blank');
+                    alert("Order Submission Error: " + error.message);
                 } else {
-                    window.open(`sms:?body=${encodeURIComponent(finalMsg)}`, '_blank');
+                    setOrderCompleted(true);
+                    setCart([]);
+                    setCheckoutName('');
+                    setCheckoutPhone('');
+                    setCheckoutAddress('');
                 }
-
-                setCart([]);
-                setPhoneInput('');
             };
 
-            // 6. Clear Order Log from Database
             const clearOrderLog = async () => {
                 if (confirm("Are you sure you want to clear the entire order history from the cloud database?")) {
                     const { error } = await supabase
                         .from('orders')
                         .delete()
-                        .neq('id', 0); // Deletes all rows
+                        .neq('id', 0); 
 
                     if (error) {
                         alert("Error clearing logs: " + error.message);
@@ -439,17 +459,19 @@
                 <div className="min-h-screen flex flex-col pb-24 md:pb-0">
                     {/* Header */}
                     <header className="bg-white/95 backdrop-blur-md border-b border-stone-200/80 sticky top-0 z-40 px-4 py-4 flex justify-between items-center shadow-xs">
-                        <h1 className="text-xl font-bold tracking-wider text-stone-900 cursor-pointer" onClick={() => setView('home')}>KENZS OFFICIAL</h1>
+                        {/* Secret Admin access on Double-Tap */}
+                        <h1 className="text-xl font-bold tracking-wider text-stone-900 cursor-pointer select-none" onClick={handleLogoTap}>
+                            KENZS OFFICIAL
+                        </h1>
                         <div className="flex items-center gap-3">
                             <div className="flex items-center bg-stone-100/80 rounded-full p-1 border border-stone-200/60">
                                 <button onClick={() => setLang('am')} className={`px-3 py-1 text-xs font-bold rounded-full transition-all ${lang === 'am' ? 'bg-amber-950 text-white shadow-sm' : 'text-stone-600'}`}>🇪🇹 AM</button>
                                 <button onClick={() => setLang('en')} className={`px-3 py-1 text-xs font-bold rounded-full transition-all ${lang === 'en' ? 'bg-amber-950 text-white shadow-sm' : 'text-stone-600'}`}>🇬🇧 EN</button>
                             </div>
                             
-                            <button onClick={() => setView('cart')} className="relative p-2 text-stone-700">
+                            <button onClick={() => { setView('cart'); setOrderCompleted(false); }} className="relative p-2 text-stone-700">
                                 <span className="text-xl">🛒</span> {cart.length > 0 && <span className="absolute -top-0.5 -right-0.5 bg-amber-800 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-black shadow">{cart.reduce((a, b) => a + b.quantity, 0)}</span>}
                             </button>
-                            <button onClick={() => setView('admin')} className="bg-stone-900 hover:bg-stone-800 text-white px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all">⚙️ {t[lang].admin}</button>
                         </div>
                     </header>
 
@@ -485,44 +507,69 @@
                         {view === 'cart' && (
                             <div className="space-y-6">
                                 <h2 className="text-3xl font-bold text-stone-900 tracking-tight">{t[lang].cartTitle}</h2>
-                                {cart.length === 0 ? (
+                                
+                                {orderCompleted ? (
+                                    <div className="text-center py-16 px-6 space-y-4 bg-white border border-stone-200 rounded-3xl shadow-sm">
+                                        <div className="text-5xl">🎉</div>
+                                        <h3 className="text-xl font-bold text-stone-900">{t[lang].orderSuccessTitle}</h3>
+                                        <p className="text-stone-600 text-sm max-w-md mx-auto font-light">{t[lang].orderSuccessMsg}</p>
+                                        <button onClick={() => { setView('shop'); setOrderCompleted(false); }} className="bg-stone-900 text-white text-xs font-bold px-8 py-3 rounded-full shadow hover:bg-stone-850 transition-all">{t[lang].backToShop}</button>
+                                    </div>
+                                ) : cart.length === 0 ? (
                                     <div className="text-center py-16 space-y-4 bg-white/60 border border-stone-200 rounded-3xl">
                                         <p className="text-stone-500 text-sm font-medium">{t[lang].cartEmpty}</p>
                                         <button onClick={() => setView('shop')} className="bg-stone-900 text-white text-xs font-bold px-8 py-3 rounded-full shadow hover:bg-stone-850 transition-all">{t[lang].backToShop}</button>
                                     </div>
                                 ) : (
-                                    <div className="space-y-4">
-                                        {cart.map(item => (
-                                            <div key={item.key} className="bg-white p-4 rounded-2xl border border-stone-200 flex gap-4 items-center shadow-xs">
-                                                <img src={item.images[0]} className="w-16 h-16 object-cover rounded-xl border border-stone-100 shadow-xs" />
-                                                <div className="flex-1">
-                                                    <h4 className="font-bold text-stone-900 text-sm">{item.name}</h4>
-                                                    <p className="text-stone-500 text-xs">Size: <span className="font-bold text-amber-900">{item.size}</span></p>
-                                                    <p className="text-stone-500 text-xs">{item.price.toLocaleString()} ETB x {item.quantity}</p>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                        {/* Cart Items List */}
+                                        <div className="space-y-4">
+                                            {cart.map(item => (
+                                                <div key={item.key} className="bg-white p-4 rounded-2xl border border-stone-200 flex gap-4 items-center shadow-xs">
+                                                    <img src={item.images[0]} className="w-16 h-16 object-cover rounded-xl border border-stone-100 shadow-xs" />
+                                                    <div className="flex-1">
+                                                        <h4 className="font-bold text-stone-900 text-sm">{item.name}</h4>
+                                                        <p className="text-stone-500 text-xs">Size: <span className="font-bold text-amber-900">{item.size}</span></p>
+                                                        <p className="text-stone-500 text-xs">{item.price.toLocaleString()} ETB x {item.quantity}</p>
+                                                    </div>
+                                                    <div className="flex items-center gap-2">
+                                                        <button onClick={() => updateQty(item.key, -1)} className="w-8 h-8 bg-stone-100 rounded-full flex items-center justify-center font-bold text-stone-600 hover:bg-stone-200 transition-all">-</button>
+                                                        <span className="text-sm font-semibold text-stone-800 w-4 text-center">{item.quantity}</span>
+                                                        <button onClick={() => updateQty(item.key, 1)} className="w-8 h-8 bg-stone-100 rounded-full flex items-center justify-center font-bold text-stone-600 hover:bg-stone-200 transition-all">+</button>
+                                                    </div>
                                                 </div>
-                                                <div className="flex items-center gap-2">
-                                                    <button onClick={() => updateQty(item.key, -1)} className="w-8 h-8 bg-stone-100 rounded-full flex items-center justify-center font-bold text-stone-600 hover:bg-stone-200 transition-all">-</button>
-                                                    <span className="text-sm font-semibold text-stone-800 w-4 text-center">{item.quantity}</span>
-                                                    <button onClick={() => updateQty(item.key, 1)} className="w-8 h-8 bg-stone-100 rounded-full flex items-center justify-center font-bold text-stone-600 hover:bg-stone-200 transition-all">+</button>
-                                                </div>
-                                            </div>
-                                        ))}
-
-                                        <div className="bg-white/80 backdrop-blur-sm p-5 rounded-2xl border border-stone-200/80 space-y-3">
-                                            <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider">{t[lang].customerPhone}</label>
-                                            <input type="text" value={phoneInput} onChange={(e) => setPhoneInput(e.target.value)} placeholder="0911..." className="w-full px-4 py-2.5 border border-stone-300 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-amber-800/20" />
-                                        </div>
-
-                                        <div className="pt-6 flex flex-col items-end space-y-4">
-                                            <div className="text-right">
+                                            ))}
+                                            <div className="text-right p-2">
                                                 <span className="text-stone-500 text-sm font-medium">{t[lang].total}: </span>
                                                 <span className="text-2xl font-extrabold text-stone-950 block mt-1">{cart.reduce((s, i) => s + (i.price * i.quantity), 0).toLocaleString()} ETB</span>
                                             </div>
-                                            <div className="w-full grid grid-cols-2 gap-3">
-                                                <button onClick={() => triggerOrder('wa')} className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-xl text-center text-xs shadow-md transition-all">{t[lang].orderWhatsapp}</button>
-                                                <button onClick={() => triggerOrder('sms')} className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl text-center text-xs shadow-md transition-all">{t[lang].orderSMS}</button>
-                                            </div>
                                         </div>
+
+                                        {/* Seamless Checkout Form */}
+                                        <form onSubmit={handlePlaceOrder} className="bg-white p-6 rounded-3xl border border-stone-200 space-y-5 shadow-sm">
+                                            <h3 className="text-lg font-bold text-stone-900 border-b pb-3">📋 {t[lang].customerInfo}</h3>
+                                            
+                                            <div className="space-y-4">
+                                                <div>
+                                                    <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-2">{t[lang].fullName}</label>
+                                                    <input required type="text" value={checkoutName} onChange={(e) => setCheckoutName(e.target.value)} placeholder="Abebe Bikila" className="w-full px-4 py-2.5 border border-stone-300 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-amber-800/20" />
+                                                </div>
+                                                
+                                                <div>
+                                                    <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-2">{t[lang].phoneNumber}</label>
+                                                    <input required type="tel" value={checkoutPhone} onChange={(e) => setCheckoutPhone(e.target.value)} placeholder="0911223344" className="w-full px-4 py-2.5 border border-stone-300 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-amber-800/20" />
+                                                </div>
+
+                                                <div>
+                                                    <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-2">{t[lang].deliveryAddress}</label>
+                                                    <input required type="text" value={checkoutAddress} onChange={(e) => setCheckoutAddress(e.target.value)} placeholder="Addis Ababa, Bole" className="w-full px-4 py-2.5 border border-stone-300 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-amber-800/20" />
+                                                </div>
+                                            </div>
+
+                                            <button type="submit" disabled={isSubmittingOrder} className="w-full bg-amber-950 hover:bg-stone-900 text-white font-bold py-4 rounded-xl text-center text-xs shadow-md transition-all">
+                                                {isSubmittingOrder ? t[lang].submitting : t[lang].placeOrder}
+                                            </button>
+                                        </form>
                                     </div>
                                 )}
                             </div>
@@ -558,7 +605,7 @@
                                                         <thead>
                                                             <tr className="bg-stone-50 text-stone-600 border-b border-stone-100">
                                                                 <th className="p-3">{t[lang].orderDate}</th>
-                                                                <th className="p-3">{t[lang].customerPhone}</th>
+                                                                <th className="p-3">{t[lang].phoneNumber}</th>
                                                                 <th className="p-3">{t[lang].customerOrder}</th>
                                                                 <th className="p-3 text-right">{t[lang].total}</th>
                                                             </tr>
@@ -568,7 +615,7 @@
                                                                 <tr key={o.id} className="hover:bg-stone-50/50">
                                                                     <td className="p-3 font-medium text-stone-500 whitespace-nowrap">{o.date}</td>
                                                                     <td className="p-3 font-bold text-amber-900">{o.phone}</td>
-                                                                    <td className="p-3 text-stone-700">{o.items} <span className="text-[10px] text-stone-400">({o.method})</span></td>
+                                                                    <td className="p-3 text-stone-700">{o.items} <span className="text-[11px] block text-amber-800 font-semibold mt-1">{o.method}</span></td>
                                                                     <td className="p-3 text-right font-bold text-stone-900 whitespace-nowrap">{o.total.toLocaleString()} ETB</td>
                                                                 </tr>
                                                             ))}
@@ -634,18 +681,16 @@
                         )}
                     </main>
 
-                    <nav className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-stone-200/80 py-3.5 px-8 flex justify-between items-center z-40 md:hidden shadow-xl">
+                    {/* Footer Nav Bar */}
+                    <nav className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-stone-200/80 py-3.5 px-12 flex justify-between items-center z-40 md:hidden shadow-xl">
                         <button onClick={() => setView('home')} className={`flex flex-col items-center gap-1 text-[10px] uppercase font-bold tracking-wider ${view === 'home' ? 'text-amber-800' : 'text-stone-400'}`}>
                             <span className="text-lg">🏠</span>{t[lang].home}
                         </button>
                         <button onClick={() => setView('shop')} className={`flex flex-col items-center gap-1 text-[10px] uppercase font-bold tracking-wider ${view === 'shop' ? 'text-amber-800' : 'text-stone-400'}`}>
                             <span className="text-lg">👟</span>{t[lang].shoes}
                         </button>
-                        <button onClick={() => setView('cart')} className={`flex flex-col items-center gap-1 text-[10px] uppercase font-bold tracking-wider ${view === 'cart' ? 'text-amber-800' : 'text-stone-400'}`}>
+                        <button onClick={() => { setView('cart'); setOrderCompleted(false); }} className={`flex flex-col items-center gap-1 text-[10px] uppercase font-bold tracking-wider ${view === 'cart' ? 'text-amber-800' : 'text-stone-400'}`}>
                             <span className="text-lg">🛒</span>{t[lang].cart}
-                        </button>
-                        <button onClick={() => setView('admin')} className={`flex flex-col items-center gap-1 text-[10px] uppercase font-bold tracking-wider ${view === 'admin' ? 'text-amber-800' : 'text-stone-400'}`}>
-                            <span className="text-lg">⚙️</span>{t[lang].admin}
                         </button>
                     </nav>
                 </div>
