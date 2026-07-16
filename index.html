@@ -8,8 +8,10 @@
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Loading the Supabase Database Helper Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=300;400;500;600;700&display=swap');
         body { 
             font-family: 'Plus Jakarta Sans', sans-serif; 
             background: radial-gradient(circle at 50% 0%, #FAF6F0 0%, #F3ECE3 100%); 
@@ -22,6 +24,11 @@
 
     <script type="text/babel">
         const { useState, useEffect } = React;
+
+        // Connects directly to your Supabase Cloud Database!
+        const SUPABASE_URL = "https://mnmegwnmvxvqreqfsaqx.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_3YFw6XOurUC4kBkjTTSvHw_g9fRsLtr";
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // Translations Dictionary
         const t = {
@@ -123,7 +130,7 @@
             }
         };
 
-        const initialProducts = [
+        const fallbackProducts = [
             { 
                 id: 1, 
                 name: "Classic Monk Strap", 
@@ -138,41 +145,54 @@
             const [lang, setLang] = useState('am');
             const [view, setView] = useState('home'); 
             const [phoneInput, setPhoneInput] = useState('');
-            
-            const [products, setProducts] = useState(() => {
-                try {
-                    const saved = localStorage.getItem('kenzs_p');
-                    return saved ? JSON.parse(saved) : initialProducts;
-                } catch (e) { return initialProducts; }
-            });
-
+            const [products, setProducts] = useState(fallbackProducts);
             const [cart, setCart] = useState([]);
             const [selectedSizes, setSelectedSizes] = useState({});
             const [activeImg, setActiveImg] = useState({});
-
-            const [orders, setOrders] = useState(() => {
-                try {
-                    const savedOrders = localStorage.getItem('kenzs_orders');
-                    return savedOrders ? JSON.parse(savedOrders) : [];
-                } catch (e) { return []; }
-            });
+            const [orders, setOrders] = useState([]);
 
             const [isAdmin, setIsAdmin] = useState(false);
             const [pass, setPass] = useState('');
             const [err, setErr] = useState('');
             const [newP, setNewP] = useState({ name: '', price: '', category: 'Formal', images: [], description: '' });
 
+            // 1. Fetch Products from Supabase on Load
             useEffect(() => {
-                try {
-                    localStorage.setItem('kenzs_p', JSON.stringify(products));
-                } catch (e) {
-                    alert("Storage space is full! Try compressing images.");
-                }
-            }, [products]);
+                fetchProducts();
+            }, []);
 
+            // 2. Fetch Orders from Supabase if admin is logged in
             useEffect(() => {
-                localStorage.setItem('kenzs_orders', JSON.stringify(orders));
-            }, [orders]);
+                if (isAdmin) {
+                    fetchOrders();
+                }
+            }, [isAdmin]);
+
+            const fetchProducts = async () => {
+                const { data, error } = await supabase
+                    .from('products')
+                    .select('*')
+                    .order('id', { ascending: false });
+                
+                if (error) {
+                    console.error("Error loading products: ", error);
+                } else if (data && data.length > 0) {
+                    setProducts(data);
+                }
+            };
+
+            const fetchOrders = async () => {
+                const { data, error } = await supabase
+                    .from('orders')
+                    .select('*')
+                    .order('id', { ascending: false });
+                
+                if (error) {
+                    console.error("Error loading orders: ", error);
+                } else if (data) {
+                    setOrders(data);
+                }
+            };
 
             const addToCart = (product) => {
                 const size = selectedSizes[product.id] || "40";
@@ -237,7 +257,8 @@
                 });
             };
 
-            const handleAdd = (e) => {
+            // 3. Save New Product to Cloud Database
+            const handleAdd = async (e) => {
                 e.preventDefault();
                 if (!newP.name || !newP.price || newP.images.length === 0) {
                     alert(t[lang].fillFields);
@@ -245,14 +266,41 @@
                 }
                 
                 const newProductObj = { 
-                    ...newP, 
-                    id: Date.now(), 
-                    price: parseFloat(newP.price) 
+                    name: newP.name, 
+                    price: parseFloat(newP.price),
+                    category: newP.category,
+                    images: newP.images,
+                    description: newP.description
                 };
 
-                setProducts(prevProducts => [newProductObj, ...prevProducts]);
-                setNewP({ name: '', price: '', category: 'Formal', images: [], description: '' });
-                alert(t[lang].successAdd);
+                const { data, error } = await supabase
+                    .from('products')
+                    .insert([newProductObj])
+                    .select();
+
+                if (error) {
+                    alert("Error registering product: " + error.message);
+                } else {
+                    alert(t[lang].successAdd);
+                    setNewP({ name: '', price: '', category: 'Formal', images: [], description: '' });
+                    fetchProducts(); // Refresh list
+                }
+            };
+
+            // 4. Delete Product from Cloud Database
+            const handleDeleteProduct = async (id) => {
+                if (confirm("Are you sure you want to delete this product?")) {
+                    const { error } = await supabase
+                        .from('products')
+                        .delete()
+                        .eq('id', id);
+
+                    if (error) {
+                        alert("Error deleting product: " + error.message);
+                    } else {
+                        fetchProducts(); // Refresh list
+                    }
+                }
             };
 
             const handlePrevImage = (productId, imagesLength, e) => {
@@ -283,12 +331,12 @@
                 return msg;
             };
 
-            const triggerOrder = (channel) => {
+            // 5. Submit Order to Cloud Database & Open App
+            const triggerOrder = async (channel) => {
                 const totalAmount = cart.reduce((s, i) => s + (i.price * i.quantity), 0);
                 const orderSummary = cart.map(i => `${i.name} (${t[lang].size}: ${i.size}) x${i.quantity}`).join(', ');
                 
-                const trackingRecord = {
-                    id: Date.now(),
+                const newOrderObj = {
                     date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
                     items: orderSummary,
                     phone: phoneInput || 'Not Provided',
@@ -296,8 +344,16 @@
                     method: channel === 'wa' ? 'WhatsApp' : 'SMS'
                 };
 
-                setOrders(prev => [trackingRecord, ...prev]);
+                // Save to Cloud Database
+                const { error } = await supabase
+                    .from('orders')
+                    .insert([newOrderObj]);
 
+                if (error) {
+                    console.error("Order couldn't be saved on database: ", error.message);
+                }
+
+                // Fire the message
                 const finalMsg = getOrderMsg();
                 if (channel === 'wa') {
                     window.open(`https://wa.me/?text=${encodeURIComponent(finalMsg)}`, '_blank');
@@ -309,9 +365,19 @@
                 setPhoneInput('');
             };
 
-            const clearOrderLog = () => {
-                if (confirm("Are you sure you want to clear the entire order history?")) {
-                    setOrders([]);
+            // 6. Clear Order Log from Database
+            const clearOrderLog = async () => {
+                if (confirm("Are you sure you want to clear the entire order history from the cloud database?")) {
+                    const { error } = await supabase
+                        .from('orders')
+                        .delete()
+                        .neq('id', 0); // Deletes all rows
+
+                    if (error) {
+                        alert("Error clearing logs: " + error.message);
+                    } else {
+                        fetchOrders();
+                    }
                 }
             };
 
@@ -557,7 +623,7 @@
                                                                 <p className="text-xs text-stone-500">{p.category} • {p.price.toLocaleString()} ETB</p>
                                                             </div>
                                                         </div>
-                                                        <button onClick={() => setProducts(products.filter(item => item.id !== p.id))} className="text-red-600 text-xs font-bold bg-red-50 hover:bg-red-100 px-4 py-2 rounded-xl transition-all">{t[lang].delete}</button>
+                                                        <button onClick={() => handleDeleteProduct(p.id)} className="text-red-600 text-xs font-bold bg-red-50 hover:bg-red-100 px-4 py-2 rounded-xl transition-all">{t[lang].delete}</button>
                                                     </div>
                                                 ))}
                                             </div>
