@@ -8,29 +8,25 @@
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <!-- Loading the Supabase Database Helper Library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
         body { 
             font-family: 'Plus Jakarta Sans', sans-serif; 
-            background: radial-gradient(circle at 50% 0%, #FAF6F0 0%, #F3ECE3 100%); 
-            background-attachment: fixed;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
     </style>
 </head>
-<body>
+<body class="bg-[#FAF6F0] text-stone-900 dark:bg-stone-950 dark:text-stone-100">
     <div id="root"></div>
 
     <script type="text/babel">
         const { useState, useEffect } = React;
 
-        // Connects directly to your Supabase Cloud Database!
         const SUPABASE_URL = "https://mnmegwnmvxvqreqfsaqx.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable_3YFw6XOurUC4kBkjTTSvHw_g9fRsLtr";
         const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // Translations Dictionary
         const t = {
             en: {
                 brand: "KENZS OFFICIAL",
@@ -50,7 +46,7 @@
                 backToShop: "Continue Browsing",
                 size: "Size",
                 total: "Total",
-                placeOrder: "Place Order Now",
+                placeOrder: "Confirm Order",
                 controlPanel: "Store Control Panel",
                 accessKey: "Access Key",
                 unlock: "Unlock",
@@ -83,7 +79,28 @@
                 orderSuccessTitle: "Order Placed Successfully!",
                 orderSuccessMsg: "Thank you for shopping with Kenzs Official. We will contact you soon to arrange delivery.",
                 submitting: "Processing...",
-                customerInfo: "Customer Info"
+                customerInfo: "Customer Info",
+                // Why Choose Us Translations
+                wcuTitle: "Why Kenzs Official?",
+                wcu1Title: "Pay After Delivery",
+                wcu1Desc: "Inspect and test your shoes at your door. Pay only when you are 100% happy.",
+                wcu2Title: "100% Genuine Leather",
+                wcu2Desc: "Crafted locally using premium, hand-selected pure leather built to last.",
+                wcu3Title: "Perfect Fit Guarantee",
+                wcu3Desc: "If the size isn't a perfect fit, we exchange it instantly at no extra cost.",
+                // Checkout Options
+                checkoutChoiceTitle: "How would you like to complete your order?",
+                orderMethodOnline: "Submit Order Online",
+                orderMethodPhone: "Call Our Store directly",
+                or: "OR",
+                callShopBtn: "Call Now: +251 911 432 094",
+                callReason: "Speak directly with us to complete your order instantly via call.",
+                // Dashboard stats
+                todaySales: "Today's Sales",
+                weekSales: "This Week's Sales",
+                monthSales: "This Month's Sales",
+                yearSales: "This Year's Sales",
+                analyticsOverview: "Executive Sales Dashboard"
             },
             am: {
                 brand: "KENZS OFFICIAL",
@@ -103,7 +120,7 @@
                 backToShop: "ወደ ግብይት ተመለስ",
                 size: "መጠን",
                 total: "ጠቅላላ ድምር",
-                placeOrder: "ትዕዛዝ ይፈጽሙ",
+                placeOrder: "ትዕዛዝ አረጋግጥ",
                 controlPanel: "የሱቅ መቆጣጠሪያ ፓነል",
                 accessKey: "የመግቢያ ቁልፍ (Access Key)",
                 unlock: "ክፈት",
@@ -136,7 +153,28 @@
                 orderSuccessTitle: "ትዕዛዝዎ በተሳካ ሁኔታ ተመዝግቧል!",
                 orderSuccessMsg: "ከ Kenzs Official ስለገዙ እናመሰግናለን። ማድረሻውን ለማመቻቸት በቅርቡ በስልክ ቁጥርዎ እንደውላለን።",
                 submitting: "በመከናወን ላይ...",
-                customerInfo: "የደንበኛ መረጃ"
+                customerInfo: "የደንበኛ መረጃ",
+                // Why Choose Us Translations
+                wcuTitle: "ለምን Kenzs Official ይመርጣሉ?",
+                wcu1Title: "ሲረከቡ ይክፈሉ",
+                wcu1Desc: "ጫማዎን በቤትዎ ወይም በቦታው ሆነው ይመልከቱ እና ይሞክሩ። 100% ሲወዱትና ሲስማማዎት ብቻ ይክፈሉ::",
+                wcu2Title: "100% እውነተኛ ቆዳ",
+                wcu2Desc: "ለረጅም ጊዜ እንዲያገለግል ተደርጎ ከተመረጠ ምርጥ ንፁህ የቆዳ ጥሬ ዕቃ በእጃችን የተሰራ።",
+                wcu3Title: "ልክ የመሆን ዋስትና",
+                wcu3Desc: "የመረጡት መጠን (Size) ልክ ካልሆነ ያለ ምንም ተጨማሪ ክፍያ ወዲያውኑ እንቀይርልዎታለን።",
+                // Checkout Options
+                checkoutChoiceTitle: "ትዕዛዝዎን እንዴት ማጠናቀቅ ይፈልጋሉ?",
+                orderMethodOnline: "በዌብሳይት እዘዝ",
+                orderMethodPhone: "በቀጥታ በመደወል እዘዝ",
+                or: "ወይም",
+                callShopBtn: "አሁን ይደውሉ፡ +251 911 432 094",
+                callReason: "በቀጥታ ከእኛ ጋር በስልክ በመነጋገር ትዕዛዝዎን ወዲያውኑ ማጠናቀቅ ይችላሉ።",
+                // Dashboard stats
+                todaySales: "የዛሬ ሽያጭ",
+                weekSales: "የዚህ ሳምንት ሽያጭ",
+                monthSales: "የዚህ ወር ሽያጭ",
+                yearSales: "የዚህ ዓመት ሽያጭ",
+                analyticsOverview: "አጠቃላይ የሽያጭ ሁኔታ መከታተያ"
             }
         };
 
@@ -160,12 +198,18 @@
             const [activeImg, setActiveImg] = useState({});
             const [orders, setOrders] = useState([]);
 
-            // Checkout state
+            // Checkout UI flow
+            const [checkoutMode, setCheckoutMode] = useState(null); // 'online' or 'phone' or null
             const [checkoutName, setCheckoutName] = useState('');
             const [checkoutPhone, setCheckoutPhone] = useState('');
             const [checkoutAddress, setCheckoutAddress] = useState('');
             const [isSubmittingOrder, setIsSubmittingOrder] = useState(false);
             const [orderCompleted, setOrderCompleted] = useState(false);
+
+            // Dark Mode State
+            const [darkMode, setDarkMode] = useState(() => {
+                return localStorage.getItem('darkMode') === 'true';
+            });
 
             // Admin state
             const [isAdmin, setIsAdmin] = useState(false);
@@ -173,8 +217,22 @@
             const [err, setErr] = useState('');
             const [newP, setNewP] = useState({ name: '', price: '', category: 'Formal', images: [], description: '' });
 
+            // Stats States
+            const [stats, setStats] = useState({ today: 0, week: 0, month: 0, year: 0 });
+
             // Logo Tap tracker for Secret Admin Entry
             const [logoTapCount, setLogoTapCount] = useState(0);
+
+            // Apply Dark Mode Class
+            useEffect(() => {
+                if (darkMode) {
+                    document.documentElement.classList.add('dark');
+                    localStorage.setItem('darkMode', 'true');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    localStorage.setItem('darkMode', 'false');
+                }
+            }, [darkMode]);
 
             // Fetch Products from Supabase on Load
             useEffect(() => {
@@ -211,17 +269,57 @@
                     console.error("Error loading orders: ", error);
                 } else if (data) {
                     setOrders(data);
+                    calculateStats(data);
                 }
+            };
+
+            // Analytics Math logic for Dashboard
+            const calculateStats = (ordersList) => {
+                let today = 0, week = 0, month = 0, year = 0;
+                const now = new Date();
+                
+                ordersList.forEach(order => {
+                    if (!order.date) return;
+                    
+                    // Parse custom date: e.g., "7/16/2026, 9:45 PM" -> we take the date part
+                    const datePart = order.date.split(' ')[0];
+                    const orderDate = new Date(datePart);
+                    
+                    if (isNaN(orderDate.getTime())) return;
+
+                    const diffTime = Math.abs(now - orderDate);
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                    const orderPrice = parseFloat(order.total) || 0;
+
+                    // Today (Same day)
+                    if (now.toDateString() === orderDate.toDateString()) {
+                        today += orderPrice;
+                    }
+                    // Week (Last 7 days)
+                    if (diffDays <= 7) {
+                        week += orderPrice;
+                    }
+                    // Month (Last 30 days)
+                    if (diffDays <= 30) {
+                        month += orderPrice;
+                    }
+                    // Year (Last 365 days)
+                    if (diffDays <= 365) {
+                        year += orderPrice;
+                    }
+                });
+
+                setStats({ today, week, month, year });
             };
 
             const handleLogoTap = () => {
                 const nextCount = logoTapCount + 1;
                 if (nextCount >= 2) {
                     setView('admin');
-                    setLogoTapCount(0); // Reset
+                    setLogoTapCount(0); 
                 } else {
                     setLogoTapCount(nextCount);
-                    // Reset tap count if user doesn't tap again within 1.5 seconds
                     setTimeout(() => setLogoTapCount(0), 1500);
                 }
             };
@@ -347,7 +445,6 @@
                 setActiveImg({ ...activeImg, [productId]: newIdx });
             };
 
-            // Submit order seamlessly on website and write to database
             const handlePlaceOrder = async (e) => {
                 e.preventDefault();
                 if (!checkoutName || !checkoutPhone || !checkoutAddress) {
@@ -383,6 +480,7 @@
                     setCheckoutName('');
                     setCheckoutPhone('');
                     setCheckoutAddress('');
+                    setCheckoutMode(null);
                 }
             };
 
@@ -406,16 +504,16 @@
                 const images = p.images && p.images.length > 0 ? p.images : ["https://images.unsplash.com/photo-1614252369475-531eba835eb1?w=600&auto=format&fit=crop&q=60"];
                 
                 return (
-                    <div key={p.id} className="bg-white rounded-2xl border border-stone-200/80 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
-                        <div className="relative w-full h-64 bg-stone-100 flex items-center justify-center group">
+                    <div key={p.id} className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200/80 dark:border-stone-800/80 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
+                        <div className="relative w-full h-64 bg-stone-100 dark:bg-stone-800 flex items-center justify-center group">
                             <img src={images[idx]} className="w-full h-full object-cover transition-all duration-500" />
                             
                             {images.length > 1 && (
                                 <>
-                                    <button onClick={(e) => handlePrevImage(p.id, images.length, e)} className="absolute left-3 bg-stone-900/80 backdrop-blur-sm text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-stone-900 shadow transition-all">
+                                    <button onClick={(e) => handlePrevImage(p.id, images.length, e)} className="absolute left-3 bg-stone-900/80 dark:bg-stone-950/80 backdrop-blur-sm text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-stone-900 shadow transition-all">
                                         ❮
                                     </button>
-                                    <button onClick={(e) => handleNextImage(p.id, images.length, e)} className="absolute right-3 bg-stone-900/80 backdrop-blur-sm text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-stone-900 shadow transition-all">
+                                    <button onClick={(e) => handleNextImage(p.id, images.length, e)} className="absolute right-3 bg-stone-900/80 dark:bg-stone-950/80 backdrop-blur-sm text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-stone-900 shadow transition-all">
                                         ❯
                                     </button>
                                 </>
@@ -423,9 +521,9 @@
                         </div>
 
                         {images.length > 1 && (
-                            <div className="flex gap-2 p-2.5 bg-stone-50 border-b border-stone-200/60 justify-center">
+                            <div className="flex gap-2 p-2.5 bg-stone-50 dark:bg-stone-950 border-b border-stone-200/60 dark:border-stone-850 justify-center">
                                 {images.map((imgSrc, i) => (
-                                    <button key={i} onClick={() => setActiveImg({...activeImg, [p.id]: i})} className={`w-12 h-12 rounded-lg border overflow-hidden transition-all ${i === idx ? 'border-amber-800 ring-4 ring-amber-800/20' : 'border-stone-300 opacity-60 hover:opacity-100'}`}>
+                                    <button key={i} onClick={() => setActiveImg({...activeImg, [p.id]: i})} className={`w-12 h-12 rounded-lg border overflow-hidden transition-all ${i === idx ? 'border-amber-850 dark:border-amber-700 ring-4 ring-amber-850/20' : 'border-stone-300 dark:border-stone-700 opacity-60 hover:opacity-100'}`}>
                                         <img src={imgSrc} className="w-full h-full object-cover" />
                                     </button>
                                 ))}
@@ -434,21 +532,21 @@
 
                         <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
                             <div>
-                                <span className="text-[10px] font-bold tracking-wider text-amber-800 bg-amber-50 border border-amber-100 px-2 py-1 rounded-md uppercase">{p.category}</span>
-                                <h4 className="font-bold text-stone-900 text-lg mt-3">{p.name}</h4>
-                                <p className="text-stone-500 text-xs mt-1 leading-relaxed">{p.description}</p>
+                                <span className="text-[10px] font-bold tracking-wider text-amber-800 dark:text-amber-500 bg-amber-50 dark:bg-amber-950/50 border border-amber-100 dark:border-amber-900 px-2 py-1 rounded-md uppercase">{p.category}</span>
+                                <h4 className="font-bold text-stone-900 dark:text-white text-lg mt-3">{p.name}</h4>
+                                <p className="text-stone-500 dark:text-stone-400 text-xs mt-1 leading-relaxed">{p.description}</p>
                                 <div className="mt-4">
-                                    <label className="block text-[11px] font-bold text-stone-500 uppercase tracking-wider mb-2">{t[lang].selectSize}</label>
+                                    <label className="block text-[11px] font-bold text-stone-500 dark:text-stone-400 uppercase tracking-wider mb-2">{t[lang].selectSize}</label>
                                     <div className="flex gap-1.5 flex-wrap">
                                         {["39", "40", "41", "42", "43", "44"].map(sz => (
-                                            <button key={sz} onClick={() => setSelectedSizes({...selectedSizes, [p.id]: sz})} className={`px-3 py-1.5 text-xs font-semibold rounded-lg border transition-all duration-200 ${(selectedSizes[p.id] || "40") === sz ? 'bg-amber-900 text-white border-amber-900 shadow-sm' : 'bg-white text-stone-700 border-stone-200 hover:border-stone-400'}`}>{sz}</button>
+                                            <button key={sz} onClick={() => setSelectedSizes({...selectedSizes, [p.id]: sz})} className={`px-3 py-1.5 text-xs font-semibold rounded-lg border transition-all duration-200 ${(selectedSizes[p.id] || "40") === sz ? 'bg-amber-900 text-white dark:bg-amber-800 border-amber-900 shadow-sm' : 'bg-white dark:bg-stone-800 text-stone-700 dark:text-stone-300 border-stone-200 dark:border-stone-700 hover:border-stone-400'}`}>{sz}</button>
                                         ))}
                                     </div>
                                 </div>
                             </div>
-                            <div className="flex items-center justify-between pt-3 border-t border-stone-100">
-                                <span className="text-lg font-bold text-stone-900">{p.price.toLocaleString()} ETB</span>
-                                <button onClick={() => addToCart(p)} className="bg-stone-900 hover:bg-stone-850 text-white text-xs font-bold px-5 py-2.5 rounded-full transition-all shadow-sm">{t[lang].addToCart}</button>
+                            <div className="flex items-center justify-between pt-3 border-t border-stone-100 dark:border-stone-800">
+                                <span className="text-lg font-bold text-stone-900 dark:text-stone-100">{p.price.toLocaleString()} ETB</span>
+                                <button onClick={() => addToCart(p)} className="bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-950 hover:bg-stone-800 dark:hover:bg-white text-xs font-bold px-5 py-2.5 rounded-full transition-all shadow-sm">{t[lang].addToCart}</button>
                             </div>
                         </div>
                     </div>
@@ -456,20 +554,19 @@
             };
 
             return (
-                <div className="min-h-screen flex flex-col pb-24 md:pb-0">
+                <div className="min-h-screen flex flex-col pb-24 md:pb-0 bg-[#FAF6F0] dark:bg-stone-950 text-stone-900 dark:text-stone-100">
                     {/* Header */}
-                    <header className="bg-white/95 backdrop-blur-md border-b border-stone-200/80 sticky top-0 z-40 px-4 py-4 flex justify-between items-center shadow-xs">
-                        {/* Secret Admin access on Double-Tap */}
-                        <h1 className="text-xl font-bold tracking-wider text-stone-900 cursor-pointer select-none" onClick={handleLogoTap}>
+                    <header className="bg-white/95 dark:bg-stone-900/95 backdrop-blur-md border-b border-stone-200/80 dark:border-stone-800 sticky top-0 z-40 px-4 py-4 flex justify-between items-center shadow-xs">
+                        <h1 className="text-xl font-extrabold tracking-wider text-stone-900 dark:text-white cursor-pointer select-none" onClick={handleLogoTap}>
                             KENZS OFFICIAL
                         </h1>
                         <div className="flex items-center gap-3">
-                            <div className="flex items-center bg-stone-100/80 rounded-full p-1 border border-stone-200/60">
-                                <button onClick={() => setLang('am')} className={`px-3 py-1 text-xs font-bold rounded-full transition-all ${lang === 'am' ? 'bg-amber-950 text-white shadow-sm' : 'text-stone-600'}`}>🇪🇹 AM</button>
-                                <button onClick={() => setLang('en')} className={`px-3 py-1 text-xs font-bold rounded-full transition-all ${lang === 'en' ? 'bg-amber-950 text-white shadow-sm' : 'text-stone-600'}`}>🇬🇧 EN</button>
+                            <div className="flex items-center bg-stone-100/80 dark:bg-stone-850 rounded-full p-1 border border-stone-200/60 dark:border-stone-800">
+                                <button onClick={() => setLang('am')} className={`px-3 py-1 text-xs font-bold rounded-full transition-all ${lang === 'am' ? 'bg-amber-950 dark:bg-amber-800 text-white shadow-sm' : 'text-stone-600 dark:text-stone-400'}`}>🇪🇹 AM</button>
+                                <button onClick={() => setLang('en')} className={`px-3 py-1 text-xs font-bold rounded-full transition-all ${lang === 'en' ? 'bg-amber-950 dark:bg-amber-800 text-white shadow-sm' : 'text-stone-600 dark:text-stone-400'}`}>🇬🇧 EN</button>
                             </div>
                             
-                            <button onClick={() => { setView('cart'); setOrderCompleted(false); }} className="relative p-2 text-stone-700">
+                            <button onClick={() => { setView('cart'); setOrderCompleted(false); setCheckoutMode(null); }} className="relative p-2 text-stone-700 dark:text-stone-300">
                                 <span className="text-xl">🛒</span> {cart.length > 0 && <span className="absolute -top-0.5 -right-0.5 bg-amber-800 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-black shadow">{cart.reduce((a, b) => a + b.quantity, 0)}</span>}
                             </button>
                         </div>
@@ -477,17 +574,39 @@
 
                     <main className="flex-1 max-w-4xl w-full mx-auto p-4 md:py-8">
                         {view === 'home' && (
-                            <div className="space-y-12">
+                            <div className="space-y-16">
                                 {/* Luxury Hero Banner */}
-                                <div className="text-center py-16 px-6 space-y-5 bg-gradient-to-br from-stone-900 via-stone-925 to-stone-950 rounded-3xl shadow-xl border border-stone-850 relative overflow-hidden">
+                                <div className="text-center py-20 px-6 space-y-6 bg-gradient-to-br from-stone-900 via-stone-925 to-stone-950 rounded-3xl shadow-xl border border-stone-850 relative overflow-hidden">
                                     <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px]"></div>
                                     <h2 className="text-4xl md:text-5xl font-extrabold text-white tracking-tight leading-tight max-w-xl mx-auto">{t[lang].heroTitle}</h2>
                                     <p className="text-stone-300 text-sm md:text-base max-w-md mx-auto font-light leading-relaxed">{t[lang].heroSub}</p>
-                                    <button onClick={() => setView('shop')} className="bg-amber-800 hover:bg-amber-700 text-white font-semibold px-10 py-3.5 rounded-full text-sm shadow-md hover:shadow-lg transition-all">{t[lang].viewCatalog}</button>
+                                    <button onClick={() => setView('shop')} className="bg-amber-800 hover:bg-amber-700 text-white font-semibold px-10 py-4 rounded-full text-sm shadow-md hover:shadow-lg transition-all">{t[lang].viewCatalog}</button>
                                 </div>
 
+                                {/* Why Choose Us Section */}
+                                <section className="space-y-8">
+                                    <h3 className="text-2xl font-extrabold text-center text-stone-900 dark:text-white tracking-tight">{t[lang].wcuTitle}</h3>
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                        <div className="bg-white dark:bg-stone-900 p-6 rounded-2xl border border-stone-200/60 dark:border-stone-800 text-center space-y-3">
+                                            <div className="text-3xl">📦</div>
+                                            <h4 className="font-bold text-stone-900 dark:text-white text-base">{t[lang].wcu1Title}</h4>
+                                            <p className="text-stone-500 dark:text-stone-400 text-xs leading-relaxed">{t[lang].wcu1Desc}</p>
+                                        </div>
+                                        <div className="bg-white dark:bg-stone-900 p-6 rounded-2xl border border-stone-200/60 dark:border-stone-800 text-center space-y-3">
+                                            <div className="text-3xl">🐂</div>
+                                            <h4 className="font-bold text-stone-900 dark:text-white text-base">{t[lang].wcu2Title}</h4>
+                                            <p className="text-stone-500 dark:text-stone-400 text-xs leading-relaxed">{t[lang].wcu2Desc}</p>
+                                        </div>
+                                        <div className="bg-white dark:bg-stone-900 p-6 rounded-2xl border border-stone-200/60 dark:border-stone-800 text-center space-y-3">
+                                            <div className="text-3xl">🔄</div>
+                                            <h4 className="font-bold text-stone-900 dark:text-white text-base">{t[lang].wcu3Title}</h4>
+                                            <p className="text-stone-500 dark:text-stone-400 text-xs leading-relaxed">{t[lang].wcu3Desc}</p>
+                                        </div>
+                                    </div>
+                                </section>
+
                                 <div>
-                                    <h3 className="text-2xl font-bold text-stone-900 mb-6 tracking-tight">{t[lang].featured}</h3>
+                                    <h3 className="text-2xl font-bold text-stone-900 dark:text-white mb-6 tracking-tight">{t[lang].featured}</h3>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                                         {products.slice(0, 4).map(p => renderProductCard(p))}
                                     </div>
@@ -497,7 +616,7 @@
 
                         {view === 'shop' && (
                             <div className="space-y-8">
-                                <h2 className="text-3xl font-bold text-stone-900 tracking-tight">{t[lang].catalogTitle}</h2>
+                                <h2 className="text-3xl font-bold text-stone-900 dark:text-white tracking-tight">{t[lang].catalogTitle}</h2>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                                     {products.map(p => renderProductCard(p))}
                                 </div>
@@ -506,70 +625,102 @@
 
                         {view === 'cart' && (
                             <div className="space-y-6">
-                                <h2 className="text-3xl font-bold text-stone-900 tracking-tight">{t[lang].cartTitle}</h2>
+                                <h2 className="text-3xl font-bold text-stone-900 dark:text-white tracking-tight">{t[lang].cartTitle}</h2>
                                 
                                 {orderCompleted ? (
-                                    <div className="text-center py-16 px-6 space-y-4 bg-white border border-stone-200 rounded-3xl shadow-sm">
+                                    <div className="text-center py-16 px-6 space-y-4 bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-3xl shadow-sm">
                                         <div className="text-5xl">🎉</div>
-                                        <h3 className="text-xl font-bold text-stone-900">{t[lang].orderSuccessTitle}</h3>
-                                        <p className="text-stone-600 text-sm max-w-md mx-auto font-light">{t[lang].orderSuccessMsg}</p>
-                                        <button onClick={() => { setView('shop'); setOrderCompleted(false); }} className="bg-stone-900 text-white text-xs font-bold px-8 py-3 rounded-full shadow hover:bg-stone-850 transition-all">{t[lang].backToShop}</button>
+                                        <h3 className="text-xl font-bold text-stone-900 dark:text-white">{t[lang].orderSuccessTitle}</h3>
+                                        <p className="text-stone-600 dark:text-stone-400 text-sm max-w-md mx-auto font-light">{t[lang].orderSuccessMsg}</p>
+                                        <button onClick={() => { setView('shop'); setOrderCompleted(false); setCheckoutMode(null); }} className="bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-950 text-xs font-bold px-8 py-3 rounded-full shadow hover:bg-stone-850 transition-all">{t[lang].backToShop}</button>
                                     </div>
                                 ) : cart.length === 0 ? (
-                                    <div className="text-center py-16 space-y-4 bg-white/60 border border-stone-200 rounded-3xl">
-                                        <p className="text-stone-500 text-sm font-medium">{t[lang].cartEmpty}</p>
-                                        <button onClick={() => setView('shop')} className="bg-stone-900 text-white text-xs font-bold px-8 py-3 rounded-full shadow hover:bg-stone-850 transition-all">{t[lang].backToShop}</button>
+                                    <div className="text-center py-16 space-y-4 bg-white/60 dark:bg-stone-900/60 border border-stone-200 dark:border-stone-800 rounded-3xl">
+                                        <p className="text-stone-500 dark:text-stone-400 text-sm font-medium">{t[lang].cartEmpty}</p>
+                                        <button onClick={() => setView('shop')} className="bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-950 text-xs font-bold px-8 py-3 rounded-full shadow hover:bg-stone-850 transition-all">{t[lang].backToShop}</button>
                                     </div>
                                 ) : (
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                         {/* Cart Items List */}
                                         <div className="space-y-4">
                                             {cart.map(item => (
-                                                <div key={item.key} className="bg-white p-4 rounded-2xl border border-stone-200 flex gap-4 items-center shadow-xs">
-                                                    <img src={item.images[0]} className="w-16 h-16 object-cover rounded-xl border border-stone-100 shadow-xs" />
+                                                <div key={item.key} className="bg-white dark:bg-stone-900 p-4 rounded-2xl border border-stone-200 dark:border-stone-800 flex gap-4 items-center shadow-xs">
+                                                    <img src={item.images[0]} className="w-16 h-16 object-cover rounded-xl border border-stone-100 dark:border-stone-800 shadow-xs" />
                                                     <div className="flex-1">
-                                                        <h4 className="font-bold text-stone-900 text-sm">{item.name}</h4>
-                                                        <p className="text-stone-500 text-xs">Size: <span className="font-bold text-amber-900">{item.size}</span></p>
-                                                        <p className="text-stone-500 text-xs">{item.price.toLocaleString()} ETB x {item.quantity}</p>
+                                                        <h4 className="font-bold text-stone-900 dark:text-white text-sm">{item.name}</h4>
+                                                        <p className="text-stone-500 dark:text-stone-400 text-xs">Size: <span className="font-bold text-amber-900 dark:text-amber-500">{item.size}</span></p>
+                                                        <p className="text-stone-500 dark:text-stone-400 text-xs">{item.price.toLocaleString()} ETB x {item.quantity}</p>
                                                     </div>
                                                     <div className="flex items-center gap-2">
-                                                        <button onClick={() => updateQty(item.key, -1)} className="w-8 h-8 bg-stone-100 rounded-full flex items-center justify-center font-bold text-stone-600 hover:bg-stone-200 transition-all">-</button>
-                                                        <span className="text-sm font-semibold text-stone-800 w-4 text-center">{item.quantity}</span>
-                                                        <button onClick={() => updateQty(item.key, 1)} className="w-8 h-8 bg-stone-100 rounded-full flex items-center justify-center font-bold text-stone-600 hover:bg-stone-200 transition-all">+</button>
+                                                        <button onClick={() => updateQty(item.key, -1)} className="w-8 h-8 bg-stone-100 dark:bg-stone-800 rounded-full flex items-center justify-center font-bold text-stone-600 dark:text-stone-400 hover:bg-stone-200 dark:hover:bg-stone-700 transition-all">-</button>
+                                                        <span className="text-sm font-semibold text-stone-800 dark:text-stone-200 w-4 text-center">{item.quantity}</span>
+                                                        <button onClick={() => updateQty(item.key, 1)} className="w-8 h-8 bg-stone-100 dark:bg-stone-800 rounded-full flex items-center justify-center font-bold text-stone-600 dark:text-stone-400 hover:bg-stone-200 dark:hover:bg-stone-700 transition-all">+</button>
                                                     </div>
                                                 </div>
                                             ))}
                                             <div className="text-right p-2">
-                                                <span className="text-stone-500 text-sm font-medium">{t[lang].total}: </span>
-                                                <span className="text-2xl font-extrabold text-stone-950 block mt-1">{cart.reduce((s, i) => s + (i.price * i.quantity), 0).toLocaleString()} ETB</span>
+                                                <span className="text-stone-500 dark:text-stone-400 text-sm font-medium">{t[lang].total}: </span>
+                                                <span className="text-2xl font-extrabold text-stone-950 dark:text-white block mt-1">{cart.reduce((s, i) => s + (i.price * i.quantity), 0).toLocaleString()} ETB</span>
                                             </div>
                                         </div>
 
-                                        {/* Seamless Checkout Form */}
-                                        <form onSubmit={handlePlaceOrder} className="bg-white p-6 rounded-3xl border border-stone-200 space-y-5 shadow-sm">
-                                            <h3 className="text-lg font-bold text-stone-900 border-b pb-3">📋 {t[lang].customerInfo}</h3>
-                                            
-                                            <div className="space-y-4">
-                                                <div>
-                                                    <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-2">{t[lang].fullName}</label>
-                                                    <input required type="text" value={checkoutName} onChange={(e) => setCheckoutName(e.target.value)} placeholder="Abebe Bikila" className="w-full px-4 py-2.5 border border-stone-300 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-amber-800/20" />
-                                                </div>
-                                                
-                                                <div>
-                                                    <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-2">{t[lang].phoneNumber}</label>
-                                                    <input required type="tel" value={checkoutPhone} onChange={(e) => setCheckoutPhone(e.target.value)} placeholder="0911223344" className="w-full px-4 py-2.5 border border-stone-300 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-amber-800/20" />
-                                                </div>
+                                        {/* Seamless Multi-option Checkout Block */}
+                                        <div className="bg-white dark:bg-stone-900 p-6 rounded-3xl border border-stone-200 dark:border-stone-800 space-y-6 shadow-sm">
+                                            {checkoutMode === null ? (
+                                                <div className="space-y-6">
+                                                    <h3 className="text-md font-bold text-stone-900 dark:text-white border-b pb-3 text-center">{t[lang].checkoutChoiceTitle}</h3>
+                                                    
+                                                    {/* Choice 1: Direct phone call */}
+                                                    <div className="bg-stone-50 dark:bg-stone-950 p-5 rounded-2xl border border-stone-150 dark:border-stone-850 text-center space-y-3">
+                                                        <span className="text-2xl">📞</span>
+                                                        <h4 className="font-bold text-stone-900 dark:text-white text-sm">{t[lang].orderMethodPhone}</h4>
+                                                        <p className="text-stone-500 dark:text-stone-400 text-[11px] leading-relaxed">{t[lang].callReason}</p>
+                                                        <a href="tel:+251911432094" className="inline-block w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl text-center text-xs shadow-sm transition-all">
+                                                            {t[lang].callShopBtn}
+                                                        </a>
+                                                    </div>
 
-                                                <div>
-                                                    <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-2">{t[lang].deliveryAddress}</label>
-                                                    <input required type="text" value={checkoutAddress} onChange={(e) => setCheckoutAddress(e.target.value)} placeholder="Addis Ababa, Bole" className="w-full px-4 py-2.5 border border-stone-300 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-amber-800/20" />
-                                                </div>
-                                            </div>
+                                                    <div className="flex items-center justify-center gap-3">
+                                                        <div className="h-px bg-stone-200 dark:bg-stone-800 flex-1"></div>
+                                                        <span className="text-[11px] font-bold text-stone-400 uppercase">{t[lang].or}</span>
+                                                        <div className="h-px bg-stone-200 dark:bg-stone-800 flex-1"></div>
+                                                    </div>
 
-                                            <button type="submit" disabled={isSubmittingOrder} className="w-full bg-amber-950 hover:bg-stone-900 text-white font-bold py-4 rounded-xl text-center text-xs shadow-md transition-all">
-                                                {isSubmittingOrder ? t[lang].submitting : t[lang].placeOrder}
-                                            </button>
-                                        </form>
+                                                    {/* Choice 2: Order on website */}
+                                                    <button onClick={() => setCheckoutMode('online')} className="w-full bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-950 font-bold py-3.5 rounded-xl text-center text-xs shadow-md transition-all">
+                                                        💻 {t[lang].orderMethodOnline}
+                                                    </button>
+                                                </div>
+                                            ) : (
+                                                <form onSubmit={handlePlaceOrder} className="space-y-5">
+                                                    <div className="flex justify-between items-center border-b pb-3">
+                                                        <h3 className="text-lg font-bold text-stone-900 dark:text-white">📋 {t[lang].customerInfo}</h3>
+                                                        <button type="button" onClick={() => setCheckoutMode(null)} className="text-xs font-semibold text-amber-800 dark:text-amber-500">← Back</button>
+                                                    </div>
+                                                    
+                                                    <div className="space-y-4">
+                                                        <div>
+                                                            <label className="block text-xs font-bold text-stone-700 dark:text-stone-300 uppercase tracking-wider mb-2">{t[lang].fullName}</label>
+                                                            <input required type="text" value={checkoutName} onChange={(e) => setCheckoutName(e.target.value)} placeholder="Abebe Bikila" className="w-full px-4 py-2.5 border border-stone-300 dark:border-stone-700 rounded-xl text-sm bg-white dark:bg-stone-800 text-stone-950 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-800/20" />
+                                                        </div>
+                                                        
+                                                        <div>
+                                                            <label className="block text-xs font-bold text-stone-700 dark:text-stone-300 uppercase tracking-wider mb-2">{t[lang].phoneNumber}</label>
+                                                            <input required type="tel" value={checkoutPhone} onChange={(e) => setCheckoutPhone(e.target.value)} placeholder="0911223344" className="w-full px-4 py-2.5 border border-stone-300 dark:border-stone-700 rounded-xl text-sm bg-white dark:bg-stone-800 text-stone-950 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-800/20" />
+                                                        </div>
+
+                                                        <div>
+                                                            <label className="block text-xs font-bold text-stone-700 dark:text-stone-300 uppercase tracking-wider mb-2">{t[lang].deliveryAddress}</label>
+                                                            <input required type="text" value={checkoutAddress} onChange={(e) => setCheckoutAddress(e.target.value)} placeholder="Addis Ababa, Bole" className="w-full px-4 py-2.5 border border-stone-300 dark:border-stone-700 rounded-xl text-sm bg-white dark:bg-stone-800 text-stone-950 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-800/20" />
+                                                        </div>
+                                                    </div>
+
+                                                    <button type="submit" disabled={isSubmittingOrder} className="w-full bg-amber-950 dark:bg-amber-800 hover:bg-stone-900 text-white font-bold py-4 rounded-xl text-center text-xs shadow-md transition-all">
+                                                        {isSubmittingOrder ? t[lang].submitting : t[lang].placeOrder}
+                                                    </button>
+                                                </form>
+                                            )}
+                                        </div>
                                     </div>
                                 )}
                             </div>
@@ -577,24 +728,47 @@
 
                         {view === 'admin' && (
                             <div className="space-y-8">
-                                <h2 className="text-3xl font-bold text-stone-900 tracking-tight">{t[lang].controlPanel}</h2>
+                                <h2 className="text-3xl font-bold text-stone-900 dark:text-white tracking-tight">{t[lang].controlPanel}</h2>
                                 {!isAdmin ? (
-                                    <form onSubmit={handleLogin} className="bg-white p-8 rounded-3xl border border-stone-200 max-w-sm mx-auto space-y-5 shadow-lg">
+                                    <form onSubmit={handleLogin} className="bg-white dark:bg-stone-900 p-8 rounded-3xl border border-stone-200 dark:border-stone-800 max-w-sm mx-auto space-y-5 shadow-lg">
                                         <div>
-                                            <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-2">{t[lang].accessKey}</label>
-                                            <input type="password" value={pass} onChange={(e) => setPass(e.target.value)} className="w-full px-4 py-3 border border-stone-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-amber-800/20" placeholder="••••••••" />
+                                            <label className="block text-xs font-bold text-stone-700 dark:text-stone-300 uppercase tracking-wider mb-2">{t[lang].accessKey}</label>
+                                            <input type="password" value={pass} onChange={(e) => setPass(e.target.value)} className="w-full px-4 py-3 border border-stone-300 dark:border-stone-700 rounded-xl text-sm bg-white dark:bg-stone-800 text-stone-900 dark:text-white focus:outline-none" placeholder="••••••••" />
                                         </div>
                                         {err && <p className="text-xs text-red-600 font-medium">{err}</p>}
                                         <button type="submit" className="w-full bg-amber-950 text-white text-xs font-bold py-3 rounded-xl hover:bg-stone-900 transition-all">{t[lang].unlock}</button>
                                     </form>
                                 ) : (
                                     <div className="space-y-8">
+                                        {/* EXECUTIVE SALES DASHBOARD STATS */}
+                                        <div className="bg-white dark:bg-stone-900 p-6 rounded-3xl border border-stone-200 dark:border-stone-800 space-y-4 shadow-sm">
+                                            <h3 className="text-lg font-bold text-stone-900 dark:text-white border-b pb-2">📈 {t[lang].analyticsOverview}</h3>
+                                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                                <div className="bg-stone-50 dark:bg-stone-950 p-4 rounded-2xl border border-stone-100 dark:border-stone-850">
+                                                    <span className="text-[10px] font-extrabold text-stone-400 dark:text-stone-500 uppercase tracking-wider">{t[lang].todaySales}</span>
+                                                    <p className="text-lg font-bold text-stone-900 dark:text-white mt-1">{stats.today.toLocaleString()} ETB</p>
+                                                </div>
+                                                <div className="bg-stone-50 dark:bg-stone-950 p-4 rounded-2xl border border-stone-100 dark:border-stone-850">
+                                                    <span className="text-[10px] font-extrabold text-stone-400 dark:text-stone-500 uppercase tracking-wider">{t[lang].weekSales}</span>
+                                                    <p className="text-lg font-bold text-stone-900 dark:text-white mt-1">{stats.week.toLocaleString()} ETB</p>
+                                                </div>
+                                                <div className="bg-stone-50 dark:bg-stone-950 p-4 rounded-2xl border border-stone-100 dark:border-stone-850">
+                                                    <span className="text-[10px] font-extrabold text-stone-400 dark:text-stone-500 uppercase tracking-wider">{t[lang].monthSales}</span>
+                                                    <p className="text-lg font-bold text-stone-900 dark:text-white mt-1">{stats.month.toLocaleString()} ETB</p>
+                                                </div>
+                                                <div className="bg-stone-50 dark:bg-stone-950 p-4 rounded-2xl border border-stone-100 dark:border-stone-850">
+                                                    <span className="text-[10px] font-extrabold text-stone-400 dark:text-stone-500 uppercase tracking-wider">{t[lang].yearSales}</span>
+                                                    <p className="text-lg font-bold text-stone-900 dark:text-white mt-1">{stats.year.toLocaleString()} ETB</p>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                         {/* Orders Log / Tracker */}
-                                        <div className="bg-white p-6 rounded-3xl border border-stone-200 space-y-4 shadow-sm">
+                                        <div className="bg-white dark:bg-stone-900 p-6 rounded-3xl border border-stone-200 dark:border-stone-800 space-y-4 shadow-sm">
                                             <div className="flex justify-between items-center border-b pb-3">
-                                                <h3 className="text-lg font-bold text-stone-900">📊 {t[lang].ordersTracker}</h3>
+                                                <h3 className="text-lg font-bold text-stone-900 dark:text-white">📊 {t[lang].ordersTracker}</h3>
                                                 {orders.length > 0 && (
-                                                    <button onClick={clearOrderLog} className="text-xs text-red-600 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg font-bold transition-all">{t[lang].clearOrders}</button>
+                                                    <button onClick={clearOrderLog} className="text-xs text-red-600 bg-red-50 hover:bg-red-100 dark:bg-red-950 dark:hover:bg-red-900 px-3 py-1.5 rounded-lg font-bold transition-all">{t[lang].clearOrders}</button>
                                                 )}
                                             </div>
                                             {orders.length === 0 ? (
@@ -603,20 +777,20 @@
                                                 <div className="overflow-x-auto">
                                                     <table className="w-full text-left text-xs border-collapse">
                                                         <thead>
-                                                            <tr className="bg-stone-50 text-stone-600 border-b border-stone-100">
+                                                            <tr className="bg-stone-50 dark:bg-stone-950 text-stone-600 dark:text-stone-400 border-b border-stone-100 dark:border-stone-850">
                                                                 <th className="p-3">{t[lang].orderDate}</th>
                                                                 <th className="p-3">{t[lang].phoneNumber}</th>
                                                                 <th className="p-3">{t[lang].customerOrder}</th>
                                                                 <th className="p-3 text-right">{t[lang].total}</th>
                                                             </tr>
                                                         </thead>
-                                                        <tbody className="divide-y divide-stone-100">
+                                                        <tbody className="divide-y divide-stone-100 dark:divide-stone-800">
                                                             {orders.map(o => (
-                                                                <tr key={o.id} className="hover:bg-stone-50/50">
+                                                                <tr key={o.id} className="hover:bg-stone-50/50 dark:hover:bg-stone-850/50">
                                                                     <td className="p-3 font-medium text-stone-500 whitespace-nowrap">{o.date}</td>
-                                                                    <td className="p-3 font-bold text-amber-900">{o.phone}</td>
-                                                                    <td className="p-3 text-stone-700">{o.items} <span className="text-[11px] block text-amber-800 font-semibold mt-1">{o.method}</span></td>
-                                                                    <td className="p-3 text-right font-bold text-stone-900 whitespace-nowrap">{o.total.toLocaleString()} ETB</td>
+                                                                    <td className="p-3 font-bold text-amber-900 dark:text-amber-500">{o.phone}</td>
+                                                                    <td className="p-3 text-stone-700 dark:text-stone-300">{o.items} <span className="text-[11px] block text-amber-800 dark:text-amber-500 font-semibold mt-1">{o.method}</span></td>
+                                                                    <td className="p-3 text-right font-bold text-stone-900 dark:text-white whitespace-nowrap">{o.total.toLocaleString()} ETB</td>
                                                                 </tr>
                                                             ))}
                                                         </tbody>
@@ -625,20 +799,21 @@
                                             )}
                                         </div>
 
-                                        <form onSubmit={handleAdd} className="bg-white p-6 rounded-3xl border border-stone-200 space-y-4 shadow-sm">
-                                            <h3 className="text-lg font-bold text-stone-900 border-b pb-3">{t[lang].addNewProduct}</h3>
+                                        {/* Register Product Form */}
+                                        <form onSubmit={handleAdd} className="bg-white dark:bg-stone-900 p-6 rounded-3xl border border-stone-200 dark:border-stone-800 space-y-4 shadow-sm">
+                                            <h3 className="text-lg font-bold text-stone-900 dark:text-white border-b pb-3">{t[lang].addNewProduct}</h3>
                                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                                 <div>
-                                                    <label className="block text-xs font-bold text-stone-700 uppercase mb-2">{t[lang].shoeName}</label>
-                                                    <input type="text" value={newP.name} onChange={(e) => setNewP({...newP, name: e.target.value})} className="w-full px-4 py-2.5 border border-stone-300 rounded-xl text-sm" placeholder="Classic Oxford" />
+                                                    <label className="block text-xs font-bold text-stone-700 dark:text-stone-300 uppercase mb-2">{t[lang].shoeName}</label>
+                                                    <input type="text" value={newP.name} onChange={(e) => setNewP({...newP, name: e.target.value})} className="w-full px-4 py-2.5 border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-white rounded-xl text-sm" placeholder="Classic Oxford" />
                                                 </div>
                                                 <div>
-                                                    <label className="block text-xs font-bold text-stone-700 uppercase mb-2">{t[lang].price}</label>
-                                                    <input type="number" value={newP.price} onChange={(e) => setNewP({...newP, price: e.target.value})} className="w-full px-4 py-2.5 border border-stone-300 rounded-xl text-sm" placeholder="3500" />
+                                                    <label className="block text-xs font-bold text-stone-700 dark:text-stone-300 uppercase mb-2">{t[lang].price}</label>
+                                                    <input type="number" value={newP.price} onChange={(e) => setNewP({...newP, price: e.target.value})} className="w-full px-4 py-2.5 border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-white rounded-xl text-sm" placeholder="3500" />
                                                 </div>
                                                 <div>
-                                                    <label className="block text-xs font-bold text-stone-700 uppercase mb-2">{t[lang].category}</label>
-                                                    <select value={newP.category} onChange={(e) => setNewP({...newP, category: e.target.value})} className="w-full px-4 py-2.5 border border-stone-300 rounded-xl text-sm bg-white">
+                                                    <label className="block text-xs font-bold text-stone-700 dark:text-stone-300 uppercase mb-2">{t[lang].category}</label>
+                                                    <select value={newP.category} onChange={(e) => setNewP({...newP, category: e.target.value})} className="w-full px-4 py-2.5 border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-white rounded-xl text-sm bg-white">
                                                         <option value="Formal">{t[lang].formal}</option>
                                                         <option value="Boots">{t[lang].boots}</option>
                                                         <option value="Sneakers">{t[lang].sneakers}</option>
@@ -646,31 +821,32 @@
                                                     </select>
                                                 </div>
                                                 <div>
-                                                    <label className="block text-xs font-bold text-stone-700 uppercase mb-2">{t[lang].imagesLabel}</label>
+                                                    <label className="block text-xs font-bold text-stone-700 dark:text-stone-300 uppercase mb-2">{t[lang].imagesLabel}</label>
                                                     <input type="file" accept="image/*" multiple onChange={handleImgUpload} className="w-full text-xs text-stone-500" />
-                                                    <p className="text-[10px] text-amber-800 mt-1.5">{t[lang].imagesSelected} {newP.images.length}</p>
+                                                    <p className="text-[10px] text-amber-800 dark:text-amber-500 mt-1.5">{t[lang].imagesSelected} {newP.images.length}</p>
                                                 </div>
                                             </div>
                                             <div>
-                                                <label className="block text-xs font-bold text-stone-700 uppercase mb-2">{t[lang].description}</label>
-                                                <textarea value={newP.description} onChange={(e) => setNewP({...newP, description: e.target.value})} rows="2" className="w-full px-4 py-2.5 border border-stone-300 rounded-xl text-sm"></textarea>
+                                                <label className="block text-xs font-bold text-stone-700 dark:text-stone-300 uppercase mb-2">{t[lang].description}</label>
+                                                <textarea value={newP.description} onChange={(e) => setNewP({...newP, description: e.target.value})} rows="2" className="w-full px-4 py-2.5 border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-white rounded-xl text-sm"></textarea>
                                             </div>
                                             <button type="submit" className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-8 py-3 rounded-xl transition-all shadow">{t[lang].registerBtn}</button>
                                         </form>
 
+                                        {/* Products list */}
                                         <div className="space-y-3">
-                                            <h3 className="text-lg font-bold text-stone-900">{t[lang].productList} ({products.length})</h3>
+                                            <h3 className="text-lg font-bold text-stone-900 dark:text-white">{t[lang].productList} ({products.length})</h3>
                                             <div className="space-y-2.5">
                                                 {products.map(p => (
-                                                    <div key={p.id} className="bg-white p-4 rounded-2xl border border-stone-200 flex items-center justify-between gap-4">
+                                                    <div key={p.id} className="bg-white dark:bg-stone-900 p-4 rounded-2xl border border-stone-200 dark:border-stone-800 flex items-center justify-between gap-4">
                                                         <div className="flex items-center gap-3">
-                                                            <img src={p.images[0]} className="w-12 h-12 object-cover rounded-xl border border-stone-100" />
+                                                            <img src={p.images[0]} className="w-12 h-12 object-cover rounded-xl border border-stone-100 dark:border-stone-800" />
                                                             <div>
-                                                                <h4 className="font-bold text-stone-900 text-sm">{p.name}</h4>
+                                                                <h4 className="font-bold text-stone-900 dark:text-white text-sm">{p.name}</h4>
                                                                 <p className="text-xs text-stone-500">{p.category} • {p.price.toLocaleString()} ETB</p>
                                                             </div>
                                                         </div>
-                                                        <button onClick={() => handleDeleteProduct(p.id)} className="text-red-600 text-xs font-bold bg-red-50 hover:bg-red-100 px-4 py-2 rounded-xl transition-all">{t[lang].delete}</button>
+                                                        <button onClick={() => handleDeleteProduct(p.id)} className="text-red-600 text-xs font-bold bg-red-50 hover:bg-red-100 dark:bg-red-950 dark:hover:bg-red-900 px-4 py-2 rounded-xl transition-all">{t[lang].delete}</button>
                                                     </div>
                                                 ))}
                                             </div>
@@ -682,17 +858,29 @@
                     </main>
 
                     {/* Footer Nav Bar */}
-                    <nav className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-stone-200/80 py-3.5 px-12 flex justify-between items-center z-40 md:hidden shadow-xl">
-                        <button onClick={() => setView('home')} className={`flex flex-col items-center gap-1 text-[10px] uppercase font-bold tracking-wider ${view === 'home' ? 'text-amber-800' : 'text-stone-400'}`}>
+                    <nav className="fixed bottom-0 left-0 right-0 bg-white/95 dark:bg-stone-900/95 backdrop-blur-md border-t border-stone-200/80 dark:border-stone-800 py-3.5 px-6 flex justify-between items-center z-40 md:hidden shadow-xl">
+                        <button onClick={() => setView('home')} className={`flex flex-col items-center gap-1 text-[10px] uppercase font-bold tracking-wider ${view === 'home' ? 'text-amber-800 dark:text-amber-500' : 'text-stone-400'}`}>
                             <span className="text-lg">🏠</span>{t[lang].home}
                         </button>
-                        <button onClick={() => setView('shop')} className={`flex flex-col items-center gap-1 text-[10px] uppercase font-bold tracking-wider ${view === 'shop' ? 'text-amber-800' : 'text-stone-400'}`}>
+                        <button onClick={() => setView('shop')} className={`flex flex-col items-center gap-1 text-[10px] uppercase font-bold tracking-wider ${view === 'shop' ? 'text-amber-800 dark:text-amber-500' : 'text-stone-400'}`}>
                             <span className="text-lg">👟</span>{t[lang].shoes}
                         </button>
-                        <button onClick={() => { setView('cart'); setOrderCompleted(false); }} className={`flex flex-col items-center gap-1 text-[10px] uppercase font-bold tracking-wider ${view === 'cart' ? 'text-amber-800' : 'text-stone-400'}`}>
+                        
+                        {/* Interactive Toggle Floating Mode Button */}
+                        <button onClick={() => setDarkMode(!darkMode)} className="flex flex-col items-center gap-1 text-[10px] uppercase font-bold tracking-wider text-stone-400">
+                            <span className="text-lg">{darkMode ? '☀️' : '🌙'}</span>
+                            <span>{darkMode ? 'Light' : 'Dark'}</span>
+                        </button>
+
+                        <button onClick={() => { setView('cart'); setOrderCompleted(false); setCheckoutMode(null); }} className={`flex flex-col items-center gap-1 text-[10px] uppercase font-bold tracking-wider ${view === 'cart' ? 'text-amber-800 dark:text-amber-500' : 'text-stone-400'}`}>
                             <span className="text-lg">🛒</span>{t[lang].cart}
                         </button>
                     </nav>
+
+                    {/* Desktop Floating Dark Mode Toggle */}
+                    <button onClick={() => setDarkMode(!darkMode)} className="hidden md:flex fixed bottom-6 right-6 bg-stone-900 dark:bg-white text-white dark:text-stone-950 w-12 h-12 rounded-full items-center justify-center shadow-lg z-50 transition-all">
+                        {darkMode ? '☀️' : '🌙'}
+                    </button>
                 </div>
             );
         }
