@@ -52,7 +52,7 @@
   <div class="bg-kenzs-charcoal text-white text-[11px] font-semibold py-2 px-4 flex justify-between items-center border-b border-neutral-800 sticky top-0 z-50">
     <div class="flex items-center gap-2">
       <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-      <span class="tracking-wider">KENZS OFFICIAL STORE ENGINE v2.3</span>
+      <span class="tracking-wider">KENZS OFFICIAL STORE ENGINE v2.4</span>
     </div>
     <div class="flex items-center gap-4">
       <!-- Dark Mode Button -->
@@ -145,15 +145,16 @@
           </div>
         </div>
 
+        <!-- Dynamic Hero Top Selection Showcase -->
         <div class="lg:col-span-5 relative">
           <div class="relative mx-auto max-w-md lg:max-w-none">
             <img id="hero-shoe-img" src="https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?auto=format&fit=crop&q=80&w=1000" alt="Kenzs Official Shoe" class="rounded-2xl shadow-2xl object-cover w-full h-[400px] border-4 border-white dark:border-neutral-800" />
             <div class="absolute bottom-6 left-6 right-6 bg-white/90 dark:bg-neutral-900/90 backdrop-blur-md p-4 rounded-xl border border-white/40 dark:border-neutral-700 shadow-lg flex items-center justify-between">
               <div>
                 <p class="text-xs font-semibold text-kenzs-brown dark:text-amber-400 uppercase tracking-wider">Top Selection</p>
-                <p class="text-sm font-bold text-kenzs-charcoal dark:text-white">The Royal Oxford Leather</p>
+                <p id="hero-shoe-title" class="text-sm font-bold text-kenzs-charcoal dark:text-white">The Royal Oxford Leather</p>
               </div>
-              <span class="text-sm font-serif font-bold text-kenzs-brown dark:text-amber-500">7,200 ETB</span>
+              <span id="hero-shoe-price" class="text-sm font-serif font-bold text-kenzs-brown dark:text-amber-500">7,200 ETB</span>
             </div>
           </div>
         </div>
@@ -241,11 +242,29 @@
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h1 class="text-2xl font-bold font-serif text-white">Product Inventory Engine</h1>
-            <p class="text-xs text-neutral-400">Manage published products or delete sold-out items.</p>
+            <p class="text-xs text-neutral-400">Manage published products, delete items, or update featured Top Selection.</p>
           </div>
           <button onclick="toggleAddProductForm()" class="flex items-center justify-center gap-2 bg-amber-600 hover:bg-amber-500 text-white px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider">
             <i data-lucide="plus" class="w-4 h-4"></i> Add New Product
           </button>
+        </div>
+
+        <!-- NEW: TOP SELECTION EDITOR PANEL -->
+        <div class="bg-neutral-900 border border-amber-500/30 p-5 rounded-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div>
+            <span class="text-xs font-bold uppercase text-amber-500 tracking-wider flex items-center gap-1.5">
+              ⭐ Hero Banner "Top Selection" Shoe
+            </span>
+            <p class="text-xs text-neutral-400 mt-1">Select which product appears highlighted on the store's main hero section.</p>
+          </div>
+          <div class="flex items-center gap-3 w-full md:w-auto">
+            <select id="top-selection-picker" class="bg-neutral-950 border border-neutral-800 p-2.5 rounded-xl text-xs text-white focus:outline-none w-full md:w-64">
+              <!-- Dynamically Populated -->
+            </select>
+            <button onclick="updateTopSelection()" class="bg-amber-600 hover:bg-amber-500 text-white px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition whitespace-nowrap">
+              Set Selection
+            </button>
+          </div>
         </div>
 
         <!-- Add Form -->
@@ -301,7 +320,7 @@
             </div>
           </div>
 
-          <!-- Size Chooser (39-44 UPDATED) -->
+          <!-- Size Chooser (39-44) -->
           <div>
             <label class="block text-xs uppercase text-neutral-400 font-semibold mb-2">Available Sizes</label>
             <div class="flex flex-wrap gap-4">
@@ -346,7 +365,7 @@
   <!-- MODALS & DRAWERS                           -->
   <!-- ========================================== -->
 
-  <!-- Quick View Product Modal (With Multi-Photo Gallery Support) -->
+  <!-- Quick View Product Modal -->
   <div id="product-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="bg-white dark:bg-neutral-900 dark:text-white w-full max-w-2xl rounded-2xl overflow-hidden shadow-2xl relative border border-neutral-200 dark:border-neutral-800">
       <button onclick="closeModal()" class="absolute top-4 right-4 z-10 w-8 h-8 bg-neutral-100 dark:bg-neutral-800 rounded-full flex items-center justify-center shadow">
@@ -398,6 +417,7 @@
     let isDarkMode = false;
     let isAdminAuthenticated = false;
     let selectedCategory = "All";
+    let topSelectionProductId = "prod_1"; // Default Top Selection ID
     
     let cart = [];
     let selectedModalColor = null;
@@ -429,8 +449,8 @@
         descriptionEn: "Iconic Jordan 1 high-top style available in dual luxury colorways.",
         descriptionAm: "ታዋቂው ኤር ጆርዳን 1 ስኒከር።",
         images: [
-          "https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?auto=format&fit=crop&q=80&w=800", // Red / Multi
-          "https://images.unsplash.com/photo-1549298916-b41d501d3772?auto=format&fit=crop&q=80&w=800"  // Alternate image
+          "https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?auto=format&fit=crop&q=80&w=800",
+          "https://images.unsplash.com/photo-1549298916-b41d501d3772?auto=format&fit=crop&q=80&w=800"
         ]
       }
     ];
@@ -455,6 +475,7 @@
       renderProducts();
       renderAdminInventory();
       renderAdminOrders();
+      renderHeroTopSelection();
       lucide.createIcons();
     };
 
@@ -511,6 +532,25 @@
       }
     }
 
+    // Render Hero Banner Top Selection
+    function renderHeroTopSelection() {
+      const p = products.find(item => item.id === topSelectionProductId) || products[0];
+      if (!p) return;
+
+      const finalPrice = p.discount > 0 ? p.priceETB * (1 - p.discount / 100) : p.priceETB;
+      
+      document.getElementById('hero-shoe-img').src = p.images[0];
+      document.getElementById('hero-shoe-title').innerText = currentLang === 'en' ? p.nameEn : p.nameAm;
+      document.getElementById('hero-shoe-price').innerText = `${finalPrice.toLocaleString()} ETB`;
+    }
+
+    function updateTopSelection() {
+      const picker = document.getElementById('top-selection-picker');
+      topSelectionProductId = picker.value;
+      renderHeroTopSelection();
+      alert("Top Selection Hero Banner Updated Successfully!");
+    }
+
     // Language Switcher
     function toggleLanguage() {
       currentLang = currentLang === "en" ? "am" : "en";
@@ -521,6 +561,7 @@
         : 'በእርግጠኝነት <span class="text-kenzs-brown dark:text-amber-500 italic font-normal">ይራመዱ።</span>';
 
       renderProducts();
+      renderHeroTopSelection();
     }
 
     // Category Filter
@@ -588,7 +629,6 @@
 
       const container = document.getElementById('modal-content');
       
-      // Image Gallery HTML construction
       const thumbnailsHtml = p.images.length > 1 ? `
         <div class="flex gap-2 mt-3 overflow-x-auto pb-1">
           ${p.images.map((img, index) => `
@@ -620,7 +660,7 @@
             </div>
           </div>
 
-          <!-- Size Choice (Includes 39) -->
+          <!-- Size Choice -->
           <div>
             <label class="block text-xs font-bold uppercase mb-2">Size</label>
             <div class="flex flex-wrap gap-2">
@@ -636,7 +676,6 @@
       document.getElementById('product-modal').classList.remove('hidden');
     }
 
-    // Set Main Image from Thumbnail Click
     function setModalMainImage(imgUrl, btn) {
       document.getElementById('modal-main-img').src = imgUrl;
       const allThumbs = document.querySelectorAll('.modal-thumb-btn');
@@ -732,7 +771,6 @@
       document.getElementById('add-product-form').classList.toggle('hidden');
     }
 
-    // Handle Image Upload File Array
     async function handleCreateProduct(e) {
       e.preventDefault();
       
@@ -784,7 +822,6 @@
       });
     }
 
-    // Delete Product
     function deleteProduct(id) {
       if(confirm("Are you sure you want to delete/remove this product?")) {
         products = products.filter(p => p.id !== id);
@@ -793,8 +830,16 @@
       }
     }
 
-    // Render Admin Product Inventory
+    // Render Admin Product Inventory & Top Selection Dropdown
     function renderAdminInventory() {
+      // Update Top Selection Picker Dropdown
+      const picker = document.getElementById('top-selection-picker');
+      picker.innerHTML = products.map(p => `
+        <option value="${p.id}" ${p.id === topSelectionProductId ? 'selected' : ''}>
+          ${p.nameEn} (${p.priceETB.toLocaleString()} ETB)
+        </option>
+      `).join('');
+
       const container = document.getElementById('admin-inventory-list');
       if (products.length === 0) {
         container.innerHTML = `<div class="p-6 bg-neutral-900 rounded-2xl text-center text-neutral-400">No products in inventory.</div>`;
@@ -806,7 +851,7 @@
           <div class="flex items-center gap-4">
             <img src="${p.images[0]}" class="w-16 h-16 rounded-xl object-cover border border-neutral-800" />
             <div>
-              <h4 class="font-bold text-white text-base">${p.nameEn} (${p.images.length} Photos)</h4>
+              <h4 class="font-bold text-white text-base">${p.nameEn} ${p.id === topSelectionProductId ? '<span class="text-amber-500 text-xs">(⭐ Top Selection)</span>' : ''}</h4>
               <p class="text-xs text-neutral-400">${p.category} | Sizes: ${p.sizes.join(', ')}</p>
               <p class="text-xs text-neutral-400">Colors: ${p.colors.join(', ')}</p>
             </div>
@@ -898,4 +943,4 @@
     }
   </script>
 </body>
-  </html>
+        </html>
