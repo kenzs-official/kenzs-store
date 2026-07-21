@@ -1,1068 +1,622 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kenzs Official</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
-        body { 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            transition: background-color 0.3s ease, color 0.3s ease;
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kenzs Official | Premium Men's Footwear</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            kenzs: {
+              white: "#FFFFFF",
+              cream: "#FBF9F5",
+              beige: "#F2ECE1",
+              brown: {
+                DEFAULT: "#5A3E2B",
+                light: "#8C684D",
+                dark: "#3B271A",
+              },
+              charcoal: "#1A1A1A",
+              gray: "#737373",
+            }
+          },
+          fontFamily: {
+            serif: ["'Playfair Display'", "serif"],
+            sans: ["'Inter'", "sans-serif"],
+          }
         }
-        .zoom-overlay {
-            backdrop-filter: blur(8px);
-        }
-    </style>
+      }
+    }
+  </script>
 </head>
-<body class="bg-[#FAF6F0] text-stone-900 dark:bg-stone-950 dark:text-stone-100">
-    <div id="root"></div>
-
-    <script type="text/babel">
-        const { useState, useEffect } = React;
-
-        const SUPABASE_URL = "https://mnmegwnmvxvqreqfsaqx.supabase.co";
-        const SUPABASE_ANON_KEY = "sb_publishable_3YFw6XOurUC4kBkjTTSvHw_g9fRsLtr";
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-        const t = {
-            en: {
-                brand: "KENZS OFFICIAL",
-                home: "Home",
-                shoes: "Shoes",
-                cart: "Cart",
-                admin: "Admin",
-                heroTitle: "Walk with confidence.",
-                heroSub: "Premium handicraft men's shoes for any formal or casual occasion.",
-                viewCatalog: "Explore Collection",
-                categoriesTitle: "Browse by Category",
-                featuredTitle: "Featured Collections",
-                featuredSub: "Handpicked masterpieces available right now",
-                featuredBadge: "Featured",
-                makeFeatured: "Feature on Home Page",
-                removeFeatured: "Remove from Featured",
-                selectSize: "Select Size:",
-                addToCart: "Add to Cart",
-                catalogTitle: "Our Master Collection",
-                cartTitle: "Your Shopping Bag",
-                cartEmpty: "Your cart is empty!",
-                backToShop: "Continue Browsing",
-                size: "Size",
-                total: "Total",
-                placeOrder: "Confirm Order",
-                controlPanel: "Store Control Panel",
-                accessKey: "Access Key",
-                unlock: "Unlock",
-                wrongPass: "Incorrect Password!",
-                addNewProduct: "Register New Shoe",
-                shoeName: "Shoe Name *",
-                price: "Price (in Birr) *",
-                category: "Category",
-                imagesLabel: "Select Images (Up to 3, Auto-compressed) *",
-                imagesSelected: "Images selected:",
-                description: "Description",
-                registerBtn: "Register Product",
-                productList: "Product List",
-                delete: "Delete",
-                fillFields: "Please fill in all fields!",
-                successAdd: "Product added successfully!",
-                addedToCart: "added to cart!",
-                formal: "Formal Shoes",
-                boots: "Boots",
-                sneakers: "Sneakers",
-                loafers: "Loafers",
-                ordersTracker: "Tracked Orders",
-                noOrders: "No orders placed yet.",
-                orderDate: "Date",
-                customerOrder: "Order Details",
-                clearOrders: "Clear Order Log",
-                fullName: "Full Name *",
-                phoneNumber: "Phone Number *",
-                deliveryAddress: "Delivery Address (City / Area) *",
-                orderSuccessTitle: "Order Placed Successfully!",
-                orderSuccessMsg: "Thank you for shopping with Kenzs Official. We will contact you soon to arrange delivery.",
-                submitting: "Processing...",
-                customerInfo: "Customer Info",
-                // Why Choose Us
-                wcuTitle: "Why Kenzs Official?",
-                wcu1Title: "Pay After Delivery",
-                wcu1Desc: "Inspect and test your shoes at your door. Pay only when you are 100% happy.",
-                wcu2Title: "100% Genuine Leather",
-                wcu2Desc: "Crafted locally using premium, hand-selected pure leather built to last.",
-                wcu3Title: "Perfect Fit Guarantee",
-                wcu3Desc: "If the size isn't a perfect fit, we exchange it instantly at no extra cost.",
-                // Checkout Choice
-                checkoutChoiceTitle: "How would you like to complete your order?",
-                orderMethodOnline: "Submit Order Online",
-                orderMethodPhone: "Call Our Store directly",
-                or: "OR",
-                callShopBtn: "Call Now: +251 911 432 094",
-                callReason: "Speak directly with us to complete your order instantly via call.",
-                // Dashboard stats
-                todaySales: "Today's Sales",
-                weekSales: "This Week's Sales",
-                monthSales: "This Month's Sales",
-                yearSales: "This Year's Sales",
-                analyticsOverview: "Executive Sales Dashboard",
-                // Search & Filter placeholders
-                searchPlaceholder: "Search for shoes (e.g. Sneaker, Boot, Oxford, Leather)...",
-                allCategories: "All Styles",
-                tapToZoom: "Touch image to zoom details"
-            },
-            am: {
-                brand: "KENZS OFFICIAL",
-                home: "መነሻ",
-                shoes: "ጫማዎች",
-                cart: "ቅርጫት",
-                admin: "መቆጣጠሪያ",
-                heroTitle: "በራስ መተማመን ይራመዱ።",
-                heroSub: "ለማንኛውም መደበኛ ወይም ተራ ዝግጅት በእጅ የተሰሩ ምርጥ የክብር ወንዶች ጫማዎች።",
-                viewCatalog: "ካታሎግ ይመልከቱ",
-                categoriesTitle: "በዓይነት ይመልከቱ",
-                featuredTitle: "የተመረጡ ምርቶች",
-                featuredSub: "በአሁኑ ሰዓት የሚገኙ ምርጥ ተመራጭ ጫማዎች",
-                featuredBadge: "ተመራጭ",
-                makeFeatured: "መነሻ ገጽ ላይ አሳይ",
-                removeFeatured: "ከመነሻ ገጽ ላይ አንሳ",
-                selectSize: "መጠን (Size) ይምረጡ፡",
-                addToCart: "ወደ ቅርጫት ጨምር",
-                catalogTitle: "ሙሉ ካታሎግ",
-                cartTitle: "የእርስዎ የገበያ ቅርጫት",
-                cartEmpty: "ቅርጫትዎ ባዶ ነው!",
-                backToShop: "ወደ ግብይት ተመለስ",
-                size: "መጠን",
-                total: "ጠቅላላ ድምር",
-                placeOrder: "ትዕዛዝ አረጋግጥ",
-                controlPanel: "የሱቅ መቆጣጠሪያ ፓነል",
-                accessKey: "የመግቢያ ቁልፍ (Access Key)",
-                unlock: "ክፈት",
-                wrongPass: "የይለፍ ቃል የተሳሳተ ነው!",
-                addNewProduct: "አዲስ ጫማ መመዝገቢያ",
-                shoeName: "የጫማው ስም *",
-                price: "ዋጋ (በ Birr) *",
-                category: "ክፍል (Category)",
-                imagesLabel: "ምስሎች መምረጫ (እስከ 3 ምስል) *",
-                imagesSelected: "የተመረጡ ምስሎች፡",
-                description: "ማብራሪያ",
-                registerBtn: "ምርቱን መዝግብ",
-                productList: "ያሉ ምርቶች ዝርዝር",
-                delete: "አጥፋ",
-                fillFields: "እባክዎ ሁሉንም መስኮች ይሙሉ!",
-                successAdd: "ምርት በተሳካ ሁኔታ ተጨምሯል!",
-                addedToCart: "ወደ ቅርጫት ገብቷል!",
-                formal: "ፎርማል ጫማዎች",
-                boots: "ቡትስ",
-                sneakers: "ስኒከር",
-                loafers: "ሎፈርስ",
-                ordersTracker: "የደንበኞች ትዕዛዝ መከታተያ",
-                noOrders: "ምንም የተመዘገበ ትዕዛዝ የለም።",
-                orderDate: "ቀን",
-                customerOrder: "የትዕዛዝ ዝርዝር",
-                clearOrders: "የመከታተያ መዝገብ አጽዳ",
-                fullName: "ሙሉ ስም *",
-                phoneNumber: "የስልክ ቁጥር *",
-                deliveryAddress: "የማድረሻ አድራሻ (ከተማ / ሰፈር) *",
-                orderSuccessTitle: "ትዕዛዝዎ በተሳካ ሁኔታ ተመዝግቧል!",
-                orderSuccessMsg: "ከ Kenzs Official ስለገዙ እናመሰግናለን። ማድረሻውን ለማመቻቸት በቅርቡ በስልክ ቁጥርዎ እንደውላለን።",
-                submitting: "በመከናወን ላይ...",
-                customerInfo: "የደንበኛ መረጃ",
-                // Why Choose Us
-                wcuTitle: "ለምን Kenzs Official ይመርጣሉ?",
-                wcu1Title: "ሲረከቡ ይክፈሉ",
-                wcu1Desc: "ጫማዎን በቤትዎ ወይም በቦታው ሆነው ይመልከቱ እና ይሞክሩ። 100% ሲወዱትና ሲስማማዎት ብቻ ይክፈሉ::",
-                wcu2Title: "100% እውነተኛ ቆዳ",
-                wcu2Desc: "ለረጅም ጊዜ እንዲያገለግል ተደርጎ ከተመረጠ ምርጥ ንፁህ የቆዳ ጥሬ ዕቃ በእጃችን የተሰራ።",
-                wcu3Title: "ልክ የመሆን ዋስትና",
-                wcu3Desc: "የመረጡት መጠን (Size) ልክ ካልሆነ ያለ ምንም ተጨማሪ ክፍያ ወዲያውኑ እንቀይርልዎታለን።",
-                // Checkout Choice
-                checkoutChoiceTitle: "ትዕዛዝዎን እንዴት ማጠናቀቅ ይፈልጋሉ?",
-                orderMethodOnline: "በዌብሳይት እዘዝ",
-                orderMethodPhone: "በቀጥታ በመደወል እዘዝ",
-                or: "ወይም",
-                callShopBtn: "አሁን ይደውሉ፡ +251 911 432 094",
-                callReason: "በቀጥታ ከእኛ ጋር በስልክ በመነጋገር ትዕዛዝዎን ወዲያውኑ ማጠናቀቅ ይችላሉ።",
-                // Dashboard stats
-                todaySales: "የዛሬ ሽያጭ",
-                weekSales: "የዚህ ሳምንት ሽያጭ",
-                monthSales: "የዚህ ወር ሽያጭ",
-                yearSales: "የዚህ ዓመት ሽያጭ",
-                analyticsOverview: "አጠቃላይ የሽያጭ ሁኔታ መከታተያ",
-                // Search & Filter
-                searchPlaceholder: "ጫማዎችን እዚህ ይፈልጉ (ለምሳሌ፡ ኮንጎ፣ ሌዘር፣ ፎርማል)...",
-                allCategories: "ሁሉንም ዓይነቶች",
-                tapToZoom: "ዝርዝሩን ለማየት ፎቶውን ይንኩት"
-            }
-        };
-
-        const fallbackProducts = [
-            { 
-                id: 1, 
-                name: "Classic Monk Strap", 
-                price: 3500, 
-                category: "Formal", 
-                images: ["https://images.unsplash.com/photo-1614252369475-531eba835eb1?w=600&auto=format&fit=crop&q=60"], 
-                description: "Handcrafted premium leather shoe designed for formal elegance.",
-                is_featured: true 
-            }
-        ];
-
-        function App() {
-            const [lang, setLang] = useState('en'); // Defaults to English
-            const [view, setView] = useState('home'); 
-            const [products, setProducts] = useState(fallbackProducts);
-            const [cart, setCart] = useState([]);
-            const [selectedSizes, setSelectedSizes] = useState({});
-            const [activeImg, setActiveImg] = useState({});
-            const [orders, setOrders] = useState([]);
-
-            // Search and Category states
-            const [searchQuery, setSearchQuery] = useState('');
-            const [selectedCategory, setSelectedCategory] = useState('All');
-
-            // Image Zoom Lightbox state
-            const [zoomedImage, setZoomedImage] = useState(null);
-
-            // Checkout UI flow
-            const [checkoutMode, setCheckoutMode] = useState(null); 
-            const [checkoutName, setCheckoutName] = useState('');
-            const [checkoutPhone, setCheckoutPhone] = useState('');
-            const [checkoutAddress, setCheckoutAddress] = useState('');
-            const [isSubmittingOrder, setIsSubmittingOrder] = useState(false);
-            const [orderCompleted, setOrderCompleted] = useState(false);
-
-            // Dark Mode State
-            const [darkMode, setDarkMode] = useState(() => {
-                return localStorage.getItem('darkMode') === 'true';
-            });
-
-            // Admin state
-            const [isAdmin, setIsAdmin] = useState(false);
-            const [pass, setPass] = useState('');
-            const [err, setErr] = useState('');
-            const [newP, setNewP] = useState({ name: '', price: '', category: 'Formal', images: [], description: '', is_featured: false });
-
-            // Stats States
-            const [stats, setStats] = useState({ today: 0, week: 0, month: 0, year: 0 });
-
-            // Logo Tap tracker for Secret Admin Entry
-            const [logoTapCount, setLogoTapCount] = useState(0);
-
-            // Apply Dark Mode Class
-            useEffect(() => {
-                if (darkMode) {
-                    document.documentElement.classList.add('dark');
-                    localStorage.setItem('darkMode', 'true');
-                } else {
-                    document.documentElement.classList.remove('dark');
-                    localStorage.setItem('darkMode', 'false');
-                }
-            }, [darkMode]);
-
-            // Fetch Products from Supabase on Load
-            useEffect(() => {
-                fetchProducts();
-            }, []);
-
-            // Fetch Orders from Supabase if admin is logged in
-            useEffect(() => {
-                if (isAdmin) {
-                    fetchOrders();
-                }
-            }, [isAdmin]);
-
-            const fetchProducts = async () => {
-                const { data, error } = await supabase
-                    .from('products')
-                    .select('*')
-                    .order('id', { ascending: false });
-                
-                if (error) {
-                    console.error("Error loading products: ", error);
-                } else if (data && data.length > 0) {
-                    setProducts(data);
-                }
-            };
-
-            const fetchOrders = async () => {
-                const { data, error } = await supabase
-                    .from('orders')
-                    .select('*')
-                    .order('id', { ascending: false });
-                
-                if (error) {
-                    console.error("Error loading orders: ", error);
-                } else if (data) {
-                    setOrders(data);
-                    calculateStats(data);
-                }
-            };
-
-            const calculateStats = (ordersList) => {
-                let today = 0, week = 0, month = 0, year = 0;
-                const now = new Date();
-                
-                ordersList.forEach(order => {
-                    if (!order.date) return;
-                    
-                    const datePart = order.date.split(' ')[0];
-                    const orderDate = new Date(datePart);
-                    
-                    if (isNaN(orderDate.getTime())) return;
-
-                    const diffTime = Math.abs(now - orderDate);
-                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-                    const orderPrice = parseFloat(order.total) || 0;
-
-                    if (now.toDateString() === orderDate.toDateString()) {
-                        today += orderPrice;
-                    }
-                    if (diffDays <= 7) {
-                        week += orderPrice;
-                    }
-                    if (diffDays <= 30) {
-                        month += orderPrice;
-                    }
-                    if (diffDays <= 365) {
-                        year += orderPrice;
-                    }
-                });
-
-                setStats({ today, week, month, year });
-            };
-
-            const handleLogoTap = () => {
-                const nextCount = logoTapCount + 1;
-                if (nextCount >= 2) {
-                    setView('admin');
-                    setLogoTapCount(0); 
-                } else {
-                    setLogoTapCount(nextCount);
-                    setTimeout(() => setLogoTapCount(0), 1500);
-                }
-            };
-
-            const addToCart = (product) => {
-                const size = selectedSizes[product.id] || "40";
-                const itemKey = `${product.id}-${size}`;
-                
-                setCart(prev => {
-                    const existing = prev.find(item => item.key === itemKey);
-                    if (existing) {
-                        return prev.map(item => item.key === itemKey ? { ...item, quantity: item.quantity + 1 } : item);
-                    }
-                    return [...prev, { ...product, key: itemKey, size: size, quantity: 1 }];
-                });
-                alert(`${product.name} (${t[lang].size}: ${size}) ${t[lang].addedToCart}`);
-            };
-
-            const updateQty = (key, val) => {
-                setCart(prev => prev.map(item => {
-                    if (item.key === key) {
-                        const n = item.quantity + val;
-                        return n > 0 ? { ...item, quantity: n } : null;
-                    }
-                    return item;
-                }).filter(Boolean));
-            };
-
-            const handleLogin = (e) => {
-                e.preventDefault();
-                if (pass === 'Kenzskey0707') {
-                    setIsAdmin(true);
-                    setErr('');
-                } else {
-                    setErr(t[lang].wrongPass);
-                }
-            };
-
-            const handleImgUpload = (e) => {
-                const files = Array.from(e.target.files);
-                files.forEach(file => {
-                    const reader = new FileReader();
-                    reader.onloadend = () => {
-                        const img = new Image();
-                        img.src = reader.result;
-                        img.onload = () => {
-                            const canvas = document.createElement('canvas');
-                            const max_width = 450; 
-                            const scale = max_width / img.width;
-                            canvas.width = max_width;
-                            canvas.height = img.height * scale;
-                            
-                            const ctx = canvas.getContext('2d');
-                            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                            
-                            const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.6); 
-                            
-                            setNewP(prev => {
-                                const updatedImages = [...prev.images, compressedDataUrl].slice(0, 3);
-                                return { ...prev, images: updatedImages };
-                            });
-                        };
-                    };
-                    reader.readAsDataURL(file);
-                });
-            };
-
-            const handleAdd = async (e) => {
-                e.preventDefault();
-                if (!newP.name || !newP.price || newP.images.length === 0) {
-                    alert(t[lang].fillFields);
-                    return;
-                }
-                
-                const newProductObj = { 
-                    name: newP.name, 
-                    price: parseFloat(newP.price),
-                    category: newP.category,
-                    images: newP.images,
-                    description: newP.description,
-                    is_featured: newP.is_featured
-                };
-
-                const { data, error } = await supabase
-                    .from('products')
-                    .insert([newProductObj])
-                    .select();
-
-                if (error) {
-                    alert("Error registering product: " + error.message);
-                } else {
-                    alert(t[lang].successAdd);
-                    setNewP({ name: '', price: '', category: 'Formal', images: [], description: '', is_featured: false });
-                    fetchProducts();
-                }
-            };
-
-            const toggleFeaturedStatus = async (productId, currentStatus) => {
-                const { error } = await supabase
-                    .from('products')
-                    .update({ is_featured: !currentStatus })
-                    .eq('id', productId);
-
-                if (error) {
-                    alert("Error updating featured status: " + error.message);
-                } else {
-                    fetchProducts();
-                }
-            };
-
-            const handleDeleteProduct = async (id) => {
-                if (confirm("Are you sure you want to delete this product?")) {
-                    const { error } = await supabase
-                        .from('products')
-                        .delete()
-                        .eq('id', id);
-
-                    if (error) {
-                        alert("Error deleting product: " + error.message);
-                    } else {
-                        fetchProducts();
-                    }
-                }
-            };
-
-            const handlePrevImage = (productId, imagesLength, e) => {
-                e.stopPropagation();
-                const currentIdx = activeImg[productId] || 0;
-                const newIdx = currentIdx === 0 ? imagesLength - 1 : currentIdx - 1;
-                setActiveImg({ ...activeImg, [productId]: newIdx });
-            };
-
-            const handleNextImage = (productId, imagesLength, e) => {
-                e.stopPropagation();
-                const currentIdx = activeImg[productId] || 0;
-                const newIdx = currentIdx === imagesLength - 1 ? 0 : currentIdx + 1;
-                setActiveImg({ ...activeImg, [productId]: newIdx });
-            };
-
-            const handlePlaceOrder = async (e) => {
-                e.preventDefault();
-                if (!checkoutName || !checkoutPhone || !checkoutAddress) {
-                    alert(t[lang].fillFields);
-                    return;
-                }
-
-                setIsSubmittingOrder(true);
-
-                const totalAmount = cart.reduce((s, i) => s + (i.price * i.quantity), 0);
-                const orderSummary = cart.map(i => `${i.name} (Size: ${i.size}) x${i.quantity}`).join(', ');
-                const formattedCustomerDetails = `Name: ${checkoutName} | Address: ${checkoutAddress}`;
-
-                const newOrderObj = {
-                    date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
-                    items: orderSummary,
-                    phone: checkoutPhone,
-                    total: totalAmount,
-                    method: formattedCustomerDetails
-                };
-
-                const { error } = await supabase
-                    .from('orders')
-                    .insert([newOrderObj]);
-
-                setIsSubmittingOrder(false);
-
-                if (error) {
-                    alert("Order Submission Error: " + error.message);
-                } else {
-                    setOrderCompleted(true);
-                    setCart([]);
-                    setCheckoutName('');
-                    setCheckoutPhone('');
-                    setCheckoutAddress('');
-                    setCheckoutMode(null);
-                }
-            };
-
-            const clearOrderLog = async () => {
-                if (confirm("Are you sure you want to clear the entire order history from the cloud database?")) {
-                    const { error } = await supabase
-                        .from('orders')
-                        .delete()
-                        .neq('id', 0); 
-
-                    if (error) {
-                        alert("Error clearing logs: " + error.message);
-                    } else {
-                        fetchOrders();
-                    }
-                }
-            };
-
-            // Filter Products based on selected Style category & search string
-            const getFilteredProducts = () => {
-                return products.filter(p => {
-                    const matchesCategory = selectedCategory === 'All' || p.category.toLowerCase() === selectedCategory.toLowerCase();
-                    const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                                          p.category.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                                          (p.description && p.description.toLowerCase().includes(searchQuery.toLowerCase()));
-                    return matchesCategory && matchesSearch;
-                });
-            };
-
-            // Get exactly up to 3 featured products for the Home page
-            const getFeaturedProductsList = () => {
-                return products.filter(p => p.is_featured === true).slice(0, 3);
-            };
-
-            const navigateToCategory = (catName) => {
-                setSelectedCategory(catName);
-                setSearchQuery('');
-                setView('shop');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            };
-
-            const renderProductCard = (p) => {
-                const idx = activeImg[p.id] || 0;
-                const images = p.images && p.images.length > 0 ? p.images : ["https://images.unsplash.com/photo-1614252369475-531eba835eb1?w=600&auto=format&fit=crop&q=60"];
-                
-                return (
-                    <div key={p.id} className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200/80 dark:border-stone-800/80 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
-                        
-                        {/* Touchable Zooming Image Container */}
-                        <div className="relative w-full h-64 bg-stone-100 dark:bg-stone-800 flex items-center justify-center group cursor-zoom-in" onClick={() => setZoomedImage(images[idx])}>
-                            <img src={images[idx]} className="w-full h-full object-cover transition-all duration-500 hover:scale-105" alt={p.name} />
-                            
-                            <span className="absolute bottom-2 left-2 text-[9px] bg-black/60 text-white px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity">
-                                🔍 {t[lang].tapToZoom}
-                            </span>
-
-                            {images.length > 1 && (
-                                <>
-                                    <button onClick={(e) => handlePrevImage(p.id, images.length, e)} className="absolute left-3 bg-stone-900/80 dark:bg-stone-950/80 backdrop-blur-sm text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-stone-900 shadow transition-all">
-                                        ❮
-                                    </button>
-                                    <button onClick={(e) => handleNextImage(p.id, images.length, e)} className="absolute right-3 bg-stone-900/80 dark:bg-stone-950/80 backdrop-blur-sm text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-stone-900 shadow transition-all">
-                                        ❯
-                                    </button>
-                                </>
-                            )}
-                        </div>
-
-                        {images.length > 1 && (
-                            <div className="flex gap-2 p-2.5 bg-stone-50 dark:bg-stone-950 border-b border-stone-200/60 dark:border-stone-850 justify-center">
-                                {images.map((imgSrc, i) => (
-                                    <button key={i} onClick={() => setActiveImg({...activeImg, [p.id]: i})} className={`w-12 h-12 rounded-lg border overflow-hidden transition-all ${i === idx ? 'border-amber-850 dark:border-amber-700 ring-4 ring-amber-850/20' : 'border-stone-300 dark:border-stone-700 opacity-60 hover:opacity-100'}`}>
-                                        <img src={imgSrc} className="w-full h-full object-cover" />
-                                    </button>
-                                ))}
-                            </div>
-                        )}
-
-                        <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
-                            <div>
-                                <span className="text-[10px] font-bold tracking-wider text-amber-800 dark:text-amber-500 bg-amber-50 dark:bg-amber-950/50 border border-amber-100 dark:border-amber-900 px-2 py-1 rounded-md uppercase">{p.category}</span>
-                                <h4 className="font-bold text-stone-900 dark:text-white text-lg mt-3">{p.name}</h4>
-                                <p className="text-stone-500 dark:text-stone-400 text-xs mt-1 leading-relaxed">{p.description}</p>
-                                <div className="mt-4">
-                                    <label className="block text-[11px] font-bold text-stone-500 dark:text-stone-400 uppercase tracking-wider mb-2">{t[lang].selectSize}</label>
-                                    <div className="flex gap-1.5 flex-wrap">
-                                        {["39", "40", "41", "42", "43", "44"].map(sz => (
-                                            <button key={sz} onClick={() => setSelectedSizes({...selectedSizes, [p.id]: sz})} className={`px-3 py-1.5 text-xs font-semibold rounded-lg border transition-all duration-200 ${(selectedSizes[p.id] || "40") === sz ? 'bg-amber-900 text-white dark:bg-amber-800 border-amber-900 shadow-sm' : 'bg-white dark:bg-stone-800 text-stone-700 dark:text-stone-300 border-stone-200 dark:border-stone-700 hover:border-stone-400'}`}>{sz}</button>
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="flex items-center justify-between pt-3 border-t border-stone-100 dark:border-stone-800">
-                                <span className="text-lg font-bold text-stone-900 dark:text-stone-100">{p.price.toLocaleString()} ETB</span>
-                                <button onClick={() => addToCart(p)} className="bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-950 hover:bg-stone-800 dark:hover:bg-white text-xs font-bold px-5 py-2.5 rounded-full transition-all shadow-sm">{t[lang].addToCart}</button>
-                            </div>
-                        </div>
-                    </div>
-                );
-            };
-
-            return (
-                <div className="min-h-screen flex flex-col pb-24 md:pb-0 bg-[#FAF6F0] dark:bg-stone-950 text-stone-900 dark:text-stone-100 animate-fadeIn">
-                    
-                    {/* FULL SCREEN LIGHTBOX FOR IMAGE ZOOM */}
-                    {zoomedImage && (
-                        <div className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center p-4 cursor-zoom-out zoom-overlay" onClick={() => setZoomedImage(null)}>
-                            <div className="relative max-w-3xl w-full max-h-[85vh] flex items-center justify-center">
-                                <img src={zoomedImage} className="max-w-full max-h-[80vh] rounded-xl object-contain shadow-2xl transition-transform duration-300 hover:scale-105" alt="Zoomed View" />
-                                <button className="absolute top-[-40px] right-0 text-white text-3xl font-light hover:text-stone-300">&times;</button>
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Header */}
-                    <header className="bg-white/95 dark:bg-stone-900/95 backdrop-blur-md border-b border-stone-200/80 dark:border-stone-800 sticky top-0 z-40 px-4 py-4 flex justify-between items-center shadow-xs">
-                        <h1 className="text-xl font-extrabold tracking-wider text-stone-900 dark:text-white cursor-pointer select-none" onClick={handleLogoTap}>
-                            KENZS OFFICIAL
-                        </h1>
-                        <div className="flex items-center gap-3">
-                            <div className="flex items-center bg-stone-100/80 dark:bg-stone-850 rounded-full p-1 border border-stone-200/60 dark:border-stone-800">
-                                <button onClick={() => setLang('en')} className={`px-3 py-1 text-xs font-bold rounded-full transition-all ${lang === 'en' ? 'bg-amber-950 dark:bg-amber-800 text-white shadow-sm' : 'text-stone-600 dark:text-stone-400'}`}>🇬🇧 EN</button>
-                                <button onClick={() => setLang('am')} className={`px-3 py-1 text-xs font-bold rounded-full transition-all ${lang === 'am' ? 'bg-amber-950 dark:bg-amber-800 text-white shadow-sm' : 'text-stone-600 dark:text-stone-400'}`}>🇪🇹 AM</button>
-                            </div>
-                            
-                            <button onClick={() => { setView('cart'); setOrderCompleted(false); setCheckoutMode(null); }} className="relative p-2 text-stone-700 dark:text-stone-300">
-                                <span className="text-xl">🛒</span> {cart.length > 0 && <span className="absolute -top-0.5 -right-0.5 bg-amber-800 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-black shadow">{cart.reduce((a, b) => a + b.quantity, 0)}</span>}
-                            </button>
-                        </div>
-                    </header>
-
-                    <main className="flex-1 max-w-4xl w-full mx-auto p-4 md:py-8">
-                        {view === 'home' && (
-                            <div className="space-y-16">
-                                {/* Luxury Hero Banner */}
-                                <div className="text-center py-20 px-6 space-y-6 bg-gradient-to-br from-stone-900 via-stone-925 to-stone-950 rounded-3xl shadow-xl border border-stone-850 relative overflow-hidden">
-                                    <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px]"></div>
-                                    <h2 className="text-4xl md:text-5xl font-extrabold text-white tracking-tight leading-tight max-w-xl mx-auto">{t[lang].heroTitle}</h2>
-                                    <p className="text-stone-300 text-sm md:text-base max-w-md mx-auto font-light leading-relaxed">{t[lang].heroSub}</p>
-                                    
-                                    {/* Actionable button that transitions view smoothly */}
-                                    <button onClick={() => { setSelectedCategory('All'); setSearchQuery(''); setView('shop'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="bg-amber-800 hover:bg-amber-700 text-white font-semibold px-10 py-4 rounded-full text-sm shadow-md hover:shadow-lg transition-all">
-                                        {t[lang].viewCatalog}
-                                    </button>
-                                </div>
-
-                                {/* CATEGORIES EXPLORER */}
-                                <section className="space-y-6">
-                                    <h3 className="text-2xl font-extrabold text-stone-900 dark:text-white tracking-tight text-center">{t[lang].categoriesTitle}</h3>
-                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                        
-                                        <div onClick={() => navigateToCategory('Sneakers')} className="bg-white dark:bg-stone-900 rounded-2xl p-6 border border-stone-200/60 dark:border-stone-800 text-center cursor-pointer hover:shadow-md hover:scale-[1.02] transition-all">
-                                            <div className="text-4xl mb-3">👟</div>
-                                            <h4 className="font-bold text-stone-900 dark:text-white text-sm">{t[lang].sneakers}</h4>
-                                        </div>
-
-                                        <div onClick={() => navigateToCategory('Boots')} className="bg-white dark:bg-stone-900 rounded-2xl p-6 border border-stone-200/60 dark:border-stone-800 text-center cursor-pointer hover:shadow-md hover:scale-[1.02] transition-all">
-                                            <div className="text-4xl mb-3">🥾</div>
-                                            <h4 className="font-bold text-stone-900 dark:text-white text-sm">{t[lang].boots}</h4>
-                                        </div>
-
-                                        <div onClick={() => navigateToCategory('Formal')} className="bg-white dark:bg-stone-900 rounded-2xl p-6 border border-stone-200/60 dark:border-stone-800 text-center cursor-pointer hover:shadow-md hover:scale-[1.02] transition-all">
-                                            <div className="text-4xl mb-3">👞</div>
-                                            <h4 className="font-bold text-stone-900 dark:text-white text-sm">{t[lang].formal}</h4>
-                                        </div>
-
-                                        <div onClick={() => navigateToCategory('Loafers')} className="bg-white dark:bg-stone-900 rounded-2xl p-6 border border-stone-200/60 dark:border-stone-800 text-center cursor-pointer hover:shadow-md hover:scale-[1.02] transition-all">
-                                            <div className="text-4xl mb-3">🥿</div>
-                                            <h4 className="font-bold text-stone-900 dark:text-white text-sm">{t[lang].loafers}</h4>
-                                        </div>
-
-                                    </div>
-                                </section>
-
-                                {/* DYNAMIC FEATURED PRODUCTS SECTION (Editable by Admin) */}
-                                {getFeaturedProductsList().length > 0 && (
-                                    <section className="space-y-6">
-                                        <div className="text-center">
-                                            <h3 className="text-2xl font-extrabold text-stone-900 dark:text-white tracking-tight">{t[lang].featuredTitle}</h3>
-                                            <p className="text-stone-500 dark:text-stone-400 text-xs mt-1.5">{t[lang].featuredSub}</p>
-                                        </div>
-                                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                                            {getFeaturedProductsList().map(p => {
-                                                const mainImg = p.images && p.images.length > 0 ? p.images[0] : "https://images.unsplash.com/photo-1614252369475-531eba835eb1?w=600&auto=format&fit=crop&q=60";
-                                                return (
-                                                    <div key={p.id} className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200/85 dark:border-stone-800 shadow-xs overflow-hidden flex flex-col hover:shadow-md transition duration-300">
-                                                        <div className="relative h-56 bg-stone-100 dark:bg-stone-800 cursor-zoom-in" onClick={() => setZoomedImage(mainImg)}>
-                                                            <img src={mainImg} className="w-full h-full object-cover" alt={p.name} />
-                                                            <span className="absolute top-2 right-2 text-[9px] bg-amber-800 text-white font-bold px-2 py-0.5 rounded uppercase tracking-wider">{t[lang].featuredBadge}</span>
-                                                        </div>
-                                                        <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
-                                                            <div>
-                                                                <h4 className="font-bold text-stone-900 dark:text-white text-sm">{p.name}</h4>
-                                                                <p className="text-xs text-stone-500 line-clamp-2 mt-1">{p.description}</p>
-                                                            </div>
-                                                            <div className="flex items-center justify-between pt-2.5 border-t border-stone-100 dark:border-stone-800">
-                                                                <span className="text-xs font-extrabold text-stone-900 dark:text-stone-100">{p.price.toLocaleString()} ETB</span>
-                                                                <button onClick={() => { setSelectedCategory('All'); setSearchQuery(p.name); setView('shop'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-950 text-[10px] font-bold px-3.5 py-1.5 rounded-lg hover:opacity-90 transition-all">
-                                                                    View Product
-                                                                </button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                );
-                                            })}
-                                        </div>
-                                    </section>
-                                )}
-
-                                {/* Why Choose Us Section */}
-                                <section className="space-y-8">
-                                    <h3 className="text-2xl font-extrabold text-center text-stone-900 dark:text-white tracking-tight">{t[lang].wcuTitle}</h3>
-                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                        <div className="bg-white dark:bg-stone-900 p-6 rounded-2xl border border-stone-200/60 dark:border-stone-800 text-center space-y-3">
-                                            <div className="text-3xl">📦</div>
-                                            <h4 className="font-bold text-stone-900 dark:text-white text-base">{t[lang].wcu1Title}</h4>
-                                            <p className="text-stone-500 dark:text-stone-400 text-xs leading-relaxed">{t[lang].wcu1Desc}</p>
-                                        </div>
-                                        <div className="bg-white dark:bg-stone-900 p-6 rounded-2xl border border-stone-200/60 dark:border-stone-800 text-center space-y-3">
-                                            <div className="text-3xl">🐂</div>
-                                            <h4 className="font-bold text-stone-900 dark:text-white text-base">{t[lang].wcu2Title}</h4>
-                                            <p className="text-stone-500 dark:text-stone-400 text-xs leading-relaxed">{t[lang].wcu2Desc}</p>
-                                        </div>
-                                        <div className="bg-white dark:bg-stone-900 p-6 rounded-2xl border border-stone-200/60 dark:border-stone-800 text-center space-y-3">
-                                            <div className="text-3xl">🔄</div>
-                                            <h4 className="font-bold text-stone-900 dark:text-white text-base">{t[lang].wcu3Title}</h4>
-                                            <p className="text-stone-500 dark:text-stone-400 text-xs leading-relaxed">{t[lang].wcu3Desc}</p>
-                                        </div>
-                                    </div>
-                                </section>
-                            </div>
-                        )}
-
-                        {view === 'shop' && (
-                            <div className="space-y-8 animate-fadeIn">
-                                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                                    <h2 className="text-3xl font-extrabold text-stone-900 dark:text-white tracking-tight">{t[lang].catalogTitle}</h2>
-                                    
-                                    {/* Inline category style chips selector */}
-                                    <div className="flex flex-wrap gap-1.5 bg-stone-200/60 dark:bg-stone-900 p-1.5 rounded-xl border border-stone-300/40">
-                                        {['All', 'Sneakers', 'Boots', 'Formal', 'Loafers'].map(cat => (
-                                            <button key={cat} onClick={() => setSelectedCategory(cat)} className={`px-4 py-1.5 text-xs font-bold rounded-lg transition-all ${selectedCategory === cat ? 'bg-amber-950 dark:bg-amber-800 text-white shadow-sm' : 'text-stone-600 dark:text-stone-400'}`}>
-                                                {cat === 'All' ? t[lang].allCategories : t[lang][cat.toLowerCase()]}
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                {/* SEARCH BAR */}
-                                <div className="relative">
-                                    <span className="absolute left-4 top-3.5 text-stone-400 text-lg">🔍</span>
-                                    <input type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder={t[lang].searchPlaceholder} className="w-full pl-12 pr-4 py-3.5 border border-stone-300/80 dark:border-stone-800 bg-white dark:bg-stone-900 text-stone-900 dark:text-white rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-amber-800/20 shadow-sm" />
-                                    {searchQuery && (
-                                        <button onClick={() => setSearchQuery('')} className="absolute right-4 top-3 text-stone-400 text-lg hover:text-stone-600">&times;</button>
-                                    )}
-                                </div>
-
-                                {/* Catalog Product grid list */}
-                                {getFilteredProducts().length === 0 ? (
-                                    <div className="text-center py-20 text-stone-400 text-sm">
-                                        No items found matching your filter or search query.
-                                    </div>
-                                ) : (
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-                                        {getFilteredProducts().map(p => renderProductCard(p))}
-                                    </div>
-                                )}
-                            </div>
-                        )}
-
-                        {view === 'cart' && (
-                            <div className="space-y-6 animate-fadeIn">
-                                <h2 className="text-3xl font-bold text-stone-900 dark:text-white tracking-tight">{t[lang].cartTitle}</h2>
-                                
-                                {orderCompleted ? (
-                                    <div className="text-center py-16 px-6 space-y-4 bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-3xl shadow-sm">
-                                        <div className="text-5xl">🎉</div>
-                                        <h3 className="text-xl font-bold text-stone-900 dark:text-white">{t[lang].orderSuccessTitle}</h3>
-                                        <p className="text-stone-600 dark:text-stone-400 text-sm max-w-md mx-auto font-light">{t[lang].orderSuccessMsg}</p>
-                                        <button onClick={() => { setView('shop'); setOrderCompleted(false); setCheckoutMode(null); }} className="bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-950 text-xs font-bold px-8 py-3 rounded-full shadow hover:bg-stone-850 transition-all">{t[lang].backToShop}</button>
-                                    </div>
-                                ) : cart.length === 0 ? (
-                                    <div className="text-center py-16 space-y-4 bg-white/60 dark:bg-stone-900/60 border border-stone-200 dark:border-stone-800 rounded-3xl">
-                                        <p className="text-stone-500 dark:text-stone-400 text-sm font-medium">{t[lang].cartEmpty}</p>
-                                        <button onClick={() => setView('shop')} className="bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-950 text-xs font-bold px-8 py-3 rounded-full shadow hover:bg-stone-850 transition-all">{t[lang].backToShop}</button>
-                                    </div>
-                                ) : (
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                        {/* Cart items */}
-                                        <div className="space-y-4">
-                                            {cart.map(item => (
-                                                <div key={item.key} className="bg-white dark:bg-stone-900 p-4 rounded-2xl border border-stone-200 dark:border-stone-800 flex gap-4 items-center shadow-xs">
-                                                    <img src={item.images[0]} className="w-16 h-16 object-cover rounded-xl border border-stone-100 dark:border-stone-800 shadow-xs" />
-                                                    <div className="flex-1">
-                                                        <h4 className="font-bold text-stone-900 dark:text-white text-sm">{item.name}</h4>
-                                                        <p className="text-stone-500 dark:text-stone-400 text-xs">Size: <span className="font-bold text-amber-900 dark:text-amber-500">{item.size}</span></p>
-                                                        <p className="text-stone-500 dark:text-stone-400 text-xs">{item.price.toLocaleString()} ETB x {item.quantity}</p>
-                                                    </div>
-                                                    <div className="flex items-center gap-2">
-                                                        <button onClick={() => updateQty(item.key, -1)} className="w-8 h-8 bg-stone-100 dark:bg-stone-800 rounded-full flex items-center justify-center font-bold text-stone-600 dark:text-stone-400 hover:bg-stone-200 dark:hover:bg-stone-700 transition-all">-</button>
-                                                        <span className="text-sm font-semibold text-stone-800 dark:text-stone-200 w-4 text-center">{item.quantity}</span>
-                                                        <button onClick={() => updateQty(item.key, 1)} className="w-8 h-8 bg-stone-100 dark:bg-stone-800 rounded-full flex items-center justify-center font-bold text-stone-600 dark:text-stone-400 hover:bg-stone-200 dark:hover:bg-stone-700 transition-all">+</button>
-                                                    </div>
-                                                </div>
-                                            ))}
-                                            <div className="text-right p-2">
-                                                <span className="text-stone-500 dark:text-stone-400 text-sm font-medium">{t[lang].total}: </span>
-                                                <span className="text-2xl font-extrabold text-stone-950 dark:text-white block mt-1">{cart.reduce((s, i) => s + (i.price * i.quantity), 0).toLocaleString()} ETB</span>
-                                            </div>
-                                        </div>
-
-                                        {/* Multi-option Checkout Block */}
-                                        <div className="bg-white dark:bg-stone-900 p-6 rounded-3xl border border-stone-200 dark:border-stone-800 space-y-6 shadow-sm">
-                                            {checkoutMode === null ? (
-                                                <div className="space-y-6">
-                                                    <h3 className="text-md font-bold text-stone-900 dark:text-white border-b pb-3 text-center">{t[lang].checkoutChoiceTitle}</h3>
-                                                    
-                                                    {/* Call shop directly */}
-                                                    <div className="bg-stone-50 dark:bg-stone-950 p-5 rounded-2xl border border-stone-150 dark:border-stone-850 text-center space-y-3">
-                                                        <span className="text-2xl">📞</span>
-                                                        <h4 className="font-bold text-stone-900 dark:text-white text-sm">{t[lang].orderMethodPhone}</h4>
-                                                        <p className="text-stone-500 dark:text-stone-400 text-[11px] leading-relaxed">{t[lang].callReason}</p>
-                                                        <a href="tel:+251911432094" className="inline-block w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl text-center text-xs shadow-sm transition-all">
-                                                            {t[lang].callShopBtn}
-                                                        </a>
-                                                    </div>
-
-                                                    <div className="flex items-center justify-center gap-3">
-                                                        <div className="h-px bg-stone-200 dark:bg-stone-800 flex-1"></div>
-                                                        <span className="text-[11px] font-bold text-stone-400 uppercase">{t[lang].or}</span>
-                                                        <div className="h-px bg-stone-200 dark:bg-stone-800 flex-1"></div>
-                                                    </div>
-
-                                                    {/* Order online */}
-                                                    <button onClick={() => setCheckoutMode('online')} className="w-full bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-950 font-bold py-3.5 rounded-xl text-center text-xs shadow-md transition-all">
-                                                        💻 {t[lang].orderMethodOnline}
-                                                    </button>
-                                                </div>
-                                            ) : (
-                                                <form onSubmit={handlePlaceOrder} className="space-y-5">
-                                                    <div className="flex justify-between items-center border-b pb-3">
-                                                        <h3 className="text-lg font-bold text-stone-900 dark:text-white">📋 {t[lang].customerInfo}</h3>
-                                                        <button type="button" onClick={() => setCheckoutMode(null)} className="text-xs font-semibold text-amber-800 dark:text-amber-500">← Back</button>
-                                                    </div>
-                                                    
-                                                    <div className="space-y-4">
-                                                        <div>
-                                                            <label className="block text-xs font-bold text-stone-700 dark:text-stone-300 uppercase tracking-wider mb-2">{t[lang].fullName}</label>
-                                                            <input required type="text" value={checkoutName} onChange={(e) => setCheckoutName(e.target.value)} placeholder="Abebe Bikila" className="w-full px-4 py-2.5 border border-stone-300 dark:border-stone-700 rounded-xl text-sm bg-white dark:bg-stone-800 text-stone-950 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-800/20" />
-                                                        </div>
-                                                        
-                                                        <div>
-                                                            <label className="block text-xs font-bold text-stone-700 dark:text-stone-300 uppercase tracking-wider mb-2">{t[lang].phoneNumber}</label>
-                                                            <input required type="tel" value={checkoutPhone} onChange={(e) => setCheckoutPhone(e.target.value)} placeholder="0911223344" className="w-full px-4 py-2.5 border border-stone-300 dark:border-stone-700 rounded-xl text-sm bg-white dark:bg-stone-800 text-stone-950 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-800/20" />
-                                                        </div>
-
-                                                        <div>
-                                                            <label className="block text-xs font-bold text-stone-700 dark:text-stone-300 uppercase tracking-wider mb-2">{t[lang].deliveryAddress}</label>
-                                                            <input required type="text" value={checkoutAddress} onChange={(e) => setCheckoutAddress(e.target.value)} placeholder="Addis Ababa, Bole" className="w-full px-4 py-2.5 border border-stone-300 dark:border-stone-700 rounded-xl text-sm bg-white dark:bg-stone-800 text-stone-950 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-800/20" />
-                                                        </div>
-                                                    </div>
-
-                                                    <button type="submit" disabled={isSubmittingOrder} className="w-full bg-amber-950 dark:bg-amber-800 hover:bg-stone-900 text-white font-bold py-4 rounded-xl text-center text-xs shadow-md transition-all">
-                                                        {isSubmittingOrder ? t[lang].submitting : t[lang].placeOrder}
-                                                    </button>
-                                                </form>
-                                            )}
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-                        )}
-
-                        {view === 'admin' && (
-                            <div className="space-y-8 animate-fadeIn">
-                                <h2 className="text-3xl font-bold text-stone-900 dark:text-white tracking-tight">{t[lang].controlPanel}</h2>
-                                {!isAdmin ? (
-                                    <form onSubmit={handleLogin} className="bg-white dark:bg-stone-900 p-8 rounded-3xl border border-stone-200 dark:border-stone-800 max-w-sm mx-auto space-y-5 shadow-lg">
-                                        <div>
-                                            <label className="block text-xs font-bold text-stone-700 dark:text-stone-300 uppercase tracking-wider mb-2">{t[lang].accessKey}</label>
-                                            <input type="password" value={pass} onChange={(e) => setPass(e.target.value)} className="w-full px-4 py-3 border border-stone-300 dark:border-stone-700 rounded-xl text-sm bg-white dark:bg-stone-800 text-stone-900 dark:text-white focus:outline-none" placeholder="••••••••" />
-                                        </div>
-                                        {err && <p className="text-xs text-red-600 font-medium">{err}</p>}
-                                        <button type="submit" className="w-full bg-amber-950 text-white text-xs font-bold py-3 rounded-xl hover:bg-stone-900 transition-all">{t[lang].unlock}</button>
-                                    </form>
-                                ) : (
-                                    <div className="space-y-8">
-                                        {/* Executive Statistics overview */}
-                                        <div className="bg-white dark:bg-stone-900 p-6 rounded-3xl border border-stone-200 dark:border-stone-800 space-y-4 shadow-sm">
-                                            <h3 className="text-lg font-bold text-stone-900 dark:text-white border-b pb-2">📈 {t[lang].analyticsOverview}</h3>
-                                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                                <div className="bg-stone-50 dark:bg-stone-950 p-4 rounded-2xl border border-stone-100 dark:border-stone-850">
-                                                    <span className="text-[10px] font-extrabold text-stone-400 dark:text-stone-500 uppercase tracking-wider">{t[lang].todaySales}</span>
-                                                    <p className="text-lg font-bold text-stone-900 dark:text-white mt-1">{stats.today.toLocaleString()} ETB</p>
-                                                </div>
-                                                <div className="bg-stone-50 dark:bg-stone-950 p-4 rounded-2xl border border-stone-100 dark:border-stone-850">
-                                                    <span className="text-[10px] font-extrabold text-stone-400 dark:text-stone-500 uppercase tracking-wider">{t[lang].weekSales}</span>
-                                                    <p className="text-lg font-bold text-stone-900 dark:text-white mt-1">{stats.week.toLocaleString()} ETB</p>
-                                                </div>
-                                                <div className="bg-stone-50 dark:bg-stone-950 p-4 rounded-2xl border border-stone-100 dark:border-stone-850">
-                                                    <span className="text-[10px] font-extrabold text-stone-400 dark:text-stone-500 uppercase tracking-wider">{t[lang].monthSales}</span>
-                                                    <p className="text-lg font-bold text-stone-900 dark:text-white mt-1">{stats.month.toLocaleString()} ETB</p>
-                                                </div>
-                                                <div className="bg-stone-50 dark:bg-stone-950 p-4 rounded-2xl border border-stone-100 dark:border-stone-850">
-                                                    <span className="text-[10px] font-extrabold text-stone-400 dark:text-stone-500 uppercase tracking-wider">{t[lang].yearSales}</span>
-                                                    <p className="text-lg font-bold text-stone-900 dark:text-white mt-1">{stats.year.toLocaleString()} ETB</p>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        {/* Orders Log Tracker */}
-                                        <div className="bg-white dark:bg-stone-900 p-6 rounded-3xl border border-stone-200 dark:border-stone-800 space-y-4 shadow-sm">
-                                            <div className="flex justify-between items-center border-b pb-3">
-                                                <h3 className="text-lg font-bold text-stone-900 dark:text-white">📊 {t[lang].ordersTracker}</h3>
-                                                {orders.length > 0 && (
-                                                    <button onClick={clearOrderLog} className="text-xs text-red-600 bg-red-50 hover:bg-red-100 dark:bg-red-950 dark:hover:bg-red-900 px-3 py-1.5 rounded-lg font-bold transition-all">{t[lang].clearOrders}</button>
-                                                )}
-                                            </div>
-                                            {orders.length === 0 ? (
-                                                <p className="text-xs text-stone-500">{t[lang].noOrders}</p>
-                                            ) : (
-                                                <div className="overflow-x-auto">
-                                                    <table className="w-full text-left text-xs border-collapse">
-                                                        <thead>
-                                                            <tr className="bg-stone-50 dark:bg-stone-950 text-stone-600 dark:text-stone-400 border-b border-stone-100 dark:border-stone-850">
-                                                                <th className="p-3">{t[lang].orderDate}</th>
-                                                                <th className="p-3">{t[lang].phoneNumber}</th>
-                                                                <th className="p-3">{t[lang].customerOrder}</th>
-                                                                <th className="p-3 text-right">{t[lang].total}</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody className="divide-y divide-stone-100 dark:divide-stone-800">
-                                                            {orders.map(o => (
-                                                                <tr key={o.id} className="hover:bg-stone-50/50 dark:hover:bg-stone-850/50">
-                                                                    <td className="p-3 font-medium text-stone-500 whitespace-nowrap">{o.date}</td>
-                                                                    <td className="p-3 font-bold text-amber-900 dark:text-amber-500">{o.phone}</td>
-                                                                    <td className="p-3 text-stone-700 dark:text-stone-300">{o.items} <span className="text-[11px] block text-amber-800 dark:text-amber-500 font-semibold mt-1">{o.method}</span></td>
-                                                                    <td className="p-3 text-right font-bold text-stone-900 dark:text-white whitespace-nowrap">{o.total.toLocaleString()} ETB</td>
-                                                                </tr>
-                                                            ))}
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            )}
-                                        </div>
-
-                                        {/* Register Product Form */}
-                                        <form onSubmit={handleAdd} className="bg-white dark:bg-stone-900 p-6 rounded-3xl border border-stone-200 dark:border-stone-800 space-y-4 shadow-sm">
-                                            <h3 className="text-lg font-bold text-stone-900 dark:text-white border-b pb-3">{t[lang].addNewProduct}</h3>
-                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                                <div>
-                                                    <label className="block text-xs font-bold text-stone-700 dark:text-stone-300 uppercase mb-2">{t[lang].shoeName}</label>
-                                                    <input type="text" value={newP.name} onChange={(e) => setNewP({...newP, name: e.target.value})} className="w-full px-4 py-2.5 border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-white rounded-xl text-sm" placeholder="Classic Oxford" />
-                                                </div>
-                                                <div>
-                                                    <label className="block text-xs font-bold text-stone-700 dark:text-stone-300 uppercase mb-2">{t[lang].price}</label>
-                                                    <input type="number" value={newP.price} onChange={(e) => setNewP({...newP, price: e.target.value})} className="w-full px-4 py-2.5 border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-white rounded-xl text-sm" placeholder="3500" />
-                                                </div>
-                                                <div>
-                                                    <label className="block text-xs font-bold text-stone-700 dark:text-stone-300 uppercase mb-2">{t[lang].category}</label>
-                                                    <select value={newP.category} onChange={(e) => setNewP({...newP, category: e.target.value})} className="w-full px-4 py-2.5 border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-white rounded-xl text-sm bg-white">
-                                                        <option value="Formal">{t[lang].formal}</option>
-                                                        <option value="Boots">{t[lang].boots}</option>
-                                                        <option value="Sneakers">{t[lang].sneakers}</option>
-                                                        <option value="Loafers">{t[lang].loafers}</option>
-                                                    </select>
-                                                </div>
-                                                <div>
-                                                    <label className="block text-xs font-bold text-stone-700 dark:text-stone-300 uppercase mb-2">{t[lang].imagesLabel}</label>
-                                                    <input type="file" accept="image/*" multiple onChange={handleImgUpload} className="w-full text-xs text-stone-500" />
-                                                    <p className="text-[10px] text-amber-800 dark:text-amber-500 mt-1.5">{t[lang].imagesSelected} {newP.images.length}</p>
-                                                </div>
-                                            </div>
-                                            
-                                            {/* Feature Checkbox inside register form */}
-                                            <div className="flex items-center gap-2 py-2">
-                                                <input type="checkbox" id="is_featured" checked={newP.is_featured} onChange={(e) => setNewP({...newP, is_featured: e.target.checked})} className="w-4 h-4 text-amber-850 accent-amber-850 rounded" />
-                                                <label htmlFor="is_featured" className="text-xs font-bold text-stone-700 dark:text-stone-300 uppercase select-none">{t[lang].makeFeatured}</label>
-                                            </div>
-
-                                            <div>
-                                                <label className="block text-xs font-bold text-stone-700 dark:text-stone-300 uppercase mb-2">{t[lang].description}</label>
-                                                <textarea value={newP.description} onChange={(e) => setNewP({...newP, description: e.target.value})} rows="2" className="w-full px-4 py-2.5 border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-white rounded-xl text-sm"></textarea>
-                                            </div>
-                                            <button type="submit" className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-8 py-3 rounded-xl transition-all shadow">{t[lang].registerBtn}</button>
-                                        </form>
-
-                                        {/* Existing products list with feature-toggle control */}
-                                        <div className="space-y-3">
-                                            <h3 className="text-lg font-bold text-stone-900 dark:text-white">{t[lang].productList} ({products.length})</h3>
-                                            <div className="space-y-2.5">
-                                                {products.map(p => (
-                                                    <div key={p.id} className="bg-white dark:bg-stone-900 p-4 rounded-2xl border border-stone-200 dark:border-stone-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                                                        <div className="flex items-center gap-3">
-                                                            <img src={p.images[0]} className="w-12 h-12 object-cover rounded-xl border border-stone-100 dark:border-stone-800" />
-                                                            <div>
-                                                                <h4 className="font-bold text-stone-900 dark:text-white text-sm">{p.name} {p.is_featured && <span className="text-[9px] bg-amber-800 text-white font-bold px-1.5 py-0.5 rounded ml-1.5">FEATURED</span>}</h4>
-                                                                <p className="text-xs text-stone-500">{p.category} • {p.price.toLocaleString()} ETB</p>
-                                                            </div>
-                                                        </div>
-                                                        <div className="flex gap-2 justify-end">
-                                                            <button onClick={() => toggleFeaturedStatus(p.id, p.is_featured)} className={`text-[11px] font-bold px-3 py-2 rounded-xl transition-all ${p.is_featured ? 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-400' : 'bg-stone-100 text-stone-700 dark:bg-stone-800 dark:text-stone-300'}`}>
-                                                                {p.is_featured ? t[lang].removeFeatured : t[lang].makeFeatured}
-                                                            </button>
-                                                            <button onClick={() => handleDeleteProduct(p.id)} className="text-red-600 text-xs font-bold bg-red-50 hover:bg-red-100 dark:bg-red-950 dark:hover:bg-red-900 px-4 py-2 rounded-xl transition-all">{t[lang].delete}</button>
-                                                        </div>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-                        )}
-                    </main>
-
-                    {/* Bottom Navigation Bar */}
-                    <nav className="fixed bottom-0 left-0 right-0 bg-white/95 dark:bg-stone-900/95 backdrop-blur-md border-t border-stone-200/80 dark:border-stone-800 py-3.5 px-6 flex justify-between items-center z-40 md:hidden shadow-xl">
-                        <button onClick={() => setView('home')} className={`flex flex-col items-center gap-1 text-[10px] uppercase font-bold tracking-wider ${view === 'home' ? 'text-amber-800 dark:text-amber-500' : 'text-stone-400'}`}>
-                            <span className="text-lg">🏠</span>{t[lang].home}
-                        </button>
-                        <button onClick={() => { setSelectedCategory('All'); setSearchQuery(''); setView('shop'); }} className={`flex flex-col items-center gap-1 text-[10px] uppercase font-bold tracking-wider ${view === 'shop' ? 'text-amber-800 dark:text-amber-500' : 'text-stone-400'}`}>
-                            <span className="text-lg">👟</span>{t[lang].shoes}
-                        </button>
-                        
-                        <button onClick={() => setDarkMode(!darkMode)} className="flex flex-col items-center gap-1 text-[10px] uppercase font-bold tracking-wider text-stone-400">
-                            <span className="text-lg">{darkMode ? '☀️' : '🌙'}</span>
-                            <span>{darkMode ? 'Light' : 'Dark'}</span>
-                        </button>
-
-                        <button onClick={() => { setView('cart'); setOrderCompleted(false); setCheckoutMode(null); }} className={`flex flex-col items-center gap-1 text-[10px] uppercase font-bold tracking-wider ${view === 'cart' ? 'text-amber-800 dark:text-amber-500' : 'text-stone-400'}`}>
-                            <span className="text-lg">🛒</span>{t[lang].cart}
-                        </button>
-                    </nav>
-
-                    {/* Desktop Mode Toggle */}
-                    <button onClick={() => setDarkMode(!darkMode)} className="hidden md:flex fixed bottom-6 right-6 bg-stone-900 dark:bg-white text-white dark:text-stone-950 w-12 h-12 rounded-full items-center justify-center shadow-lg z-50 transition-all">
-                        {darkMode ? '☀️' : '🌙'}
-                    </button>
-                </div>
-            );
-        }
-
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
-    </script>
+<body class="bg-kenzs-white text-kenzs-charcoal font-sans antialiased selection:bg-kenzs-brown selection:text-white">
+
+  <!-- ========================================== -->
+  <!-- TOP SWITCHER BAR (DEV/MODE UTILITY)        -->
+  <!-- ========================================== -->
+  <div class="bg-kenzs-charcoal text-white text-[11px] font-semibold py-2 px-4 flex justify-between items-center border-b border-neutral-800 sticky top-0 z-50">
+    <div class="flex items-center gap-2">
+      <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+      <span>Kenzs Official Store Engine v1.0</span>
+    </div>
+    <div class="flex items-center gap-4">
+      <button onclick="switchView('store')" id="nav-btn-store" class="text-amber-400 font-bold underline">
+        Storefront View
+      </button>
+      <button onclick="switchView('admin')" id="nav-btn-admin" class="hover:text-amber-400 transition text-neutral-400">
+        Admin Portal
+      </button>
+    </div>
+  </div>
+
+
+  <!-- ========================================== -->
+  <!-- 1. STOREFRONT VIEW                         -->
+  <!-- ========================================== -->
+  <div id="store-view">
+
+    <!-- Header -->
+    <header class="bg-kenzs-white/90 backdrop-blur-md border-b border-kenzs-beige sticky top-[33px] z-40">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+        
+        <!-- Brand Logo -->
+        <a href="#" class="flex flex-col">
+          <span class="font-serif text-2xl tracking-widest text-kenzs-charcoal font-bold uppercase">
+            KENZS
+          </span>
+          <span class="text-[9px] tracking-[0.3em] text-kenzs-brown uppercase font-medium -mt-1">
+            OFFICIAL
+          </span>
+        </a>
+
+        <!-- Desktop Navigation -->
+        <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-kenzs-charcoal tracking-wide uppercase">
+          <a href="#hero" class="hover:text-kenzs-brown transition">Home</a>
+          <a href="#catalog" class="hover:text-kenzs-brown transition">Shop</a>
+          <a href="#categories" class="hover:text-kenzs-brown transition">Categories</a>
+          <a href="#about" class="hover:text-kenzs-brown transition">About Us</a>
+        </nav>
+
+        <!-- Right Utilities -->
+        <div class="flex items-center gap-4">
+          <!-- Language Toggle Button -->
+          <button onclick="toggleLanguage()" class="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full bg-kenzs-cream border border-kenzs-beige text-kenzs-charcoal hover:bg-kenzs-beige transition">
+            <i data-lucide="globe" class="w-3.5 h-3.5 text-kenzs-brown"></i>
+            <span id="lang-label">EN | አማ</span>
+          </button>
+
+          <!-- Cart Drawer Button -->
+          <button onclick="toggleCartDrawer(true)" class="relative flex items-center gap-2 bg-kenzs-charcoal text-white px-4 py-2.5 rounded-full hover:bg-kenzs-brown transition shadow-md">
+            <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+            <span class="text-xs font-semibold tracking-wider uppercase hidden sm:inline">Cart</span>
+            <span id="cart-count-badge" class="bg-kenzs-brown text-white text-[11px] font-bold px-2 py-0.5 rounded-full">0</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="hero" class="bg-kenzs-cream overflow-hidden py-16 lg:py-24 border-b border-kenzs-beige">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        
+        <!-- Hero Text -->
+        <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+          <div class="inline-flex items-center gap-2 bg-kenzs-beige/80 px-3.5 py-1.5 rounded-full text-xs font-semibold text-kenzs-brown tracking-widest uppercase">
+            <span>✨ Premium Handcrafted Footwear</span>
+          </div>
+
+          <h1 id="hero-title" class="font-serif text-4xl sm:text-6xl lg:text-7xl font-bold text-kenzs-charcoal leading-[1.1]">
+            Walk with <span class="text-kenzs-brown italic font-normal">Confidence.</span>
+          </h1>
+
+          <p id="hero-desc" class="text-kenzs-gray text-base sm:text-lg max-w-xl mx-auto lg:mx-0 leading-relaxed">
+            Handcrafted luxury men's footwear designed for ultimate comfort, modern prestige, and timeless durability.
+          </p>
+
+          <div class="pt-2 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+            <a href="#catalog" class="w-full sm:w-auto text-center bg-kenzs-brown text-white px-8 py-4 rounded-full font-semibold text-sm uppercase tracking-wider hover:bg-kenzs-brown-dark transition shadow-lg">
+              Explore Collection
+            </a>
+            <a href="https://wa.me/251911432094" target="_blank" class="w-full sm:w-auto text-center flex items-center justify-center gap-2 bg-white text-kenzs-charcoal border border-kenzs-beige px-8 py-4 rounded-full font-semibold text-sm uppercase tracking-wider hover:bg-kenzs-beige/50 transition">
+              <i data-lucide="message-circle" class="w-4 h-4 text-emerald-600"></i>
+              <span>Order on WhatsApp</span>
+            </a>
+          </div>
+
+          <!-- Highlights -->
+          <div class="pt-8 grid grid-cols-3 gap-4 border-t border-kenzs-beige/80">
+            <div>
+              <p class="font-serif text-xl sm:text-2xl font-bold text-kenzs-charcoal">100%</p>
+              <p class="text-xs text-kenzs-gray uppercase tracking-wider">Genuine Leather</p>
+            </div>
+            <div>
+              <p class="font-serif text-xl sm:text-2xl font-bold text-kenzs-charcoal">Pay COD</p>
+              <p class="text-xs text-kenzs-gray uppercase tracking-wider">Pay On Delivery</p>
+            </div>
+            <div>
+              <p class="font-serif text-xl sm:text-2xl font-bold text-kenzs-charcoal">Express</p>
+              <p class="text-xs text-kenzs-gray uppercase tracking-wider">Addis Shipping</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hero Image -->
+        <div class="lg:col-span-5 relative">
+          <div class="relative mx-auto max-w-md lg:max-w-none">
+            <img src="https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?auto=format&fit=crop&q=80&w=1000" alt="Kenzs Official Shoe" class="rounded-2xl shadow-2xl object-cover w-full h-[450px] border-4 border-white" />
+            <div class="absolute bottom-6 left-6 right-6 bg-white/90 backdrop-blur-md p-4 rounded-xl border border-white/40 shadow-lg flex items-center justify-between">
+              <div>
+                <p class="text-xs font-semibold text-kenzs-brown uppercase tracking-wider">Top Selection</p>
+                <p class="text-sm font-bold text-kenzs-charcoal">The Royal Oxford Leather</p>
+              </div>
+              <span class="text-sm font-serif font-bold text-kenzs-brown">7,200 ETB</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Product Catalog Section -->
+    <section id="catalog" class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6">
+        <div>
+          <h2 id="catalog-title" class="font-serif text-3xl font-bold text-kenzs-charcoal">Curated Collection</h2>
+          <p class="text-kenzs-gray text-sm mt-1">Discover precision tailoring & luxury craftsmanship.</p>
+        </div>
+
+        <!-- Filter Category Tabs -->
+        <div class="flex items-center gap-2 overflow-x-auto pb-2" id="category-tabs">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+
+      <!-- Product Grid Container -->
+      <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Products dynamically rendered by JS -->
+      </div>
+    </section>
+  </div>
+
+
+  <!-- ========================================== -->
+  <!-- 2. ADMIN PORTAL VIEW                       -->
+  <!-- ========================================== -->
+  <div id="admin-view" class="hidden min-h-screen bg-neutral-900 text-neutral-100 flex flex-col md:flex-row">
+    
+    <!-- Admin Sidebar -->
+    <aside class="w-full md:w-64 bg-neutral-950 border-r border-neutral-800 p-6 space-y-8">
+      <div>
+        <h2 class="font-serif text-xl font-bold tracking-widest text-white uppercase">KENZS</h2>
+        <p class="text-[10px] text-amber-600 font-semibold uppercase tracking-widest">Admin Control Center</p>
+      </div>
+
+      <nav class="space-y-2">
+        <button onclick="setAdminTab('inventory')" id="tab-btn-inventory" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-wider bg-amber-700 text-white">
+          <i data-lucide="package" class="w-4 h-4"></i> Inventory Control
+        </button>
+        <button onclick="setAdminTab('orders')" id="tab-btn-orders" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-wider text-neutral-400 hover:bg-neutral-900">
+          <i data-lucide="shopping-cart" class="w-4 h-4"></i> Orders
+        </button>
+      </nav>
+    </aside>
+
+    <!-- Admin Content Area -->
+    <main class="flex-1 p-6 lg:p-10 space-y-8 overflow-y-auto">
+      
+      <!-- INVENTORY TAB -->
+      <div id="admin-tab-inventory" class="space-y-6">
+        <div class="flex justify-between items-center">
+          <h1 class="text-2xl font-bold font-serif text-white">Product Inventory Management</h1>
+          <button onclick="toggleAddProductForm()" class="flex items-center gap-2 bg-amber-600 hover:bg-amber-500 text-white px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider">
+            <i data-lucide="plus" class="w-4 h-4"></i> Add New Shoe
+          </button>
+        </div>
+
+        <!-- Add Form -->
+        <form id="add-product-form" onsubmit="handleCreateProduct(event)" class="hidden bg-neutral-950 p-6 rounded-2xl border border-neutral-800 space-y-4">
+          <h3 class="text-sm font-bold text-amber-500 uppercase tracking-wider">Create New Inventory Item</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input type="text" id="new-p-name" placeholder="Shoe Name (e.g. Royal Derby)" required class="bg-neutral-900 border border-neutral-800 p-3 rounded-xl text-sm text-white focus:outline-none" />
+            <input type="number" id="new-p-price" placeholder="Price in ETB" required class="bg-neutral-900 border border-neutral-800 p-3 rounded-xl text-sm text-white focus:outline-none" />
+            <select id="new-p-cat" class="bg-neutral-900 border border-neutral-800 p-3 rounded-xl text-sm text-white">
+              <option value="Leather Shoes">Leather Shoes</option>
+              <option value="Sneakers">Sneakers</option>
+              <option value="Boots">Boots</option>
+              <option value="Formal Shoes">Formal Shoes</option>
+            </select>
+            <input type="url" id="new-p-img" placeholder="Image URL" class="bg-neutral-900 border border-neutral-800 p-3 rounded-xl text-sm text-white focus:outline-none" />
+          </div>
+          <button type="submit" class="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider">
+            Save Product
+          </button>
+        </form>
+
+        <!-- Product Table -->
+        <div class="bg-neutral-950 rounded-2xl border border-neutral-800 overflow-hidden">
+          <table class="w-full text-left text-sm text-neutral-300">
+            <thead class="bg-neutral-900 text-xs font-semibold uppercase text-neutral-400">
+              <tr>
+                <th class="p-4">Product</th>
+                <th class="p-4">Category</th>
+                <th class="p-4">Price</th>
+                <th class="p-4 text-right">Action</th>
+              </tr>
+            </thead>
+            <tbody id="admin-inventory-list" class="divide-y divide-neutral-900">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ORDERS TAB -->
+      <div id="admin-tab-orders" class="hidden space-y-6">
+        <h1 class="text-2xl font-bold font-serif text-white">Order Control Center</h1>
+        <div class="bg-neutral-950 rounded-2xl border border-neutral-800 overflow-hidden">
+          <table class="w-full text-left text-sm text-neutral-300">
+            <thead class="bg-neutral-900 text-xs font-semibold uppercase text-neutral-400">
+              <tr>
+                <th class="p-4">Order ID</th>
+                <th class="p-4">Customer</th>
+                <th class="p-4">Phone</th>
+                <th class="p-4">Total</th>
+                <th class="p-4">Status</th>
+              </tr>
+            </thead>
+            <tbody id="admin-orders-list" class="divide-y divide-neutral-900">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+
+  <!-- ========================================== -->
+  <!-- MODALS & DRAWERS                           -->
+  <!-- ========================================== -->
+
+  <!-- Quick View Product Modal -->
+  <div id="product-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-2xl rounded-2xl overflow-hidden shadow-2xl relative">
+      <button onclick="closeModal()" class="absolute top-4 right-4 z-10 w-8 h-8 bg-neutral-100 rounded-full flex items-center justify-center">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+      <div id="modal-content" class="grid grid-cols-1 md:grid-cols-2">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Shopping Cart Drawer -->
+  <div id="cart-drawer" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex justify-end">
+    <div class="bg-white w-full max-w-md h-full flex flex-col justify-between shadow-2xl">
+      <div class="p-6 border-b border-kenzs-beige flex justify-between items-center">
+        <h3 class="font-serif font-bold text-lg text-kenzs-charcoal">Your Shopping Cart</h3>
+        <button onclick="toggleCartDrawer(false)"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+
+      <div id="cart-items-container" class="p-6 overflow-y-auto flex-1 space-y-4">
+        <!-- Dynamic Cart Items -->
+      </div>
+
+      <div className="p-6 border-t border-kenzs-beige bg-kenzs-cream p-6">
+        <div class="flex justify-between items-center mb-4">
+          <span class="font-bold text-sm">Total:</span>
+          <span id="cart-total-price" class="font-serif font-bold text-lg text-kenzs-brown">0 ETB</span>
+        </div>
+        <button onclick="checkoutCOD()" class="w-full bg-kenzs-brown text-white py-4 rounded-xl font-bold uppercase text-xs tracking-wider">
+          Complete Pay On Delivery
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ========================================== -->
+  <!-- JAVASCRIPT STATE ENGINE                    -->
+  <!-- ========================================== -->
+  <script>
+    // System Initial Data
+    let currentLang = "en";
+    let cart = [];
+    let selectedCategory = "All";
+
+    let products = [
+      {
+        id: "prod_1",
+        nameEn: "The Royal Oxford Leather",
+        nameAm: "ዘ ሮያል ኦክስፎርድ ሌዘር",
+        category: "Formal Shoes",
+        priceETB: 7200,
+        descriptionEn: "Handcrafted Italian full-grain leather oxford shoes engineered for business luxury.",
+        descriptionAm: "በእጅ የተሰራ የጣሊያን ሌዘር ጫማ ለላቀ ግርማና ለፕሮፌሽናል ክብር።",
+        images: ["https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?auto=format&fit=crop&q=80&w=800"],
+        sizes: [40, 41, 42, 43, 44]
+      },
+      {
+        id: "prod_2",
+        nameEn: "Minimalist Craft Sneaker",
+        nameAm: "ሚኒማሊስት ክራፍት ስኒከር",
+        category: "Sneakers",
+        priceETB: 6400,
+        descriptionEn: "Ultra-clean luxury leather sneaker featuring soft beige inner lining.",
+        descriptionAm: "በጣም ዘመናዊ እና ምቹ የቆዳ ስኒከር ለዕለታዊ ውበት።",
+        images: ["https://images.unsplash.com/photo-1549298916-b41d501d3772?auto=format&fit=crop&q=80&w=800"],
+        sizes: [41, 42, 43]
+      },
+      {
+        id: "prod_3",
+        nameEn: "Highland Chelsea Boot",
+        nameAm: "ሃይላንድ ቼልሲ ቡት",
+        category: "Boots",
+        priceETB: 8500,
+        descriptionEn: "Rugged elegance with elastic side gussets and weather-treated suede finish.",
+        descriptionAm: "ጠንካራ እና ውብ የቼልሲ ቡት ለሁሉም የአየር ጠባይ።",
+        images: ["https://images.unsplash.com/photo-1638247025967-b4e38f787b76?auto=format&fit=crop&q=80&w=800"],
+        sizes: [40, 42, 43, 44]
+      }
+    ];
+
+    let orders = [
+      { id: "ORD-9482", customerName: "Abebe Kebede", phone: "+251911223344", total: 7200, status: "Pending" }
+    ];
+
+    // Initialization
+    window.onload = () => {
+      renderCategoryTabs();
+      renderProducts();
+      renderAdminInventory();
+      renderAdminOrders();
+      lucide.createIcons();
+    };
+
+    // Toggle Views
+    function switchView(view) {
+      if (view === 'store') {
+        document.getElementById('store-view').classList.remove('hidden');
+        document.getElementById('admin-view').classList.add('hidden');
+        document.getElementById('nav-btn-store').className = "text-amber-400 font-bold underline";
+        document.getElementById('nav-btn-admin').className = "hover:text-amber-400 transition text-neutral-400";
+      } else {
+        document.getElementById('store-view').classList.add('hidden');
+        document.getElementById('admin-view').classList.remove('hidden');
+        document.getElementById('nav-btn-admin').className = "text-amber-400 font-bold underline";
+        document.getElementById('nav-btn-store').className = "hover:text-amber-400 transition text-neutral-400";
+      }
+    }
+
+    // Toggle Languages
+    function toggleLanguage() {
+      currentLang = currentLang === "en" ? "am" : "en";
+      document.getElementById('lang-label').innerText = currentLang === "en" ? "EN | አማ" : "አማ | EN";
+      
+      document.getElementById('hero-title').innerHTML = currentLang === "en" 
+        ? 'Walk with <span class="text-kenzs-brown italic font-normal">Confidence.</span>'
+        : 'በእርግጠኝነት <span class="text-kenzs-brown italic font-normal">ይራመዱ።</span>';
+      
+      document.getElementById('hero-desc').innerText = currentLang === "en"
+        ? 'Handcrafted luxury men\'s footwear designed for ultimate comfort, modern prestige, and timeless durability.'
+        : 'ለልዩ ምቾት፣ ዘመናዊ ውበት እና ለዘላቂ ጥራት የተዘጋጁ የከፍተኛ ደረጃ የወንዶች ጫማዎች።';
+
+      renderProducts();
+    }
+
+    // Render Categories
+    function renderCategoryTabs() {
+      const cats = ["All", "Sneakers", "Leather Shoes", "Boots", "Formal Shoes"];
+      const container = document.getElementById('category-tabs');
+      container.innerHTML = cats.map(c => `
+        <button onclick="filterCategory('${c}')" class="px-4 py-2 rounded-full text-xs font-semibold tracking-wider uppercase transition whitespace-nowrap ${selectedCategory === c ? 'bg-kenzs-brown text-white' : 'bg-kenzs-cream border border-kenzs-beige'}">
+          ${c}
+        </button>
+      `).join('');
+    }
+
+    function filterCategory(cat) {
+      selectedCategory = cat;
+      renderCategoryTabs();
+      renderProducts();
+    }
+
+    // Render Storefront Products
+    function renderProducts() {
+      const grid = document.getElementById('product-grid');
+      const items = selectedCategory === "All" ? products : products.filter(p => p.category === selectedCategory);
+
+      grid.innerHTML = items.map(p => `
+        <div class="bg-white rounded-2xl border border-kenzs-beige overflow-hidden hover:shadow-xl transition flex flex-col justify-between">
+          <div class="aspect-[4/3] bg-kenzs-cream overflow-hidden">
+            <img src="${p.images[0]}" alt="${p.nameEn}" class="w-full h-full object-cover" />
+          </div>
+          <div class="p-6 space-y-3">
+            <span class="text-xs text-kenzs-gray uppercase font-semibold">${p.category}</span>
+            <h3 class="font-serif text-lg font-bold text-kenzs-charcoal">${currentLang === "en" ? p.nameEn : p.nameAm}</h3>
+            <p class="text-xs text-kenzs-gray line-clamp-2">${currentLang === "en" ? p.descriptionEn : p.descriptionAm}</p>
+            <div class="flex justify-between items-center pt-2">
+              <span class="font-serif font-bold text-lg text-kenzs-brown">${p.priceETB.toLocaleString()} ETB</span>
+              <button onclick="openProductModal('${p.id}')" class="bg-kenzs-cream border border-kenzs-beige px-4 py-2 rounded-xl text-xs font-semibold uppercase hover:bg-kenzs-brown hover:text-white transition">
+                Quick View
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Modal Control
+    function openProductModal(id) {
+      const p = products.find(item => item.id === id);
+      if (!p) return;
+
+      const container = document.getElementById('modal-content');
+      container.innerHTML = `
+        <div class="bg-kenzs-cream p-6">
+          <img src="${p.images[0]}" class="w-full h-64 object-cover rounded-xl" />
+        </div>
+        <div class="p-6 space-y-4">
+          <h2 class="font-serif text-2xl font-bold">${p.nameEn}</h2>
+          <p class="font-serif text-xl font-bold text-kenzs-brown">${p.priceETB.toLocaleString()} ETB</p>
+          <p class="text-xs text-kenzs-gray">${p.descriptionEn}</p>
+          <div>
+            <label class="block text-xs font-bold uppercase mb-2">Select Size</label>
+            <div class="flex gap-2">
+              ${p.sizes.map(s => `<button onclick="addToCart('${p.id}', ${s})" class="w-10 h-10 border rounded-lg text-xs font-bold hover:bg-kenzs-brown hover:text-white">${s}</button>`).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+      document.getElementById('product-modal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+      document.getElementById('product-modal').classList.add('hidden');
+    }
+
+    // Cart System
+    function addToCart(productId, size) {
+      const p = products.find(item => item.id === productId);
+      cart.push({ ...p, size });
+      updateCartUI();
+      closeModal();
+      toggleCartDrawer(true);
+    }
+
+    function updateCartUI() {
+      document.getElementById('cart-count-badge').innerText = cart.length;
+      const container = document.getElementById('cart-items-container');
+      const totalEl = document.getElementById('cart-total-price');
+
+      const total = cart.reduce((sum, item) => sum + item.priceETB, 0);
+      totalEl.innerText = `${total.toLocaleString()} ETB`;
+
+      container.innerHTML = cart.map((item, idx) => `
+        <div class="flex items-center justify-between border-b border-kenzs-cream pb-2">
+          <div>
+            <p class="font-bold text-sm">${item.nameEn}</p>
+            <p class="text-xs text-kenzs-gray">Size: ${item.size}</p>
+            <p class="text-xs font-bold text-kenzs-brown">${item.priceETB.toLocaleString()} ETB</p>
+          </div>
+          <button onclick="removeFromCart(${idx})" class="text-red-500 text-xs">Remove</button>
+        </div>
+      `).join('');
+    }
+
+    function removeFromCart(index) {
+      cart.splice(index, 1);
+      updateCartUI();
+    }
+
+    function toggleCartDrawer(open) {
+      const drawer = document.getElementById('cart-drawer');
+      if (open) drawer.classList.remove('hidden');
+      else drawer.classList.add('hidden');
+    }
+
+    function checkoutCOD() {
+      if (cart.length === 0) return alert("Your cart is empty!");
+      orders.push({
+        id: `ORD-${Math.floor(1000 + Math.random() * 9000)}`,
+        customerName: "New Order (Addis)",
+        phone: "+251911432094",
+        total: cart.reduce((sum, item) => sum + item.priceETB, 0),
+        status: "Pending"
+      });
+      cart = [];
+      updateCartUI();
+      toggleCartDrawer(false);
+      renderAdminOrders();
+      alert("Order Received! Pay Cash on Delivery upon receipt.");
+    }
+
+    // Admin Control Engine
+    function setAdminTab(tab) {
+      document.getElementById('admin-tab-inventory').classList.add('hidden');
+      document.getElementById('admin-tab-orders').classList.add('hidden');
+      document.getElementById(`admin-tab-${tab}`).classList.remove('hidden');
+    }
+
+    function toggleAddProductForm() {
+      document.getElementById('add-product-form').classList.toggle('hidden');
+    }
+
+    function handleCreateProduct(e) {
+      e.preventDefault();
+      const name = document.getElementById('new-p-name').value;
+      const price = parseFloat(document.getElementById('new-p-price').value);
+      const category = document.getElementById('new-p-cat').value;
+      const img = document.getElementById('new-p-img').value;
+
+      products.unshift({
+        id: `prod_${Date.now()}`,
+        nameEn: name,
+        nameAm: name,
+        category: category,
+        priceETB: price,
+        descriptionEn: "High quality premium handcrafted footwear.",
+        descriptionAm: "ከፍተኛ ጥራት ያለው የወንዶች ጫማ።",
+        images: [img || "https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?auto=format&fit=crop&q=80&w=800"],
+        sizes: [40, 41, 42, 43]
+      });
+
+      renderProducts();
+      renderAdminInventory();
+      toggleAddProductForm();
+    }
+
+    function deleteProduct(id) {
+      products = products.filter(p => p.id !== id);
+      renderProducts();
+      renderAdminInventory();
+    }
+
+    function renderAdminInventory() {
+      const list = document.getElementById('admin-inventory-list');
+      list.innerHTML = products.map(p => `
+        <tr class="hover:bg-neutral-900">
+          <td class="p-4 flex items-center gap-3">
+            <img src="${p.images[0]}" class="w-8 h-8 rounded object-cover" />
+            <span class="font-bold text-white">${p.nameEn}</span>
+          </td>
+          <td class="p-4">${p.category}</td>
+          <td class="p-4 font-mono">${p.priceETB.toLocaleString()} ETB</td>
+          <td class="p-4 text-right">
+            <button onclick="deleteProduct('${p.id}')" class="text-red-400 hover:underline">Delete</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function renderAdminOrders() {
+      const list = document.getElementById('admin-orders-list');
+      list.innerHTML = orders.map(o => `
+        <tr class="hover:bg-neutral-900">
+          <td class="p-4 font-mono text-amber-500">${o.id}</td>
+          <td class="p-4 text-white font-bold">${o.customerName}</td>
+          <td class="p-4">${o.phone}</td>
+          <td class="p-4 font-mono">${o.total.toLocaleString()} ETB</td>
+          <td class="p-4"><span class="bg-amber-950 text-amber-400 px-2 py-1 rounded text-xs">${o.status}</span></td>
+        </tr>
+      `).join('');
+    }
+  </script>
 </body>
-</html>
+                    </html>
