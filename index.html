@@ -49,13 +49,11 @@
 </head>
 <body class="bg-kenzs-white dark:bg-neutral-950 text-kenzs-charcoal dark:text-neutral-100 font-sans antialiased selection:bg-kenzs-brown selection:text-white transition-colors duration-200">
 
-  <!-- ========================================== -->
-  <!-- TOP UTILITY / MODE SWITCHER BAR            -->
-  <!-- ========================================== -->
+  <!-- TOP BAR -->
   <div class="bg-kenzs-charcoal text-white text-[11px] font-semibold py-2 px-4 flex justify-between items-center border-b border-neutral-800 sticky top-0 z-50">
     <div class="flex items-center gap-2">
       <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-      <span class="tracking-wider">KENZS OFFICIAL STORE ENGINE (SUPABASE LIVE SYNC)</span>
+      <span class="tracking-wider">KENZS OFFICIAL STORE ENGINE</span>
     </div>
     <div class="flex items-center gap-4">
       <button onclick="toggleDarkMode()" class="flex items-center gap-1.5 hover:text-amber-400 transition text-neutral-300">
@@ -95,7 +93,7 @@
         <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-kenzs-charcoal dark:text-neutral-300 tracking-wide uppercase">
           <a href="#hero" class="hover:text-kenzs-brown transition">Home</a>
           <a href="#catalog" class="hover:text-kenzs-brown transition">Shop Catalog</a>
-          <a href="https://wa.me/251911432094" target="_blank" class="hover:text-kenzs-brown transition">Contact Us</a>
+          <button onclick="openTrackOrderModal()" class="hover:text-kenzs-brown transition text-amber-600 font-bold">📦 Track Order</button>
         </nav>
 
         <div class="flex items-center gap-3">
@@ -134,16 +132,16 @@
             <a href="#catalog" class="w-full sm:w-auto text-center bg-kenzs-brown text-white px-8 py-4 rounded-full font-semibold text-sm uppercase tracking-wider hover:bg-kenzs-brown-dark transition shadow-lg">
               Explore Collection
             </a>
-            <a href="https://wa.me/251911432094" target="_blank" class="w-full sm:w-auto text-center flex items-center justify-center gap-2 bg-white dark:bg-neutral-800 text-kenzs-charcoal dark:text-white border border-kenzs-beige dark:border-neutral-700 px-8 py-4 rounded-full font-semibold text-sm uppercase tracking-wider hover:bg-kenzs-beige/50 transition">
-              <i data-lucide="message-circle" class="w-4 h-4 text-emerald-600"></i>
-              <span>Order on WhatsApp</span>
-            </a>
+            <button onclick="openTrackOrderModal()" class="w-full sm:w-auto text-center flex items-center justify-center gap-2 bg-white dark:bg-neutral-800 text-kenzs-charcoal dark:text-white border border-kenzs-beige dark:border-neutral-700 px-8 py-4 rounded-full font-semibold text-sm uppercase tracking-wider hover:bg-kenzs-beige/50 transition">
+              <i data-lucide="package" class="w-4 h-4 text-amber-600"></i>
+              <span>Track My Order</span>
+            </button>
           </div>
         </div>
 
         <div class="lg:col-span-5 relative">
           <div class="relative mx-auto max-w-md lg:max-w-none">
-            <img id="hero-shoe-img" src="https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?auto=format&fit=crop&q=80&w=1000" alt="Kenzs Official Shoe" class="rounded-2xl shadow-2xl object-cover w-full h-[400px] border-4 border-white dark:border-neutral-800" />
+            <img id="hero-shoe-img" src="https://images.unsplash.com/photo-1614252235316-8c857d38b5f4" alt="Kenzs Official Shoe" class="rounded-2xl shadow-2xl object-cover w-full h-[400px] border-4 border-white dark:border-neutral-800" />
             <div class="absolute bottom-6 left-6 right-6 bg-white/90 dark:bg-neutral-900/90 backdrop-blur-md p-4 rounded-xl border border-white/40 dark:border-neutral-700 shadow-lg flex items-center justify-between">
               <div>
                 <p class="text-xs font-semibold text-kenzs-brown dark:text-amber-400 uppercase tracking-wider">Featured Shoe</p>
@@ -174,7 +172,82 @@
 
 
   <!-- ========================================== -->
-  <!-- 2. ADMIN LOGIN MODAL                       -->
+  <!-- 2. TRACK ORDER MODAL                       -->
+  <!-- ========================================== -->
+  <div id="track-order-modal" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="bg-neutral-900 border border-neutral-800 w-full max-w-md p-6 rounded-2xl shadow-2xl space-y-6 text-white relative">
+      <button onclick="closeTrackOrderModal()" class="absolute top-4 right-4 text-neutral-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+      
+      <div class="text-center space-y-1">
+        <h3 class="font-serif text-2xl font-bold uppercase tracking-wider text-amber-500">Track Your Order 📦</h3>
+        <p class="text-xs text-neutral-400">Enter your unique Order Code (e.g. KNZ-8492)</p>
+      </div>
+
+      <div class="space-y-4">
+        <input type="text" id="track-code-input" placeholder="e.g. KNZ-8492" class="w-full bg-neutral-950 border border-neutral-800 p-3 rounded-xl text-center text-lg font-mono tracking-widest text-amber-400 uppercase focus:outline-none" />
+        <button onclick="searchOrderTracking()" class="w-full py-3 rounded-xl text-xs font-bold uppercase bg-amber-600 hover:bg-amber-500 text-white">Search Status</button>
+      </div>
+
+      <div id="tracking-result-box" class="hidden bg-neutral-950 border border-neutral-800 p-4 rounded-xl space-y-3">
+        <div class="flex justify-between items-center text-xs">
+          <span class="text-neutral-400">Order Code:</span>
+          <span id="res-code" class="font-mono font-bold text-amber-400"></span>
+        </div>
+        <div class="flex justify-between items-center text-xs">
+          <span class="text-neutral-400">Customer:</span>
+          <span id="res-name" class="font-bold text-white"></span>
+        </div>
+        <div class="flex justify-between items-center text-xs">
+          <span class="text-neutral-400">Total Price:</span>
+          <span id="res-price" class="font-bold text-emerald-400"></span>
+        </div>
+        <div class="pt-2 border-t border-neutral-800 flex justify-between items-center">
+          <span class="text-xs text-neutral-400 uppercase font-bold">Current Status:</span>
+          <span id="res-status" class="px-3 py-1 rounded-full text-xs font-bold uppercase bg-amber-500/20 text-amber-400 border border-amber-500/40"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ========================================== -->
+  <!-- 3. LIVE CUSTOMER CHAT WIDGET              -->
+  <!-- ========================================== -->
+  <div id="chat-widget" class="fixed bottom-6 right-6 z-50">
+    <!-- Chat Button -->
+    <button onclick="toggleChatWindow()" class="bg-amber-600 hover:bg-amber-500 text-white p-4 rounded-full shadow-2xl flex items-center justify-center transition">
+      <i data-lucide="message-square" class="w-6 h-6"></i>
+    </button>
+
+    <!-- Chat Popup -->
+    <div id="chat-window" class="hidden absolute bottom-16 right-0 w-80 sm:w-96 bg-neutral-900 border border-neutral-800 rounded-2xl shadow-2xl flex flex-col h-96 overflow-hidden">
+      <div class="bg-neutral-950 p-4 border-b border-neutral-800 flex justify-between items-center">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+          <div>
+            <h4 class="text-xs font-bold text-white uppercase tracking-wider">Kenzs Live Support</h4>
+            <p class="text-[10px] text-neutral-400">Online & Ready to help!</p>
+          </div>
+        </div>
+        <button onclick="toggleChatWindow()" class="text-neutral-400 hover:text-white"><i data-lucide="x" class="w-4 h-4"></i></button>
+      </div>
+
+      <div id="chat-messages" class="flex-1 p-4 overflow-y-auto space-y-3 text-xs">
+        <div class="bg-neutral-800 p-3 rounded-2xl rounded-tl-none text-neutral-200 max-w-[85%]">
+          👋 Welcome to Kenzs Official! How can we help you find the perfect pair today?
+        </div>
+      </div>
+
+      <div class="p-3 bg-neutral-950 border-t border-neutral-800 flex gap-2">
+        <input type="text" id="chat-input" placeholder="Type a message..." onkeypress="if(event.key==='Enter') sendChatMessage()" class="flex-1 bg-neutral-900 border border-neutral-800 p-2.5 rounded-xl text-xs text-white focus:outline-none" />
+        <button onclick="sendChatMessage()" class="bg-amber-600 hover:bg-amber-500 text-white px-3.5 py-2.5 rounded-xl"><i data-lucide="send" class="w-4 h-4"></i></button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ========================================== -->
+  <!-- 4. ADMIN LOGIN MODAL                       -->
   <!-- ========================================== -->
   <div id="admin-login-modal" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-4">
     <div class="bg-neutral-900 border border-neutral-800 w-full max-w-md p-8 rounded-2xl shadow-2xl space-y-6 text-white">
@@ -198,7 +271,7 @@
 
 
   <!-- ========================================== -->
-  <!-- 3. ADMIN CONTROL CENTER                    -->
+  <!-- 5. ADMIN CONTROL CENTER                    -->
   <!-- ========================================== -->
   <div id="admin-view" class="hidden min-h-screen bg-neutral-950 text-neutral-100 flex flex-col md:flex-row">
     
@@ -210,7 +283,10 @@
 
       <nav class="space-y-2">
         <button onclick="setAdminTab('inventory')" id="tab-btn-inventory" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-wider bg-amber-700 text-white">
-          <i data-lucide="package" class="w-4 h-4"></i> Inventory Control
+          <i data-lucide="package" class="w-4 h-4"></i> Inventory
+        </button>
+        <button onclick="setAdminTab('orders')" id="tab-btn-orders" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-wider bg-neutral-800 hover:bg-neutral-700 text-neutral-300">
+          <i data-lucide="shopping-cart" class="w-4 h-4"></i> Web Orders 📦
         </button>
       </nav>
 
@@ -223,11 +299,12 @@
 
     <main class="flex-1 p-4 sm:p-6 lg:p-10 space-y-8 overflow-y-auto max-w-7xl">
       
+      <!-- INVENTORY TAB -->
       <div id="admin-tab-inventory" class="space-y-6">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h1 class="text-2xl font-bold font-serif text-white">Product Inventory Engine</h1>
-            <p class="text-xs text-neutral-400">Manage published products with sizes, colors & direct photo uploads.</p>
+            <p class="text-xs text-neutral-400">Manage published products with sizes, colors & multi-photo uploads.</p>
           </div>
           <button onclick="toggleAddProductForm()" class="flex items-center justify-center gap-2 bg-amber-600 hover:bg-amber-500 text-white px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider">
             <i data-lucide="plus" class="w-4 h-4"></i> Add New Product
@@ -259,10 +336,10 @@
               <input type="number" id="new-p-price" placeholder="7200" required class="w-full bg-neutral-950 border border-neutral-800 p-3 rounded-xl text-sm text-white focus:outline-none" />
             </div>
 
-            <!-- DIRECT FILE UPLOAD -->
+            <!-- MULTIPLE FILE UPLOADS -->
             <div>
-              <label class="block text-xs uppercase text-neutral-400 font-semibold mb-1">Shoe Photo (Upload File)</label>
-              <input type="file" id="new-p-file" accept="image/*" required class="w-full bg-neutral-950 border border-neutral-800 p-2.5 rounded-xl text-xs text-neutral-300 file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-amber-600 file:text-white hover:file:bg-amber-500" />
+              <label class="block text-xs uppercase text-neutral-400 font-semibold mb-1">Shoe Photos (Select Up to 4 Files)</label>
+              <input type="file" id="new-p-files" accept="image/*" multiple required class="w-full bg-neutral-950 border border-neutral-800 p-2.5 rounded-xl text-xs text-neutral-300 file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-amber-600 file:text-white hover:file:bg-amber-500" />
             </div>
           </div>
 
@@ -279,11 +356,21 @@
           </div>
 
           <button type="submit" id="btn-save-prod" class="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-wider">
-            Upload Image & Save Live Product
+            Upload Images & Save Product
           </button>
         </form>
 
         <div id="admin-inventory-list" class="space-y-4"></div>
+      </div>
+
+      <!-- ORDERS TAB -->
+      <div id="admin-tab-orders" class="hidden space-y-6">
+        <div>
+          <h1 class="text-2xl font-bold font-serif text-white">Customer Orders Dashboard</h1>
+          <p class="text-xs text-neutral-400">View direct website purchases & update delivery statuses.</p>
+        </div>
+
+        <div id="admin-orders-list" class="space-y-4"></div>
       </div>
 
     </main>
@@ -309,20 +396,27 @@
           <span class="font-bold text-sm">Total Order Price:</span>
           <span id="cart-total-price" class="font-serif font-bold text-lg text-kenzs-brown dark:text-amber-500">0 ETB</span>
         </div>
+
+        <!-- DIRECT WEB CHECKOUT FORM -->
+        <div class="space-y-2 border-t border-neutral-200 dark:border-neutral-800 pt-3">
+          <p class="text-xs font-bold uppercase text-amber-600">Checkout Details</p>
+          <input type="text" id="cust-name" placeholder="Full Name" class="w-full p-2.5 text-xs bg-white dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-700 rounded-xl focus:outline-none" />
+          <input type="tel" id="cust-phone" placeholder="Phone Number" class="w-full p-2.5 text-xs bg-white dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-700 rounded-xl focus:outline-none" />
+          <input type="text" id="cust-address" placeholder="Delivery Address / City" class="w-full p-2.5 text-xs bg-white dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-700 rounded-xl focus:outline-none" />
+        </div>
         
-        <a id="whatsapp-checkout-btn" href="#" target="_blank" class="block text-center w-full bg-emerald-600 text-white py-4 rounded-xl font-bold uppercase text-xs tracking-wider hover:bg-emerald-500 transition">
-          Order via WhatsApp
-        </a>
+        <button onclick="placeWebsiteOrder()" class="w-full bg-emerald-600 text-white py-3.5 rounded-xl font-bold uppercase text-xs tracking-wider hover:bg-emerald-500 transition">
+          Confirm & Place Order
+        </button>
       </div>
     </div>
   </div>
 
 
   <!-- ========================================== -->
-  <!-- JAVASCRIPT STATE ENGINE (SUPABASE PRE-CONFIGURED) -->
+  <!-- JAVASCRIPT STATE ENGINE                    -->
   <!-- ========================================== -->
   <script>
-    // PRE-CONFIGURED WITH YOUR EXACT SUPABASE CREDENTIALS!
     const SUPABASE_URL = "https://sjykaxehoveygeeueqpe.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_9e3zbaru3VYp5OayYPgjgg_6EUpkquA";
 
@@ -336,6 +430,7 @@
     let isAdminAuthenticated = false;
     let selectedCategory = "All";
     let products = [];
+    let orders = [];
     let cart = [];
 
     window.onload = async () => {
@@ -374,7 +469,7 @@
 
       if (error) {
         console.error('Supabase fetch error:', error);
-        grid.innerHTML = `<p class="text-xs text-red-500 py-8 col-span-3 text-center">Failed to load products. Make sure table "products" exists.</p>`;
+        grid.innerHTML = `<p class="text-xs text-red-500 py-8 col-span-3 text-center">Failed to load products.</p>`;
         return;
       }
 
@@ -388,43 +483,43 @@
       e.preventDefault();
       
       const saveBtn = document.getElementById('btn-save-prod');
-      saveBtn.innerText = "Uploading Image to Cloud Storage...";
+      saveBtn.innerText = "Uploading Photos to Cloud Storage...";
       saveBtn.disabled = true;
 
       try {
-        const fileInput = document.getElementById('new-p-file');
-        const file = fileInput.files[0];
+        const fileInput = document.getElementById('new-p-files');
+        const files = Array.from(fileInput.files);
 
-        if (!file) {
-          alert('Please select an image file to upload.');
-          saveBtn.innerText = "Upload Image & Save Live Product";
+        if (files.length === 0) {
+          alert('Please select at least one image file.');
+          saveBtn.innerText = "Upload Images & Save Product";
           saveBtn.disabled = false;
           return;
         }
 
-        // 1. Upload File to Supabase Storage Bucket
-        const fileExt = file.name.split('.').pop();
-        const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
-        const filePath = `shoes/${fileName}`;
+        let uploadedUrls = [];
 
-        const { data: uploadData, error: uploadError } = await supabaseClient
-          .storage
-          .from('product-images')
-          .upload(filePath, file);
+        // Upload each selected file
+        for (let file of files) {
+          const fileExt = file.name.split('.').pop();
+          const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
+          const filePath = `shoes/${fileName}`;
 
-        if (uploadError) {
-          throw uploadError;
+          const { error: uploadError } = await supabaseClient
+            .storage
+            .from('product-images')
+            .upload(filePath, file);
+
+          if (uploadError) throw uploadError;
+
+          const { data: publicUrlData } = supabaseClient
+            .storage
+            .from('product-images')
+            .getPublicUrl(filePath);
+
+          uploadedUrls.push(publicUrlData.publicUrl);
         }
 
-        // Get Public URL of uploaded image
-        const { data: publicUrlData } = supabaseClient
-          .storage
-          .from('product-images')
-          .getPublicUrl(filePath);
-
-        const imageUrl = publicUrlData.publicUrl;
-
-        // 2. Gather Selected Sizes & Colors
         const selectedSizes = Array.from(document.querySelectorAll('input[name="admin-size"]:checked')).map(cb => cb.value);
         const selectedColors = Array.from(document.querySelectorAll('input[name="admin-color"]:checked')).map(cb => cb.value);
 
@@ -432,7 +527,7 @@
         const price = parseFloat(document.getElementById('new-p-price').value);
         const category = document.getElementById('new-p-cat').value;
 
-        // 3. Insert Product into DB
+        // Insert into DB with multi-image array
         const { error: dbError } = await supabaseClient
           .from('products')
           .insert([
@@ -440,7 +535,8 @@
               name: name, 
               price: price, 
               category: category, 
-              image_url: imageUrl,
+              image_url: uploadedUrls[0],
+              image_urls: uploadedUrls,
               sizes: selectedSizes,
               colors: selectedColors
             }
@@ -448,114 +544,160 @@
 
         if (dbError) throw dbError;
 
-        alert('Product & Image successfully uploaded! Available live across all devices.');
+        alert('Product with multiple photos uploaded successfully!');
         document.getElementById('add-product-form').reset();
         toggleAddProductForm();
         await fetchProductsFromSupabase();
 
       } catch (err) {
         console.error('Upload Error:', err);
-        alert('Failed to upload product. Make sure the storage bucket "product-images" is created in Supabase.');
+        alert('Upload failed. Please ensure storage bucket "product-images" is active.');
       } finally {
-        saveBtn.innerText = "Upload Image & Save Live Product";
+        saveBtn.innerText = "Upload Images & Save Product";
         saveBtn.disabled = false;
       }
     }
 
-    async function deleteProduct(id) {
-      if(confirm("Are you sure you want to delete this product across all devices?")) {
-        const { error } = await supabaseClient
-          .from('products')
-          .delete()
-          .eq('id', id);
+    async function placeWebsiteOrder() {
+      const name = document.getElementById('cust-name').value;
+      const phone = document.getElementById('cust-phone').value;
+      const address = document.getElementById('cust-address').value;
 
-        if (error) {
-          alert("Failed to delete product.");
-        } else {
-          await fetchProductsFromSupabase();
-        }
+      if (!name || !phone || !address) {
+        alert("Please fill in your name, phone number, and address!");
+        return;
       }
-    }
 
-    function toggleDarkMode() {
-      isDarkMode = !isDarkMode;
-      if (isDarkMode) {
-        document.documentElement.classList.add('dark');
-        document.getElementById('dark-mode-text').innerText = "Light Mode";
+      if (cart.length === 0) {
+        alert("Your cart is empty!");
+        return;
+      }
+
+      const orderCode = 'KNZ-' + Math.floor(1000 + Math.random() * 9000);
+      const total = cart.reduce((sum, item) => sum + item.price, 0);
+
+      const { error } = await supabaseClient
+        .from('orders')
+        .insert([{
+          order_code: orderCode,
+          customer_name: name,
+          customer_phone: phone,
+          delivery_address: address,
+          items: cart,
+          total_price: total,
+          status: 'Pending'
+        }]);
+
+      if (error) {
+        alert("Failed to place order. Please try again.");
       } else {
-        document.documentElement.classList.remove('dark');
-        document.getElementById('dark-mode-text').innerText = "Dark Mode";
+        alert(`🎉 Order Placed Successfully!\n\nYour Order Tracking Code is: ${orderCode}\nSave this code to track your delivery!`);
+        cart = [];
+        updateCartUI();
+        toggleCartDrawer(false);
       }
     }
 
-    function openAdminPortal() {
-      if (isAdminAuthenticated) switchView('admin');
-      else document.getElementById('admin-login-modal').classList.remove('hidden');
-    }
+    async function searchOrderTracking() {
+      const code = document.getElementById('track-code-input').value.trim().toUpperCase();
+      if (!code) return;
 
-    function closeAdminLogin() {
-      document.getElementById('admin-login-modal').classList.add('hidden');
-    }
+      const { data, error } = await supabaseClient
+        .from('orders')
+        .select('*')
+        .eq('order_code', code)
+        .single();
 
-    function handleAdminLogin(e) {
-      e.preventDefault();
-      const pass = document.getElementById('admin-pass-input').value;
-      if (pass === 'admin123') {
-        isAdminAuthenticated = true;
-        closeAdminLogin();
-        switchView('admin');
-        document.getElementById('admin-error-msg').classList.add('hidden');
+      const box = document.getElementById('tracking-result-box');
+
+      if (error || !data) {
+        alert("Order code not found. Please double-check your code.");
+        box.classList.add('hidden');
       } else {
-        document.getElementById('admin-error-msg').classList.remove('hidden');
+        document.getElementById('res-code').innerText = data.order_code;
+        document.getElementById('res-name').innerText = data.customer_name;
+        document.getElementById('res-price').innerText = `${data.total_price.toLocaleString()} ETB`;
+        document.getElementById('res-status').innerText = data.status;
+        box.classList.remove('hidden');
       }
     }
 
-    function switchView(view) {
-      if (view === 'store') {
-        document.getElementById('store-view').classList.remove('hidden');
-        document.getElementById('admin-view').classList.add('hidden');
-        document.getElementById('nav-btn-store').className = "text-amber-400 font-bold underline";
-        document.getElementById('nav-btn-admin').className = "hover:text-amber-400 transition text-neutral-400";
-      } else {
-        document.getElementById('store-view').classList.add('hidden');
-        document.getElementById('admin-view').classList.remove('hidden');
-        document.getElementById('nav-btn-admin').className = "text-amber-400 font-bold underline";
-        document.getElementById('nav-btn-store').className = "hover:text-amber-400 transition text-neutral-400";
+    async function fetchAdminOrders() {
+      const container = document.getElementById('admin-orders-list');
+      container.innerHTML = `<p class="text-xs text-neutral-400">Loading orders...</p>`;
+
+      const { data, error } = await supabaseClient
+        .from('orders')
+        .select('*')
+        .order('id', { ascending: false });
+
+      if (error) {
+        container.innerHTML = `<p class="text-xs text-red-500">Failed to load orders.</p>`;
+        return;
       }
-    }
 
-    function renderHeroShoe() {
-      if (products.length > 0) {
-        const p = products[0];
-        document.getElementById('hero-shoe-img').src = p.image_url || "https://images.unsplash.com/photo-1614252235316-8c857d38b5f4";
-        document.getElementById('hero-shoe-title').innerText = p.name;
-        document.getElementById('hero-shoe-price').innerText = `${p.price.toLocaleString()} ETB`;
+      orders = data || [];
+      if (orders.length === 0) {
+        container.innerHTML = `<div class="p-6 bg-neutral-900 rounded-2xl text-center text-neutral-400">No orders received yet.</div>`;
+        return;
       }
-    }
 
-    function toggleLanguage() {
-      currentLang = currentLang === "en" ? "am" : "en";
-      document.getElementById('lang-label').innerText = currentLang === "en" ? "EN | አማ" : "አማ | EN";
-      
-      document.getElementById('hero-title').innerHTML = currentLang === "en" 
-        ? 'Walk with <span class="text-kenzs-brown dark:text-amber-500 italic font-normal">Confidence.</span>'
-        : 'በእርግጠኝነት <span class="text-kenzs-brown dark:text-amber-500 italic font-normal">ይራመዱ።</span>';
-    }
-
-    function renderCategoryTabs() {
-      const cats = ["All", "Sneakers", "Leather Shoes", "Boots", "Formal Shoes"];
-      const container = document.getElementById('category-tabs');
-      container.innerHTML = cats.map(c => `
-        <button onclick="filterCategory('${c}')" class="px-4 py-2 rounded-full text-xs font-semibold tracking-wider uppercase transition whitespace-nowrap ${selectedCategory === c ? 'bg-kenzs-brown dark:bg-amber-600 text-white' : 'bg-kenzs-cream dark:bg-neutral-800 border border-kenzs-beige dark:border-neutral-700'}">
-          ${c}
-        </button>
+      container.innerHTML = orders.map(o => `
+        <div class="bg-neutral-900 border border-neutral-800 p-5 rounded-2xl space-y-3">
+          <div class="flex justify-between items-center">
+            <span class="font-mono text-amber-400 font-bold text-sm">${o.order_code}</span>
+            <select onchange="updateOrderStatus('${o.id}', this.value)" class="bg-neutral-950 border border-neutral-800 text-xs font-bold text-amber-400 p-2 rounded-xl">
+              <option value="Pending" ${o.status==='Pending'?'selected':''}>Pending</option>
+              <option value="Processing" ${o.status==='Processing'?'selected':''}>Processing</option>
+              <option value="Dispatched" ${o.status==='Dispatched'?'selected':''}>Dispatched</option>
+              <option value="Delivered" ${o.status==='Delivered'?'selected':''}>Delivered</option>
+            </select>
+          </div>
+          
+          <div class="text-xs space-y-1 text-neutral-300">
+            <p><strong>Customer:</strong> ${o.customer_name} (${o.customer_phone})</p>
+            <p><strong>Address:</strong> ${o.delivery_address}</p>
+            <p><strong>Total:</strong> <span class="text-emerald-400 font-bold">${o.total_price.toLocaleString()} ETB</span></p>
+          </div>
+        </div>
       `).join('');
     }
 
-    function filterCategory(cat) {
-      selectedCategory = cat;
-      renderCategoryTabs();
-      renderProducts();
+    async function updateOrderStatus(id, newStatus) {
+      await supabaseClient.from('orders').update({ status: newStatus }).eq('id', id);
+      alert("Order status updated!");
+    }
+
+    function toggleChatWindow() {
+      document.getElementById('chat-window').classList.toggle('hidden');
+    }
+
+    function sendChatMessage() {
+      const input = document.getElementById('chat-input');
+      const text = input.value.trim();
+      if (!text) return;
+
+      const container = document.getElementById('chat-messages');
+      container.innerHTML += `
+        <div class="bg-amber-600 p-3 rounded-2xl rounded-tr-none text-white ml-auto max-w-[85%]">
+          ${text}
+        </div>
+      `;
+      input.value = '';
+      container.scrollTop = container.scrollHeight;
+
+      setTimeout(() => {
+        container.innerHTML += `
+          <div class="bg-neutral-800 p-3 rounded-2xl rounded-tl-none text-neutral-200 max-w-[85%]">
+            Thanks for reaching out! A Kenzs Official representative will respond shortly. You can also call us at +251 911 432 094.
+          </div>
+        `;
+        container.scrollTop = container.scrollHeight;
+      }, 1000);
+    }
+
+    function swapMainImage(cardId, newSrc) {
+      document.getElementById(`main-img-${cardId}`).src = newSrc;
     }
 
     function renderProducts() {
@@ -570,13 +712,23 @@
       grid.innerHTML = items.map(p => {
         const sizesList = p.sizes && p.sizes.length > 0 ? p.sizes.join(', ') : 'Standard';
         const colorsList = p.colors && p.colors.length > 0 ? p.colors.join(', ') : 'Standard';
+        const gallery = p.image_urls && p.image_urls.length > 0 ? p.image_urls : [p.image_url];
 
         return `
           <div class="bg-white dark:bg-neutral-900 rounded-2xl border border-kenzs-beige dark:border-neutral-800 overflow-hidden hover:shadow-xl transition flex flex-col justify-between relative group">
             
             <div class="aspect-[4/3] bg-kenzs-cream dark:bg-neutral-800 overflow-hidden relative">
-              <img src="${p.image_url || 'https://images.unsplash.com/photo-1614252235316-8c857d38b5f4'}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+              <img id="main-img-${p.id}" src="${gallery[0] || 'https://images.unsplash.com/photo-1614252235316-8c857d38b5f4'}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
             </div>
+
+            <!-- GALLERY THUMBNAILS -->
+            ${gallery.length > 1 ? `
+              <div class="flex gap-1.5 p-2 bg-neutral-100 dark:bg-neutral-950 overflow-x-auto">
+                ${gallery.map(imgUrl => `
+                  <img src="${imgUrl}" onclick="swapMainImage('${p.id}', '${imgUrl}')" class="w-10 h-10 object-cover rounded-md cursor-pointer border border-neutral-300 dark:border-neutral-700 hover:border-amber-500" />
+                `).join('')}
+              </div>
+            ` : ''}
 
             <div class="p-6 space-y-3">
               <div class="flex justify-between items-center">
@@ -586,7 +738,6 @@
 
               <h3 class="font-serif text-lg font-bold text-kenzs-charcoal dark:text-white">${p.name}</h3>
               
-              <!-- SIZES & COLORS DISPLAY -->
               <div class="text-xs space-y-1 text-neutral-500 dark:text-neutral-400 border-t border-neutral-100 dark:border-neutral-800 pt-2">
                 <p><strong class="text-neutral-700 dark:text-neutral-300">Sizes:</strong> ${sizesList}</p>
                 <p><strong class="text-neutral-700 dark:text-neutral-300">Colors:</strong> ${colorsList}</p>
@@ -596,15 +747,89 @@
                 <span class="font-serif font-bold text-lg text-kenzs-brown dark:text-amber-500">${p.price.toLocaleString()} ETB</span>
               </div>
 
-              <div class="flex justify-between items-center pt-2">
-                <button onclick="addToCart('${p.id}')" class="w-full bg-kenzs-cream dark:bg-neutral-800 border border-kenzs-beige dark:border-neutral-700 py-2.5 rounded-xl text-xs font-semibold uppercase hover:bg-kenzs-brown hover:text-white dark:hover:bg-amber-600 transition">
-                  Add To Cart
-                </button>
-              </div>
+              <button onclick="addToCart('${p.id}')" class="w-full bg-kenzs-cream dark:bg-neutral-800 border border-kenzs-beige dark:border-neutral-700 py-2.5 rounded-xl text-xs font-semibold uppercase hover:bg-kenzs-brown hover:text-white dark:hover:bg-amber-600 transition">
+                Add To Cart
+              </button>
             </div>
           </div>
         `;
       }).join('');
+    }
+
+    function setAdminTab(tab) {
+      if (tab === 'inventory') {
+        document.getElementById('admin-tab-inventory').classList.remove('hidden');
+        document.getElementById('admin-tab-orders').classList.add('hidden');
+        document.getElementById('tab-btn-inventory').className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-wider bg-amber-700 text-white";
+        document.getElementById('tab-btn-orders').className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-wider bg-neutral-800 hover:bg-neutral-700 text-neutral-300";
+      } else {
+        document.getElementById('admin-tab-inventory').classList.add('hidden');
+        document.getElementById('admin-tab-orders').classList.remove('hidden');
+        document.getElementById('tab-btn-orders').className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-wider bg-amber-700 text-white";
+        document.getElementById('tab-btn-inventory').className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-wider bg-neutral-800 hover:bg-neutral-700 text-neutral-300";
+        fetchAdminOrders();
+      }
+    }
+
+    function openTrackOrderModal() { document.getElementById('track-order-modal').classList.remove('hidden'); }
+    function closeTrackOrderModal() { document.getElementById('track-order-modal').classList.add('hidden'); }
+    function openAdminPortal() { if (isAdminAuthenticated) switchView('admin'); else document.getElementById('admin-login-modal').classList.remove('hidden'); }
+    function closeAdminLogin() { document.getElementById('admin-login-modal').classList.add('hidden'); }
+
+    function handleAdminLogin(e) {
+      e.preventDefault();
+      if (document.getElementById('admin-pass-input').value === 'admin123') {
+        isAdminAuthenticated = true;
+        closeAdminLogin();
+        switchView('admin');
+      } else {
+        document.getElementById('admin-error-msg').classList.remove('hidden');
+      }
+    }
+
+    function switchView(view) {
+      if (view === 'store') {
+        document.getElementById('store-view').classList.remove('hidden');
+        document.getElementById('admin-view').classList.add('hidden');
+      } else {
+        document.getElementById('store-view').classList.add('hidden');
+        document.getElementById('admin-view').classList.remove('hidden');
+      }
+    }
+
+    function toggleDarkMode() {
+      isDarkMode = !isDarkMode;
+      document.documentElement.classList.toggle('dark');
+      document.getElementById('dark-mode-text').innerText = isDarkMode ? "Light Mode" : "Dark Mode";
+    }
+
+    function toggleLanguage() {
+      currentLang = currentLang === "en" ? "am" : "en";
+      document.getElementById('lang-label').innerText = currentLang === "en" ? "EN | አማ" : "አማ | EN";
+    }
+
+    function renderCategoryTabs() {
+      const cats = ["All", "Sneakers", "Leather Shoes", "Boots", "Formal Shoes"];
+      document.getElementById('category-tabs').innerHTML = cats.map(c => `
+        <button onclick="filterCategory('${c}')" class="px-4 py-2 rounded-full text-xs font-semibold tracking-wider uppercase transition whitespace-nowrap ${selectedCategory === c ? 'bg-kenzs-brown dark:bg-amber-600 text-white' : 'bg-kenzs-cream dark:bg-neutral-800 border border-kenzs-beige dark:border-neutral-700'}">
+          ${c}
+        </button>
+      `).join('');
+    }
+
+    function filterCategory(cat) {
+      selectedCategory = cat;
+      renderCategoryTabs();
+      renderProducts();
+    }
+
+    function renderHeroShoe() {
+      if (products.length > 0) {
+        const p = products[0];
+        document.getElementById('hero-shoe-img').src = p.image_url || "https://images.unsplash.com/photo-1614252235316-8c857d38b5f4";
+        document.getElementById('hero-shoe-title').innerText = p.name;
+        document.getElementById('hero-shoe-price').innerText = `${p.price.toLocaleString()} ETB`;
+      }
     }
 
     function addToCart(id) {
@@ -618,25 +843,18 @@
 
     function updateCartUI() {
       document.getElementById('cart-count-badge').innerText = cart.length;
-      const container = document.getElementById('cart-items-container');
-      const totalEl = document.getElementById('cart-total-price');
-
       const total = cart.reduce((sum, item) => sum + item.price, 0);
-      totalEl.innerText = `${total.toLocaleString()} ETB`;
+      document.getElementById('cart-total-price').innerText = `${total.toLocaleString()} ETB`;
 
-      container.innerHTML = cart.map((item, idx) => `
+      document.getElementById('cart-items-container').innerHTML = cart.map((item, idx) => `
         <div class="flex items-center justify-between border-b border-neutral-200 dark:border-neutral-800 pb-3">
           <div>
             <p class="font-bold text-sm">${item.name}</p>
-            <p class="text-xs text-neutral-400">Size: ${item.sizes ? item.sizes.join('/') : 'Std'}</p>
             <p class="text-xs font-bold text-kenzs-brown dark:text-amber-500">${item.price.toLocaleString()} ETB</p>
           </div>
           <button onclick="removeFromCart(${idx})" class="text-red-500 text-xs font-bold">Remove</button>
         </div>
       `).join('');
-
-      const whatsappText = encodeURIComponent(`Hello Kenzs Official, I would like to order:\n` + cart.map(i => `- ${i.name} (${i.price} ETB)`).join('\n') + `\n\nTotal: ${total} ETB`);
-      document.getElementById('whatsapp-checkout-btn').href = `https://wa.me/251911432094?text=${whatsappText}`;
     }
 
     function removeFromCart(index) {
@@ -645,9 +863,7 @@
     }
 
     function toggleCartDrawer(open) {
-      const drawer = document.getElementById('cart-drawer');
-      if (open) drawer.classList.remove('hidden');
-      else drawer.classList.add('hidden');
+      document.getElementById('cart-drawer').classList.toggle('hidden', !open);
     }
 
     function toggleAddProductForm() {
@@ -657,37 +873,30 @@
     function renderAdminInventory() {
       const container = document.getElementById('admin-inventory-list');
       if (products.length === 0) {
-        container.innerHTML = `<div class="p-6 bg-neutral-900 rounded-2xl text-center text-neutral-400">No products in Supabase database. Add one above!</div>`;
+        container.innerHTML = `<div class="p-6 bg-neutral-900 rounded-2xl text-center text-neutral-400">No products in database.</div>`;
         return;
       }
 
       container.innerHTML = products.map(p => `
-        <div class="bg-neutral-900 border border-neutral-800 p-4 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div class="bg-neutral-900 border border-neutral-800 p-4 rounded-2xl flex items-center justify-between">
           <div class="flex items-center gap-4">
-            <img src="${p.image_url || 'https://images.unsplash.com/photo-1614252235316-8c857d38b5f4'}" class="w-16 h-16 rounded-xl object-cover border border-neutral-800" />
+            <img src="${p.image_url || 'https://images.unsplash.com/photo-1614252235316-8c857d38b5f4'}" class="w-14 h-14 rounded-xl object-cover" />
             <div>
-              <h4 class="font-bold text-white text-base">${p.name}</h4>
-              <p class="text-xs text-neutral-400">${p.category}</p>
-              <div class="flex gap-4 text-[11px] text-amber-500/80 mt-1">
-                <span>Sizes: ${p.sizes && p.sizes.length ? p.sizes.join(', ') : 'None'}</span>
-                <span>Colors: ${p.colors && p.colors.length ? p.colors.join(', ') : 'None'}</span>
-              </div>
+              <h4 class="font-bold text-white text-sm">${p.name}</h4>
+              <p class="text-xs text-neutral-400">${p.price.toLocaleString()} ETB</p>
             </div>
           </div>
-
-          <div class="flex items-center justify-between md:justify-end gap-6 pt-2 md:pt-0 border-t md:border-t-0 border-neutral-800">
-            <div>
-              <span class="text-xs text-neutral-500 uppercase block font-semibold">Price</span>
-              <span class="font-mono font-bold text-amber-500">${p.price.toLocaleString()} ETB</span>
-            </div>
-
-            <button onclick="deleteProduct('${p.id}')" class="bg-red-950/80 hover:bg-red-900 text-red-400 border border-red-800/60 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition">
-              Remove
-            </button>
-          </div>
+          <button onclick="deleteProduct('${p.id}')" class="bg-red-950/80 text-red-400 border border-red-800/60 px-3 py-1.5 rounded-xl text-xs font-bold">Remove</button>
         </div>
       `).join('');
     }
+
+    async function deleteProduct(id) {
+      if(confirm("Delete product?")) {
+        await supabaseClient.from('products').delete().eq('id', id);
+        await fetchProductsFromSupabase();
+      }
+    }
   </script>
 </body>
-</html>
+          </html>
