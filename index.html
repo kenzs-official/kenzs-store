@@ -214,12 +214,10 @@
   <!-- 3. LIVE CUSTOMER CHAT WIDGET              -->
   <!-- ========================================== -->
   <div id="chat-widget" class="fixed bottom-6 right-6 z-50">
-    <!-- Chat Button -->
     <button onclick="toggleChatWindow()" class="bg-amber-600 hover:bg-amber-500 text-white p-4 rounded-full shadow-2xl flex items-center justify-center transition">
       <i data-lucide="message-square" class="w-6 h-6"></i>
     </button>
 
-    <!-- Chat Popup -->
     <div id="chat-window" class="hidden absolute bottom-16 right-0 w-80 sm:w-96 bg-neutral-900 border border-neutral-800 rounded-2xl shadow-2xl flex flex-col h-96 overflow-hidden">
       <div class="bg-neutral-950 p-4 border-b border-neutral-800 flex justify-between items-center">
         <div class="flex items-center gap-2">
@@ -432,6 +430,7 @@
     let products = [];
     let orders = [];
     let cart = [];
+    let selectedOptions = {}; // Stores chosen size & color per product id
 
     window.onload = async () => {
       renderCategoryTabs();
@@ -468,15 +467,40 @@
         .order('id', { ascending: false });
 
       if (error) {
-        console.error('Supabase fetch error:', error);
         grid.innerHTML = `<p class="text-xs text-red-500 py-8 col-span-3 text-center">Failed to load products.</p>`;
         return;
       }
 
       products = data || [];
+      
+      // Initialize default selected size & color for each shoe
+      products.forEach(p => {
+        selectedOptions[p.id] = {
+          size: (p.sizes && p.sizes.length > 0) ? p.sizes[0] : null,
+          color: (p.colors && p.colors.length > 0) ? p.colors[0] : null
+        };
+      });
+
       renderProducts();
       renderAdminInventory();
       renderHeroShoe();
+    }
+
+    function selectProductOption(prodId, type, val) {
+      if (!selectedOptions[prodId]) selectedOptions[prodId] = {};
+      selectedOptions[prodId][type] = val;
+
+      // Update button visual styles
+      const group = document.querySelectorAll(`[data-opt-${type}="${prodId}"]`);
+      group.forEach(btn => {
+        if (btn.getAttribute('data-val') == val) {
+          btn.className = type === 'size' 
+            ? "px-2.5 py-1 text-xs rounded-md bg-amber-600 text-white font-bold"
+            : "px-2.5 py-1 text-xs rounded-md bg-amber-600 text-white font-bold";
+        } else {
+          btn.className = "px-2.5 py-1 text-xs rounded-md bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 border border-neutral-300 dark:border-neutral-700";
+        }
+      });
     }
 
     async function handleCreateProduct(e) {
@@ -499,7 +523,6 @@
 
         let uploadedUrls = [];
 
-        // Upload each selected file
         for (let file of files) {
           const fileExt = file.name.split('.').pop();
           const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
@@ -527,7 +550,6 @@
         const price = parseFloat(document.getElementById('new-p-price').value);
         const category = document.getElementById('new-p-cat').value;
 
-        // Insert into DB with multi-image array
         const { error: dbError } = await supabaseClient
           .from('products')
           .insert([
@@ -657,7 +679,11 @@
           <div class="text-xs space-y-1 text-neutral-300">
             <p><strong>Customer:</strong> ${o.customer_name} (${o.customer_phone})</p>
             <p><strong>Address:</strong> ${o.delivery_address}</p>
-            <p><strong>Total:</strong> <span class="text-emerald-400 font-bold">${o.total_price.toLocaleString()} ETB</span></p>
+            <p><strong>Items Ordered:</strong></p>
+            <ul class="list-disc pl-5 text-amber-400">
+              ${o.items ? o.items.map(i => `<li>${i.name} — Size: ${i.chosenSize || 'N/A'}, Color: ${i.chosenColor || 'N/A'} (${i.price} ETB)</li>`).join('') : ''}
+            </ul>
+            <p class="pt-1"><strong>Total:</strong> <span class="text-emerald-400 font-bold">${o.total_price.toLocaleString()} ETB</span></p>
           </div>
         </div>
       `).join('');
@@ -710,9 +736,12 @@
       }
 
       grid.innerHTML = items.map(p => {
-        const sizesList = p.sizes && p.sizes.length > 0 ? p.sizes.join(', ') : 'Standard';
-        const colorsList = p.colors && p.colors.length > 0 ? p.colors.join(', ') : 'Standard';
+        const sizesList = (p.sizes && p.sizes.length > 0) ? p.sizes : [39, 40, 41, 42, 43, 44];
+        const colorsList = (p.colors && p.colors.length > 0) ? p.colors : ["Black", "Brown"];
         const gallery = p.image_urls && p.image_urls.length > 0 ? p.image_urls : [p.image_url];
+
+        const activeSize = selectedOptions[p.id]?.size || sizesList[0];
+        const activeColor = selectedOptions[p.id]?.color || colorsList[0];
 
         return `
           <div class="bg-white dark:bg-neutral-900 rounded-2xl border border-kenzs-beige dark:border-neutral-800 overflow-hidden hover:shadow-xl transition flex flex-col justify-between relative group">
@@ -721,7 +750,6 @@
               <img id="main-img-${p.id}" src="${gallery[0] || 'https://images.unsplash.com/photo-1614252235316-8c857d38b5f4'}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
             </div>
 
-            <!-- GALLERY THUMBNAILS -->
             ${gallery.length > 1 ? `
               <div class="flex gap-1.5 p-2 bg-neutral-100 dark:bg-neutral-950 overflow-x-auto">
                 ${gallery.map(imgUrl => `
@@ -730,7 +758,7 @@
               </div>
             ` : ''}
 
-            <div class="p-6 space-y-3">
+            <div class="p-6 space-y-4">
               <div class="flex justify-between items-center">
                 <span class="text-xs text-kenzs-gray dark:text-neutral-400 uppercase font-semibold">${p.category || 'Footwear'}</span>
                 <span class="text-[10px] bg-amber-500/10 text-amber-600 dark:text-amber-400 px-2 py-0.5 rounded font-bold uppercase">In Stock</span>
@@ -738,22 +766,81 @@
 
               <h3 class="font-serif text-lg font-bold text-kenzs-charcoal dark:text-white">${p.name}</h3>
               
-              <div class="text-xs space-y-1 text-neutral-500 dark:text-neutral-400 border-t border-neutral-100 dark:border-neutral-800 pt-2">
-                <p><strong class="text-neutral-700 dark:text-neutral-300">Sizes:</strong> ${sizesList}</p>
-                <p><strong class="text-neutral-700 dark:text-neutral-300">Colors:</strong> ${colorsList}</p>
+              <!-- SELECT SIZE -->
+              <div class="space-y-1">
+                <p class="text-[11px] uppercase font-bold text-neutral-400">Select Size:</p>
+                <div class="flex flex-wrap gap-1.5">
+                  ${sizesList.map(s => `
+                    <button data-opt-size="${p.id}" data-val="${s}" onclick="selectProductOption('${p.id}', 'size', '${s}')" class="px-2.5 py-1 text-xs rounded-md ${activeSize == s ? 'bg-amber-600 text-white font-bold' : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 border border-neutral-300 dark:border-neutral-700'}">
+                      ${s}
+                    </button>
+                  `).join('')}
+                </div>
               </div>
 
-              <div class="flex items-center gap-2 pt-1">
+              <!-- SELECT COLOR -->
+              <div class="space-y-1">
+                <p class="text-[11px] uppercase font-bold text-neutral-400">Select Color:</p>
+                <div class="flex flex-wrap gap-1.5">
+                  ${colorsList.map(c => `
+                    <button data-opt-color="${p.id}" data-val="${c}" onclick="selectProductOption('${p.id}', 'color', '${c}')" class="px-2.5 py-1 text-xs rounded-md ${activeColor == c ? 'bg-amber-600 text-white font-bold' : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 border border-neutral-300 dark:border-neutral-700'}">
+                      ${c}
+                    </button>
+                  `).join('')}
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between pt-2 border-t border-neutral-100 dark:border-neutral-800">
                 <span class="font-serif font-bold text-lg text-kenzs-brown dark:text-amber-500">${p.price.toLocaleString()} ETB</span>
               </div>
 
-              <button onclick="addToCart('${p.id}')" class="w-full bg-kenzs-cream dark:bg-neutral-800 border border-kenzs-beige dark:border-neutral-700 py-2.5 rounded-xl text-xs font-semibold uppercase hover:bg-kenzs-brown hover:text-white dark:hover:bg-amber-600 transition">
+              <button onclick="addToCart('${p.id}')" class="w-full bg-kenzs-cream dark:bg-neutral-800 border border-kenzs-beige dark:border-neutral-700 py-3 rounded-xl text-xs font-semibold uppercase hover:bg-kenzs-brown hover:text-white dark:hover:bg-amber-600 transition">
                 Add To Cart
               </button>
             </div>
           </div>
         `;
       }).join('');
+    }
+
+    function addToCart(id) {
+      const p = products.find(item => item.id == id);
+      if(p) {
+        const chosenSize = selectedOptions[p.id]?.size || (p.sizes ? p.sizes[0] : 'Std');
+        const chosenColor = selectedOptions[p.id]?.color || (p.colors ? p.colors[0] : 'Std');
+
+        const itemToAdd = {
+          ...p,
+          chosenSize: chosenSize,
+          chosenColor: chosenColor
+        };
+
+        cart.push(itemToAdd);
+        updateCartUI();
+        toggleCartDrawer(true);
+      }
+    }
+
+    function updateCartUI() {
+      document.getElementById('cart-count-badge').innerText = cart.length;
+      const total = cart.reduce((sum, item) => sum + item.price, 0);
+      document.getElementById('cart-total-price').innerText = `${total.toLocaleString()} ETB`;
+
+      document.getElementById('cart-items-container').innerHTML = cart.map((item, idx) => `
+        <div class="flex items-center justify-between border-b border-neutral-200 dark:border-neutral-800 pb-3">
+          <div>
+            <p class="font-bold text-sm">${item.name}</p>
+            <p class="text-[11px] text-amber-600 dark:text-amber-400 font-semibold">Size: ${item.chosenSize} | Color: ${item.chosenColor}</p>
+            <p class="text-xs font-bold text-kenzs-brown dark:text-amber-500">${item.price.toLocaleString()} ETB</p>
+          </div>
+          <button onclick="removeFromCart(${idx})" class="text-red-500 text-xs font-bold">Remove</button>
+        </div>
+      `).join('');
+    }
+
+    function removeFromCart(index) {
+      cart.splice(index, 1);
+      updateCartUI();
     }
 
     function setAdminTab(tab) {
@@ -830,36 +917,6 @@
         document.getElementById('hero-shoe-title').innerText = p.name;
         document.getElementById('hero-shoe-price').innerText = `${p.price.toLocaleString()} ETB`;
       }
-    }
-
-    function addToCart(id) {
-      const p = products.find(item => item.id == id);
-      if(p) {
-        cart.push(p);
-        updateCartUI();
-        toggleCartDrawer(true);
-      }
-    }
-
-    function updateCartUI() {
-      document.getElementById('cart-count-badge').innerText = cart.length;
-      const total = cart.reduce((sum, item) => sum + item.price, 0);
-      document.getElementById('cart-total-price').innerText = `${total.toLocaleString()} ETB`;
-
-      document.getElementById('cart-items-container').innerHTML = cart.map((item, idx) => `
-        <div class="flex items-center justify-between border-b border-neutral-200 dark:border-neutral-800 pb-3">
-          <div>
-            <p class="font-bold text-sm">${item.name}</p>
-            <p class="text-xs font-bold text-kenzs-brown dark:text-amber-500">${item.price.toLocaleString()} ETB</p>
-          </div>
-          <button onclick="removeFromCart(${idx})" class="text-red-500 text-xs font-bold">Remove</button>
-        </div>
-      `).join('');
-    }
-
-    function removeFromCart(index) {
-      cart.splice(index, 1);
-      updateCartUI();
     }
 
     function toggleCartDrawer(open) {
