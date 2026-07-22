@@ -52,7 +52,7 @@
   <div class="bg-kenzs-charcoal text-white text-[11px] font-semibold py-2 px-4 flex justify-between items-center border-b border-neutral-800 sticky top-0 z-50">
     <div class="flex items-center gap-2">
       <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-      <span class="tracking-wider">KENZS OFFICIAL STORE ENGINE v2.4</span>
+      <span class="tracking-wider">KENZS OFFICIAL STORE ENGINE v2.5 (PERSISTENT)</span>
     </div>
     <div class="flex items-center gap-4">
       <!-- Dark Mode Button -->
@@ -229,9 +229,14 @@
         </button>
       </nav>
 
-      <button onclick="switchView('store')" class="w-full py-2.5 rounded-xl border border-neutral-700 text-xs text-neutral-400 font-semibold uppercase hover:bg-neutral-800">
-        Exit Admin Mode
-      </button>
+      <div class="space-y-2 pt-4 border-t border-neutral-800">
+        <button onclick="resetToDefaults()" class="w-full py-2 rounded-xl text-[10px] text-red-400 font-bold uppercase border border-red-900/50 hover:bg-red-950/50">
+          ⚠️ Reset Inventory Data
+        </button>
+        <button onclick="switchView('store')" class="w-full py-2.5 rounded-xl border border-neutral-700 text-xs text-neutral-400 font-semibold uppercase hover:bg-neutral-800">
+          Exit Admin Mode
+        </button>
+      </div>
     </aside>
 
     <!-- Main Admin Content Area -->
@@ -249,7 +254,7 @@
           </button>
         </div>
 
-        <!-- NEW: TOP SELECTION EDITOR PANEL -->
+        <!-- TOP SELECTION EDITOR PANEL -->
         <div class="bg-neutral-900 border border-amber-500/30 p-5 rounded-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div>
             <span class="text-xs font-bold uppercase text-amber-500 tracking-wider flex items-center gap-1.5">
@@ -417,13 +422,13 @@
     let isDarkMode = false;
     let isAdminAuthenticated = false;
     let selectedCategory = "All";
-    let topSelectionProductId = "prod_1"; // Default Top Selection ID
+    let topSelectionProductId = "prod_1"; 
     
     let cart = [];
     let selectedModalColor = null;
     let selectedModalSize = null;
 
-    let products = [
+    let defaultProducts = [
       {
         id: "prod_1",
         nameEn: "The Royal Oxford Leather",
@@ -455,6 +460,8 @@
       }
     ];
 
+    let products = [...defaultProducts];
+
     let orders = [
       { 
         id: "ORD-4711", 
@@ -469,8 +476,52 @@
       }
     ];
 
+    // ==========================================
+    // LOCAL STORAGE PERSISTENCE ENGINE
+    // ==========================================
+    function loadFromLocalStorage() {
+      const savedProducts = localStorage.getItem('kenzs_products');
+      if (savedProducts) {
+        try { products = JSON.parse(savedProducts); } catch(e) { console.error(e); }
+      }
+      const savedOrders = localStorage.getItem('kenzs_orders');
+      if (savedOrders) {
+        try { orders = JSON.parse(savedOrders); } catch(e) { console.error(e); }
+      }
+      const savedTopSel = localStorage.getItem('kenzs_top_selection');
+      if (savedTopSel) {
+        topSelectionProductId = savedTopSel;
+      }
+    }
+
+    function saveProductsToLocalStorage() {
+      localStorage.setItem('kenzs_products', JSON.stringify(products));
+    }
+
+    function saveOrdersToLocalStorage() {
+      localStorage.setItem('kenzs_orders', JSON.stringify(orders));
+    }
+
+    function saveTopSelectionToLocalStorage() {
+      localStorage.setItem('kenzs_top_selection', topSelectionProductId);
+    }
+
+    function resetToDefaults() {
+      if(confirm("Are you sure you want to reset back to default products? This will erase custom products stored locally.")) {
+        localStorage.clear();
+        products = [...defaultProducts];
+        topSelectionProductId = "prod_1";
+        renderCategoryTabs();
+        renderProducts();
+        renderAdminInventory();
+        renderAdminOrders();
+        renderHeroTopSelection();
+      }
+    }
+
     // Initialization
     window.onload = () => {
+      loadFromLocalStorage();
       renderCategoryTabs();
       renderProducts();
       renderAdminInventory();
@@ -547,8 +598,9 @@
     function updateTopSelection() {
       const picker = document.getElementById('top-selection-picker');
       topSelectionProductId = picker.value;
+      saveTopSelectionToLocalStorage();
       renderHeroTopSelection();
-      alert("Top Selection Hero Banner Updated Successfully!");
+      alert("Top Selection Hero Banner Updated & Saved Successfully!");
     }
 
     // Language Switcher
@@ -753,6 +805,7 @@
         status: "Pending"
       });
 
+      saveOrdersToLocalStorage();
       cart = [];
       updateCartUI();
       toggleCartDrawer(false);
@@ -808,9 +861,11 @@
         images: uploadedImages
       });
 
+      saveProductsToLocalStorage();
       renderProducts();
       renderAdminInventory();
       toggleAddProductForm();
+      alert("Product published and saved permanently!");
     }
 
     function convertFileToBase64(file) {
@@ -825,6 +880,7 @@
     function deleteProduct(id) {
       if(confirm("Are you sure you want to delete/remove this product?")) {
         products = products.filter(p => p.id !== id);
+        saveProductsToLocalStorage();
         renderProducts();
         renderAdminInventory();
       }
@@ -875,6 +931,7 @@
     function clearOrder(orderId) {
       if(confirm("Clear this order from history?")) {
         orders = orders.filter(o => o.id !== orderId);
+        saveOrdersToLocalStorage();
         renderAdminOrders();
       }
     }
@@ -883,6 +940,7 @@
       const order = orders.find(o => o.id === orderId);
       if (order) {
         order.status = order.status === "Pending" ? "Completed" : "Pending";
+        saveOrdersToLocalStorage();
         renderAdminOrders();
       }
     }
@@ -943,4 +1001,4 @@
     }
   </script>
 </body>
-        </html>
+  </html>
