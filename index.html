@@ -93,14 +93,11 @@
         <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-kenzs-charcoal dark:text-neutral-300 tracking-wide uppercase">
           <a href="#hero" class="hover:text-kenzs-brown transition">Home</a>
           <a href="#catalog" class="hover:text-kenzs-brown transition">Shop Catalog</a>
-          <button onclick="openTrackOrderModal()" class="hover:text-kenzs-brown transition text-amber-600 font-bold">📦 Track Order</button>
+          <a href="#about" class="hover:text-kenzs-brown transition">About Us</a>
+          <a href="https://wa.me/251911432094?text=Hello%20Kenzs%20Official,%20I%20would%20like%20to%20order%20shoes." target="_blank" class="hover:text-emerald-500 transition text-emerald-600 font-bold flex items-center gap-1">
+            <i data-lucide="message-circle" class="w-4 h-4"></i> Order via WhatsApp
+          </a>
         </nav>
-
-        <div class="flex items-center gap-3">
-          <button onclick="toggleLanguage()" class="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full bg-kenzs-cream dark:bg-neutral-800 border border-kenzs-beige dark:border-neutral-700 text-kenzs-charcoal dark:text-white hover:bg-kenzs-beige transition">
-            <i data-lucide="globe" class="w-3.5 h-3.5 text-kenzs-brown"></i>
-            <span id="lang-label">EN | አማ</span>
-          </button>
 
           <button onclick="toggleCartDrawer(true)" class="relative flex items-center gap-2 bg-kenzs-charcoal dark:bg-white text-white dark:text-neutral-900 px-4 py-2.5 rounded-full hover:bg-kenzs-brown dark:hover:bg-amber-500 transition shadow-md">
             <i data-lucide="shopping-bag" class="w-4 h-4"></i>
@@ -110,6 +107,13 @@
         </div>
       </div>
     </header>
+
+    <!-- Banner Badges: Free Delivery & Pay After Delivery -->
+    <div class="bg-amber-600 text-white py-2 px-4 text-center text-xs font-bold tracking-wider uppercase flex flex-wrap justify-center items-center gap-6">
+      <span class="flex items-center gap-1.5"><i data-lucide="truck" class="w-4 h-4"></i> FREE DELIVERY</span>
+      <span class="hidden sm:inline">•</span>
+      <span class="flex items-center gap-1.5"><i data-lucide="shield-check" class="w-4 h-4"></i> PAY AFTER DELIVERY</span>
+    </div>
 
     <!-- Hero Section -->
     <section id="hero" class="bg-kenzs-cream dark:bg-neutral-900/50 py-16 lg:py-20 border-b border-kenzs-beige dark:border-neutral-800">
@@ -132,10 +136,10 @@
             <a href="#catalog" class="w-full sm:w-auto text-center bg-kenzs-brown text-white px-8 py-4 rounded-full font-semibold text-sm uppercase tracking-wider hover:bg-kenzs-brown-dark transition shadow-lg">
               Explore Collection
             </a>
-            <button onclick="openTrackOrderModal()" class="w-full sm:w-auto text-center flex items-center justify-center gap-2 bg-white dark:bg-neutral-800 text-kenzs-charcoal dark:text-white border border-kenzs-beige dark:border-neutral-700 px-8 py-4 rounded-full font-semibold text-sm uppercase tracking-wider hover:bg-kenzs-beige/50 transition">
-              <i data-lucide="package" class="w-4 h-4 text-amber-600"></i>
-              <span>Track My Order</span>
-            </button>
+            <a href="https://wa.me/251911432094?text=Hello%20Kenzs%20Official,%20I%20want%20to%20order%20directly." target="_blank" class="w-full sm:w-auto text-center flex items-center justify-center gap-2 bg-emerald-600 text-white px-8 py-4 rounded-full font-semibold text-sm uppercase tracking-wider hover:bg-emerald-500 transition shadow-lg">
+              <i data-lucide="message-circle" class="w-4 h-4"></i>
+              <span>Order by WhatsApp</span>
+            </a>
           </div>
         </div>
 
@@ -168,50 +172,50 @@
 
       <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"></div>
     </section>
+
+    <!-- About Us & Contact Section -->
+    <section id="about" class="bg-neutral-900 text-white py-16 border-t border-neutral-800">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+        <div class="text-center space-y-3 max-w-2xl mx-auto">
+          <h2 class="font-serif text-3xl font-bold text-amber-500">ABOUT KENZS OFFICIAL</h2>
+          <p class="text-neutral-400 text-sm leading-relaxed">
+            Kenzs Official is Ethiopia's premier men's footwear destination, blending classic artisan leather crafting with contemporary style. We deliver high-quality, durable shoes directly to your doorstep.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+          <div class="bg-neutral-950 p-6 rounded-2xl border border-neutral-800 space-y-3">
+            <div class="w-12 h-12 bg-amber-600/20 text-amber-500 rounded-full flex items-center justify-center mx-auto">
+              <i data-lucide="map-pin" class="w-6 h-6"></i>
+            </div>
+            <h3 class="font-bold text-sm uppercase">Physical Store Address</h3>
+            <p class="text-neutral-400 text-xs">Addis Ababa Merkato, Ethiopia</p>
+          </div>
+
+          <div class="bg-neutral-950 p-6 rounded-2xl border border-neutral-800 space-y-3">
+            <div class="w-12 h-12 bg-amber-600/20 text-amber-500 rounded-full flex items-center justify-center mx-auto">
+              <i data-lucide="phone" class="w-6 h-6"></i>
+            </div>
+            <h3 class="font-bold text-sm uppercase">Phone Numbers</h3>
+            <p class="text-neutral-400 text-xs">+251 911 432 094<br />+251 777 729 125</p>
+          </div>
+
+          <div class="bg-neutral-950 p-6 rounded-2xl border border-neutral-800 space-y-3">
+            <div class="w-12 h-12 bg-amber-600/20 text-amber-500 rounded-full flex items-center justify-center mx-auto">
+              <i data-lucide="mail" class="w-6 h-6"></i>
+            </div>
+            <h3 class="font-bold text-sm uppercase">Email & Policy</h3>
+            <p class="text-neutral-400 text-xs">kenzsofficial7@gmail.com<br /><span class="text-amber-400 font-bold">Pay After Delivery | FREE DELIVERY</span></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
   </div>
 
 
   <!-- ========================================== -->
-  <!-- 2. TRACK ORDER MODAL                       -->
-  <!-- ========================================== -->
-  <div id="track-order-modal" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-4">
-    <div class="bg-neutral-900 border border-neutral-800 w-full max-w-md p-6 rounded-2xl shadow-2xl space-y-6 text-white relative">
-      <button onclick="closeTrackOrderModal()" class="absolute top-4 right-4 text-neutral-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
-      
-      <div class="text-center space-y-1">
-        <h3 class="font-serif text-2xl font-bold uppercase tracking-wider text-amber-500">Track Your Order 📦</h3>
-        <p class="text-xs text-neutral-400">Enter your unique Order Code (e.g. KNZ-8492)</p>
-      </div>
-
-      <div class="space-y-4">
-        <input type="text" id="track-code-input" placeholder="e.g. KNZ-8492" class="w-full bg-neutral-950 border border-neutral-800 p-3 rounded-xl text-center text-lg font-mono tracking-widest text-amber-400 uppercase focus:outline-none" />
-        <button onclick="searchOrderTracking()" class="w-full py-3 rounded-xl text-xs font-bold uppercase bg-amber-600 hover:bg-amber-500 text-white">Search Status</button>
-      </div>
-
-      <div id="tracking-result-box" class="hidden bg-neutral-950 border border-neutral-800 p-4 rounded-xl space-y-3">
-        <div class="flex justify-between items-center text-xs">
-          <span class="text-neutral-400">Order Code:</span>
-          <span id="res-code" class="font-mono font-bold text-amber-400"></span>
-        </div>
-        <div class="flex justify-between items-center text-xs">
-          <span class="text-neutral-400">Customer:</span>
-          <span id="res-name" class="font-bold text-white"></span>
-        </div>
-        <div class="flex justify-between items-center text-xs">
-          <span class="text-neutral-400">Total Price:</span>
-          <span id="res-price" class="font-bold text-emerald-400"></span>
-        </div>
-        <div class="pt-2 border-t border-neutral-800 flex justify-between items-center">
-          <span class="text-xs text-neutral-400 uppercase font-bold">Current Status:</span>
-          <span id="res-status" class="px-3 py-1 rounded-full text-xs font-bold uppercase bg-amber-500/20 text-amber-400 border border-amber-500/40"></span>
-        </div>
-      </div>
-    </div>
-  </div>
-
-
-  <!-- ========================================== -->
-  <!-- 3. LIVE CUSTOMER CHAT WIDGET              -->
+  <!-- 2. LIVE CUSTOMER CHAT WIDGET              -->
   <!-- ========================================== -->
   <div id="chat-widget" class="fixed bottom-6 right-6 z-50">
     <button onclick="toggleChatWindow()" class="bg-amber-600 hover:bg-amber-500 text-white p-4 rounded-full shadow-2xl flex items-center justify-center transition">
@@ -245,7 +249,7 @@
 
 
   <!-- ========================================== -->
-  <!-- 4. ADMIN LOGIN MODAL                       -->
+  <!-- 3. ADMIN LOGIN MODAL                       -->
   <!-- ========================================== -->
   <div id="admin-login-modal" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-4">
     <div class="bg-neutral-900 border border-neutral-800 w-full max-w-md p-8 rounded-2xl shadow-2xl space-y-6 text-white">
@@ -269,7 +273,7 @@
 
 
   <!-- ========================================== -->
-  <!-- 5. ADMIN CONTROL CENTER                    -->
+  <!-- 4. ADMIN CONTROL CENTER                    -->
   <!-- ========================================== -->
   <div id="admin-view" class="hidden min-h-screen bg-neutral-950 text-neutral-100 flex flex-col md:flex-row">
     
@@ -285,6 +289,9 @@
         </button>
         <button onclick="setAdminTab('orders')" id="tab-btn-orders" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-wider bg-neutral-800 hover:bg-neutral-700 text-neutral-300">
           <i data-lucide="shopping-cart" class="w-4 h-4"></i> Web Orders 📦
+        </button>
+        <button onclick="setAdminTab('finance')" id="tab-btn-finance" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-wider bg-neutral-800 hover:bg-neutral-700 text-neutral-300">
+          <i data-lucide="trending-up" class="w-4 h-4"></i> Finance Analytics 📊
         </button>
       </nav>
 
@@ -371,6 +378,34 @@
         <div id="admin-orders-list" class="space-y-4"></div>
       </div>
 
+      <!-- FINANCE TAB -->
+      <div id="admin-tab-finance" class="hidden space-y-6">
+        <div>
+          <h1 class="text-2xl font-bold font-serif text-white">Finance & Revenue Dashboard</h1>
+          <p class="text-xs text-neutral-400">Real-time revenue calculation breakdown for week, month, and year.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="bg-neutral-900 border border-neutral-800 p-6 rounded-2xl space-y-2">
+            <p class="text-xs font-bold uppercase text-amber-500">This Week Sales</p>
+            <p id="finance-week-rev" class="text-3xl font-serif font-bold text-emerald-400">0 ETB</p>
+            <p id="finance-week-count" class="text-xs text-neutral-400">0 Orders Completed</p>
+          </div>
+
+          <div class="bg-neutral-900 border border-neutral-800 p-6 rounded-2xl space-y-2">
+            <p class="text-xs font-bold uppercase text-amber-500">This Month Sales</p>
+            <p id="finance-month-rev" class="text-3xl font-serif font-bold text-emerald-400">0 ETB</p>
+            <p id="finance-month-count" class="text-xs text-neutral-400">0 Orders Completed</p>
+          </div>
+
+          <div class="bg-neutral-900 border border-neutral-800 p-6 rounded-2xl space-y-2">
+            <p class="text-xs font-bold uppercase text-amber-500">This Year Sales</p>
+            <p id="finance-year-rev" class="text-3xl font-serif font-bold text-emerald-400">0 ETB</p>
+            <p id="finance-year-count" class="text-xs text-neutral-400">0 Orders Completed</p>
+          </div>
+        </div>
+      </div>
+
     </main>
   </div>
 
@@ -397,14 +432,14 @@
 
         <!-- DIRECT WEB CHECKOUT FORM -->
         <div class="space-y-2 border-t border-neutral-200 dark:border-neutral-800 pt-3">
-          <p class="text-xs font-bold uppercase text-amber-600">Checkout Details</p>
+          <p class="text-xs font-bold uppercase text-amber-600">Checkout Details (Pay After Delivery)</p>
           <input type="text" id="cust-name" placeholder="Full Name" class="w-full p-2.5 text-xs bg-white dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-700 rounded-xl focus:outline-none" />
           <input type="tel" id="cust-phone" placeholder="Phone Number" class="w-full p-2.5 text-xs bg-white dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-700 rounded-xl focus:outline-none" />
           <input type="text" id="cust-address" placeholder="Delivery Address / City" class="w-full p-2.5 text-xs bg-white dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-700 rounded-xl focus:outline-none" />
         </div>
         
         <button onclick="placeWebsiteOrder()" class="w-full bg-emerald-600 text-white py-3.5 rounded-xl font-bold uppercase text-xs tracking-wider hover:bg-emerald-500 transition">
-          Confirm & Place Order
+          Confirm Order (Pay After Delivery)
         </button>
       </div>
     </div>
@@ -421,7 +456,7 @@
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     const AVAILABLE_SIZES = [39, 40, 41, 42, 43, 44, 45];
-    const AVAILABLE_COLORS = ["Black", "Brown", "Tan", "White", "Navy", "Burgundy"];
+    const AVAILABLE_COLORS = ["Black", "Brown", "White", "Red", "Blue", "Green", "Navy", "Gray"];
 
     let currentLang = "en";
     let isDarkMode = false;
@@ -430,7 +465,7 @@
     let products = [];
     let orders = [];
     let cart = [];
-    let selectedOptions = {}; // Stores chosen size & color per product id
+    let selectedOptions = {};
 
     window.onload = async () => {
       renderCategoryTabs();
@@ -473,7 +508,6 @@
 
       products = data || [];
       
-      // Initialize default selected size & color for each shoe
       products.forEach(p => {
         selectedOptions[p.id] = {
           size: (p.sizes && p.sizes.length > 0) ? p.sizes[0] : null,
@@ -490,13 +524,10 @@
       if (!selectedOptions[prodId]) selectedOptions[prodId] = {};
       selectedOptions[prodId][type] = val;
 
-      // Update button visual styles
       const group = document.querySelectorAll(`[data-opt-${type}="${prodId}"]`);
       group.forEach(btn => {
         if (btn.getAttribute('data-val') == val) {
-          btn.className = type === 'size' 
-            ? "px-2.5 py-1 text-xs rounded-md bg-amber-600 text-white font-bold"
-            : "px-2.5 py-1 text-xs rounded-md bg-amber-600 text-white font-bold";
+          btn.className = "px-2.5 py-1 text-xs rounded-md bg-amber-600 text-white font-bold";
         } else {
           btn.className = "px-2.5 py-1 text-xs rounded-md bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 border border-neutral-300 dark:border-neutral-700";
         }
@@ -566,7 +597,7 @@
 
         if (dbError) throw dbError;
 
-        alert('Product with multiple photos uploaded successfully!');
+        alert('Product with colors & photos uploaded successfully!');
         document.getElementById('add-product-form').reset();
         toggleAddProductForm();
         await fetchProductsFromSupabase();
@@ -607,40 +638,17 @@
           delivery_address: address,
           items: cart,
           total_price: total,
-          status: 'Pending'
+          status: 'Pending',
+          created_at: new Date().toISOString()
         }]);
 
       if (error) {
         alert("Failed to place order. Please try again.");
       } else {
-        alert(`🎉 Order Placed Successfully!\n\nYour Order Tracking Code is: ${orderCode}\nSave this code to track your delivery!`);
+        alert(`🎉 Order Placed Successfully!\n\nDelivery is FREE & you will Pay After Delivery!\nYour Order Code: ${orderCode}`);
         cart = [];
         updateCartUI();
         toggleCartDrawer(false);
-      }
-    }
-
-    async function searchOrderTracking() {
-      const code = document.getElementById('track-code-input').value.trim().toUpperCase();
-      if (!code) return;
-
-      const { data, error } = await supabaseClient
-        .from('orders')
-        .select('*')
-        .eq('order_code', code)
-        .single();
-
-      const box = document.getElementById('tracking-result-box');
-
-      if (error || !data) {
-        alert("Order code not found. Please double-check your code.");
-        box.classList.add('hidden');
-      } else {
-        document.getElementById('res-code').innerText = data.order_code;
-        document.getElementById('res-name').innerText = data.customer_name;
-        document.getElementById('res-price').innerText = `${data.total_price.toLocaleString()} ETB`;
-        document.getElementById('res-status').innerText = data.status;
-        box.classList.remove('hidden');
       }
     }
 
@@ -659,6 +667,8 @@
       }
 
       orders = data || [];
+      calculateFinanceData();
+
       if (orders.length === 0) {
         container.innerHTML = `<div class="p-6 bg-neutral-900 rounded-2xl text-center text-neutral-400">No orders received yet.</div>`;
         return;
@@ -689,9 +699,48 @@
       `).join('');
     }
 
+    function calculateFinanceData() {
+      const now = new Date();
+      const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+      const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+      const startOfYear = new Date(now.getFullYear(), 0, 1);
+
+      let weekRev = 0, weekCount = 0;
+      let monthRev = 0, monthCount = 0;
+      let yearRev = 0, yearCount = 0;
+
+      orders.forEach(o => {
+        const orderDate = o.created_at ? new Date(o.created_at) : new Date();
+        const price = o.total_price || 0;
+
+        if (orderDate >= oneWeekAgo) {
+          weekRev += price;
+          weekCount++;
+        }
+        if (orderDate >= startOfMonth) {
+          monthRev += price;
+          monthCount++;
+        }
+        if (orderDate >= startOfYear) {
+          yearRev += price;
+          yearCount++;
+        }
+      });
+
+      document.getElementById('finance-week-rev').innerText = `${weekRev.toLocaleString()} ETB`;
+      document.getElementById('finance-week-count').innerText = `${weekCount} Orders Total`;
+
+      document.getElementById('finance-month-rev').innerText = `${monthRev.toLocaleString()} ETB`;
+      document.getElementById('finance-month-count').innerText = `${monthCount} Orders Total`;
+
+      document.getElementById('finance-year-rev').innerText = `${yearRev.toLocaleString()} ETB`;
+      document.getElementById('finance-year-count').innerText = `${yearCount} Orders Total`;
+    }
+
     async function updateOrderStatus(id, newStatus) {
       await supabaseClient.from('orders').update({ status: newStatus }).eq('id', id);
       alert("Order status updated!");
+      fetchAdminOrders();
     }
 
     function toggleChatWindow() {
@@ -715,7 +764,7 @@
       setTimeout(() => {
         container.innerHTML += `
           <div class="bg-neutral-800 p-3 rounded-2xl rounded-tl-none text-neutral-200 max-w-[85%]">
-            Thanks for reaching out! A Kenzs Official representative will respond shortly. You can also call us at +251 911 432 094.
+            Thanks for reaching out! A Kenzs Official representative will respond shortly. You can also call us at +251 911 432 094 or +251 777 729 125.
           </div>
         `;
         container.scrollTop = container.scrollHeight;
@@ -736,8 +785,8 @@
       }
 
       grid.innerHTML = items.map(p => {
-        const sizesList = (p.sizes && p.sizes.length > 0) ? p.sizes : [39, 40, 41, 42, 43, 44];
-        const colorsList = (p.colors && p.colors.length > 0) ? p.colors : ["Black", "Brown"];
+        const sizesList = (p.sizes && p.sizes.length > 0) ? p.sizes : AVAILABLE_SIZES;
+        const colorsList = (p.colors && p.colors.length > 0) ? p.colors : AVAILABLE_COLORS;
         const gallery = p.image_urls && p.image_urls.length > 0 ? p.image_urls : [p.image_url];
 
         const activeSize = selectedOptions[p.id]?.size || sizesList[0];
@@ -844,22 +893,28 @@
     }
 
     function setAdminTab(tab) {
+      document.getElementById('admin-tab-inventory').classList.add('hidden');
+      document.getElementById('admin-tab-orders').classList.add('hidden');
+      document.getElementById('admin-tab-finance').classList.add('hidden');
+
+      document.getElementById('tab-btn-inventory').className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-wider bg-neutral-800 hover:bg-neutral-700 text-neutral-300";
+      document.getElementById('tab-btn-orders').className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-wider bg-neutral-800 hover:bg-neutral-700 text-neutral-300";
+      document.getElementById('tab-btn-finance').className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-wider bg-neutral-800 hover:bg-neutral-700 text-neutral-300";
+
       if (tab === 'inventory') {
         document.getElementById('admin-tab-inventory').classList.remove('hidden');
-        document.getElementById('admin-tab-orders').classList.add('hidden');
         document.getElementById('tab-btn-inventory').className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-wider bg-amber-700 text-white";
-        document.getElementById('tab-btn-orders').className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-wider bg-neutral-800 hover:bg-neutral-700 text-neutral-300";
-      } else {
-        document.getElementById('admin-tab-inventory').classList.add('hidden');
+      } else if (tab === 'orders') {
         document.getElementById('admin-tab-orders').classList.remove('hidden');
         document.getElementById('tab-btn-orders').className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-wider bg-amber-700 text-white";
-        document.getElementById('tab-btn-inventory').className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-wider bg-neutral-800 hover:bg-neutral-700 text-neutral-300";
+        fetchAdminOrders();
+      } else if (tab === 'finance') {
+        document.getElementById('admin-tab-finance').classList.remove('hidden');
+        document.getElementById('tab-btn-finance').className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-wider bg-amber-700 text-white";
         fetchAdminOrders();
       }
     }
 
-    function openTrackOrderModal() { document.getElementById('track-order-modal').classList.remove('hidden'); }
-    function closeTrackOrderModal() { document.getElementById('track-order-modal').classList.add('hidden'); }
     function openAdminPortal() { if (isAdminAuthenticated) switchView('admin'); else document.getElementById('admin-login-modal').classList.remove('hidden'); }
     function closeAdminLogin() { document.getElementById('admin-login-modal').classList.add('hidden'); }
 
@@ -956,4 +1011,4 @@
     }
   </script>
 </body>
-          </html>
+  </html>
