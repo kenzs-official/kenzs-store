@@ -227,14 +227,14 @@
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h1 class="text-2xl font-bold font-serif text-white">Product Inventory Engine</h1>
-            <p class="text-xs text-neutral-400">Manage published products with sizes, colors & image uploads.</p>
+            <p class="text-xs text-neutral-400">Manage published products with sizes, colors & direct photo uploads.</p>
           </div>
           <button onclick="toggleAddProductForm()" class="flex items-center justify-center gap-2 bg-amber-600 hover:bg-amber-500 text-white px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider">
             <i data-lucide="plus" class="w-4 h-4"></i> Add New Product
           </button>
         </div>
 
-        <!-- Add Form with File Upload, Sizes & Colors -->
+        <!-- Add Product Form -->
         <form id="add-product-form" onsubmit="handleCreateProduct(event)" class="hidden bg-neutral-900 p-6 rounded-2xl border border-neutral-800 space-y-6">
           <h3 class="text-sm font-bold text-amber-500 uppercase tracking-wider">Publish New Item To Supabase DB</h3>
           
@@ -261,7 +261,7 @@
 
             <!-- DIRECT FILE UPLOAD -->
             <div>
-              <label class="block text-xs uppercase text-neutral-400 font-semibold mb-1">Shoe Image (Upload File)</label>
+              <label class="block text-xs uppercase text-neutral-400 font-semibold mb-1">Shoe Photo (Upload File)</label>
               <input type="file" id="new-p-file" accept="image/*" required class="w-full bg-neutral-950 border border-neutral-800 p-2.5 rounded-xl text-xs text-neutral-300 file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-amber-600 file:text-white hover:file:bg-amber-500" />
             </div>
           </div>
@@ -269,17 +269,13 @@
           <!-- SIZES SELECTION -->
           <div>
             <label class="block text-xs uppercase text-neutral-400 font-semibold mb-2">Available Sizes</label>
-            <div class="flex flex-wrap gap-2" id="size-checkboxes">
-              <!-- Dynamically rendered -->
-            </div>
+            <div class="flex flex-wrap gap-2" id="size-checkboxes"></div>
           </div>
 
           <!-- COLORS SELECTION -->
           <div>
             <label class="block text-xs uppercase text-neutral-400 font-semibold mb-2">Available Colors</label>
-            <div class="flex flex-wrap gap-2" id="color-checkboxes">
-              <!-- Dynamically rendered -->
-            </div>
+            <div class="flex flex-wrap gap-2" id="color-checkboxes"></div>
           </div>
 
           <button type="submit" id="btn-save-prod" class="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-wider">
@@ -297,16 +293,6 @@
   <!-- ========================================== -->
   <!-- MODALS & DRAWERS                           -->
   <!-- ========================================== -->
-
-  <!-- Quick View Product Modal -->
-  <div id="product-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white dark:bg-neutral-900 dark:text-white w-full max-w-2xl rounded-2xl overflow-hidden shadow-2xl relative border border-neutral-200 dark:border-neutral-800">
-      <button onclick="closeModal()" class="absolute top-4 right-4 z-10 w-8 h-8 bg-neutral-100 dark:bg-neutral-800 rounded-full flex items-center justify-center shadow">
-        <i data-lucide="x" class="w-4 h-4"></i>
-      </button>
-      <div id="modal-content" class="grid grid-cols-1 md:grid-cols-2"></div>
-    </div>
-  </div>
 
   <!-- Shopping Cart Drawer -->
   <div id="cart-drawer" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex justify-end">
@@ -333,11 +319,12 @@
 
 
   <!-- ========================================== -->
-  <!-- JAVASCRIPT STATE ENGINE (SUPABASE CONNECTED) -->
+  <!-- JAVASCRIPT STATE ENGINE (SUPABASE PRE-CONFIGURED) -->
   <!-- ========================================== -->
   <script>
-    const SUPABASE_URL = "https://mnmegwnmvxvqreqfsaqx.supabase.co";
-    const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY"; // <--- PASTE YOUR SUPABASE ANON KEY HERE!
+    // PRE-CONFIGURED WITH YOUR EXACT SUPABASE CREDENTIALS!
+    const SUPABASE_URL = "https://sjykaxehoveygeeueqpe.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_9e3zbaru3VYp5OayYPgjgg_6EUpkquA";
 
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -387,7 +374,7 @@
 
       if (error) {
         console.error('Supabase fetch error:', error);
-        grid.innerHTML = `<p class="text-xs text-red-500 py-8 col-span-3 text-center">Failed to load products. Check your Supabase API Key.</p>`;
+        grid.innerHTML = `<p class="text-xs text-red-500 py-8 col-span-3 text-center">Failed to load products. Make sure table "products" exists.</p>`;
         return;
       }
 
@@ -397,7 +384,6 @@
       renderHeroShoe();
     }
 
-    // --- UPLOAD IMAGE FILE & INSERT PRODUCT ---
     async function handleCreateProduct(e) {
       e.preventDefault();
       
@@ -469,7 +455,7 @@
 
       } catch (err) {
         console.error('Upload Error:', err);
-        alert('Failed to upload product. Make sure the storage bucket "product-images" is set up in Supabase.');
+        alert('Failed to upload product. Make sure the storage bucket "product-images" is created in Supabase.');
       } finally {
         saveBtn.innerText = "Upload Image & Save Live Product";
         saveBtn.disabled = false;
@@ -671,7 +657,7 @@
     function renderAdminInventory() {
       const container = document.getElementById('admin-inventory-list');
       if (products.length === 0) {
-        container.innerHTML = `<div class="p-6 bg-neutral-900 rounded-2xl text-center text-neutral-400">No products in Supabase database.</div>`;
+        container.innerHTML = `<div class="p-6 bg-neutral-900 rounded-2xl text-center text-neutral-400">No products in Supabase database. Add one above!</div>`;
         return;
       }
 
