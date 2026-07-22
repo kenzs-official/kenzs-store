@@ -58,14 +58,12 @@
       <span class="tracking-wider">KENZS OFFICIAL STORE ENGINE (SUPABASE LIVE SYNC)</span>
     </div>
     <div class="flex items-center gap-4">
-      <!-- Dark Mode Button -->
       <button onclick="toggleDarkMode()" class="flex items-center gap-1.5 hover:text-amber-400 transition text-neutral-300">
         <i data-lucide="moon" class="w-3.5 h-3.5 hidden dark:block"></i>
         <i data-lucide="sun" class="w-3.5 h-3.5 block dark:hidden"></i>
         <span id="dark-mode-text">Dark Mode</span>
       </button>
 
-      <!-- View Switchers -->
       <button onclick="switchView('store')" id="nav-btn-store" class="text-amber-400 font-bold underline">
         Storefront
       </button>
@@ -85,7 +83,6 @@
     <header class="bg-kenzs-white/90 dark:bg-neutral-900/90 backdrop-blur-md border-b border-kenzs-beige dark:border-neutral-800 sticky top-[33px] z-40 transition-colors">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
         
-        <!-- Brand Logo -->
         <a href="#" class="flex flex-col">
           <span class="font-serif text-2xl tracking-widest text-kenzs-charcoal dark:text-white font-bold uppercase">
             KENZS
@@ -95,22 +92,18 @@
           </span>
         </a>
 
-        <!-- Desktop Navigation -->
         <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-kenzs-charcoal dark:text-neutral-300 tracking-wide uppercase">
           <a href="#hero" class="hover:text-kenzs-brown transition">Home</a>
           <a href="#catalog" class="hover:text-kenzs-brown transition">Shop Catalog</a>
           <a href="https://wa.me/251911432094" target="_blank" class="hover:text-kenzs-brown transition">Contact Us</a>
         </nav>
 
-        <!-- Right Utilities -->
         <div class="flex items-center gap-3">
-          <!-- Language Toggle Button -->
           <button onclick="toggleLanguage()" class="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full bg-kenzs-cream dark:bg-neutral-800 border border-kenzs-beige dark:border-neutral-700 text-kenzs-charcoal dark:text-white hover:bg-kenzs-beige transition">
             <i data-lucide="globe" class="w-3.5 h-3.5 text-kenzs-brown"></i>
             <span id="lang-label">EN | አማ</span>
           </button>
 
-          <!-- Cart Drawer Button -->
           <button onclick="toggleCartDrawer(true)" class="relative flex items-center gap-2 bg-kenzs-charcoal dark:bg-white text-white dark:text-neutral-900 px-4 py-2.5 rounded-full hover:bg-kenzs-brown dark:hover:bg-amber-500 transition shadow-md">
             <i data-lucide="shopping-bag" class="w-4 h-4"></i>
             <span class="text-xs font-semibold tracking-wider uppercase hidden sm:inline">Cart</span>
@@ -148,7 +141,6 @@
           </div>
         </div>
 
-        <!-- Dynamic Hero Top Selection Showcase -->
         <div class="lg:col-span-5 relative">
           <div class="relative mx-auto max-w-md lg:max-w-none">
             <img id="hero-shoe-img" src="https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?auto=format&fit=crop&q=80&w=1000" alt="Kenzs Official Shoe" class="rounded-2xl shadow-2xl object-cover w-full h-[400px] border-4 border-white dark:border-neutral-800" />
@@ -173,16 +165,10 @@
           <p class="text-kenzs-gray dark:text-neutral-400 text-sm mt-1">Discover precision tailoring & luxury craftsmanship.</p>
         </div>
 
-        <!-- Filter Category Tabs -->
-        <div class="flex items-center gap-2 overflow-x-auto pb-2" id="category-tabs">
-          <!-- Dynamically populated -->
-        </div>
+        <div class="flex items-center gap-2 overflow-x-auto pb-2" id="category-tabs"></div>
       </div>
 
-      <!-- Product Grid Container -->
-      <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        <!-- Dynamic products from Supabase -->
-      </div>
+      <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"></div>
     </section>
   </div>
 
@@ -216,7 +202,6 @@
   <!-- ========================================== -->
   <div id="admin-view" class="hidden min-h-screen bg-neutral-950 text-neutral-100 flex flex-col md:flex-row">
     
-    <!-- Sidebar -->
     <aside class="w-full md:w-64 bg-neutral-900 border-r border-neutral-800 p-6 space-y-8 flex-shrink-0">
       <div>
         <h2 class="font-serif text-xl font-bold tracking-widest text-white uppercase">KENZS</h2>
@@ -236,22 +221,20 @@
       </div>
     </aside>
 
-    <!-- Main Admin Content Area -->
     <main class="flex-1 p-4 sm:p-6 lg:p-10 space-y-8 overflow-y-auto max-w-7xl">
       
-      <!-- INVENTORY TAB -->
       <div id="admin-tab-inventory" class="space-y-6">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h1 class="text-2xl font-bold font-serif text-white">Product Inventory Engine</h1>
-            <p class="text-xs text-neutral-400">Manage published products directly inside Supabase database.</p>
+            <p class="text-xs text-neutral-400">Manage published products with sizes, colors & image uploads.</p>
           </div>
           <button onclick="toggleAddProductForm()" class="flex items-center justify-center gap-2 bg-amber-600 hover:bg-amber-500 text-white px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider">
             <i data-lucide="plus" class="w-4 h-4"></i> Add New Product
           </button>
         </div>
 
-        <!-- Add Form -->
+        <!-- Add Form with File Upload, Sizes & Colors -->
         <form id="add-product-form" onsubmit="handleCreateProduct(event)" class="hidden bg-neutral-900 p-6 rounded-2xl border border-neutral-800 space-y-6">
           <h3 class="text-sm font-bold text-amber-500 uppercase tracking-wider">Publish New Item To Supabase DB</h3>
           
@@ -276,21 +259,35 @@
               <input type="number" id="new-p-price" placeholder="7200" required class="w-full bg-neutral-950 border border-neutral-800 p-3 rounded-xl text-sm text-white focus:outline-none" />
             </div>
 
+            <!-- DIRECT FILE UPLOAD -->
             <div>
-              <label class="block text-xs uppercase text-neutral-400 font-semibold mb-1">Image URL</label>
-              <input type="text" id="new-p-img" placeholder="https://..." required class="w-full bg-neutral-950 border border-neutral-800 p-3 rounded-xl text-sm text-white focus:outline-none" />
+              <label class="block text-xs uppercase text-neutral-400 font-semibold mb-1">Shoe Image (Upload File)</label>
+              <input type="file" id="new-p-file" accept="image/*" required class="w-full bg-neutral-950 border border-neutral-800 p-2.5 rounded-xl text-xs text-neutral-300 file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-amber-600 file:text-white hover:file:bg-amber-500" />
+            </div>
+          </div>
+
+          <!-- SIZES SELECTION -->
+          <div>
+            <label class="block text-xs uppercase text-neutral-400 font-semibold mb-2">Available Sizes</label>
+            <div class="flex flex-wrap gap-2" id="size-checkboxes">
+              <!-- Dynamically rendered -->
+            </div>
+          </div>
+
+          <!-- COLORS SELECTION -->
+          <div>
+            <label class="block text-xs uppercase text-neutral-400 font-semibold mb-2">Available Colors</label>
+            <div class="flex flex-wrap gap-2" id="color-checkboxes">
+              <!-- Dynamically rendered -->
             </div>
           </div>
 
           <button type="submit" id="btn-save-prod" class="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-wider">
-            Save & Publish Live Across All Devices
+            Upload Image & Save Live Product
           </button>
         </form>
 
-        <!-- Product Inventory Container -->
-        <div id="admin-inventory-list" class="space-y-4">
-          <!-- JS Populated -->
-        </div>
+        <div id="admin-inventory-list" class="space-y-4"></div>
       </div>
 
     </main>
@@ -307,9 +304,7 @@
       <button onclick="closeModal()" class="absolute top-4 right-4 z-10 w-8 h-8 bg-neutral-100 dark:bg-neutral-800 rounded-full flex items-center justify-center shadow">
         <i data-lucide="x" class="w-4 h-4"></i>
       </button>
-      <div id="modal-content" class="grid grid-cols-1 md:grid-cols-2">
-        <!-- Rendered dynamically -->
-      </div>
+      <div id="modal-content" class="grid grid-cols-1 md:grid-cols-2"></div>
     </div>
   </div>
 
@@ -321,9 +316,7 @@
         <button onclick="toggleCartDrawer(false)"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
 
-      <div id="cart-items-container" class="p-6 overflow-y-auto flex-1 space-y-4">
-        <!-- Dynamic Cart Items -->
-      </div>
+      <div id="cart-items-container" class="p-6 overflow-y-auto flex-1 space-y-4"></div>
 
       <div class="p-6 border-t border-kenzs-beige dark:border-neutral-800 bg-kenzs-cream dark:bg-neutral-950 space-y-4">
         <div class="flex justify-between items-center">
@@ -343,13 +336,13 @@
   <!-- JAVASCRIPT STATE ENGINE (SUPABASE CONNECTED) -->
   <!-- ========================================== -->
   <script>
-    // -------------------------------------------------------------
-    // SUPABASE CONFIGURATION
-    // -------------------------------------------------------------
     const SUPABASE_URL = "https://mnmegwnmvxvqreqfsaqx.supabase.co";
     const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY"; // <--- PASTE YOUR SUPABASE ANON KEY HERE!
 
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const AVAILABLE_SIZES = [39, 40, 41, 42, 43, 44, 45];
+    const AVAILABLE_COLORS = ["Black", "Brown", "Tan", "White", "Navy", "Burgundy"];
 
     let currentLang = "en";
     let isDarkMode = false;
@@ -358,14 +351,31 @@
     let products = [];
     let cart = [];
 
-    // Initialize App & Fetch Live Products from Supabase
     window.onload = async () => {
       renderCategoryTabs();
+      renderAdminOptionCheckboxes();
       await fetchProductsFromSupabase();
       lucide.createIcons();
     };
 
-    // --- FETCH PRODUCTS FROM SUPABASE ---
+    function renderAdminOptionCheckboxes() {
+      const sizesContainer = document.getElementById('size-checkboxes');
+      sizesContainer.innerHTML = AVAILABLE_SIZES.map(s => `
+        <label class="flex items-center gap-1.5 bg-neutral-950 border border-neutral-800 px-3 py-1.5 rounded-lg text-xs cursor-pointer hover:border-amber-500">
+          <input type="checkbox" name="admin-size" value="${s}" class="accent-amber-500" />
+          <span>${s}</span>
+        </label>
+      `).join('');
+
+      const colorsContainer = document.getElementById('color-checkboxes');
+      colorsContainer.innerHTML = AVAILABLE_COLORS.map(c => `
+        <label class="flex items-center gap-1.5 bg-neutral-950 border border-neutral-800 px-3 py-1.5 rounded-lg text-xs cursor-pointer hover:border-amber-500">
+          <input type="checkbox" name="admin-color" value="${c}" class="accent-amber-500" />
+          <span>${c}</span>
+        </label>
+      `).join('');
+    }
+
     async function fetchProductsFromSupabase() {
       const grid = document.getElementById('product-grid');
       grid.innerHTML = `<p class="text-xs text-neutral-400 py-8 col-span-3 text-center">Loading latest products from cloud...</p>`;
@@ -387,44 +397,85 @@
       renderHeroShoe();
     }
 
-    // --- ADD NEW PRODUCT TO SUPABASE ---
+    // --- UPLOAD IMAGE FILE & INSERT PRODUCT ---
     async function handleCreateProduct(e) {
       e.preventDefault();
       
       const saveBtn = document.getElementById('btn-save-prod');
-      saveBtn.innerText = "Publishing to Cloud...";
+      saveBtn.innerText = "Uploading Image to Cloud Storage...";
       saveBtn.disabled = true;
 
-      const name = document.getElementById('new-p-name').value;
-      const price = parseFloat(document.getElementById('new-p-price').value);
-      const category = document.getElementById('new-p-cat').value;
-      const imgUrl = document.getElementById('new-p-img').value;
+      try {
+        const fileInput = document.getElementById('new-p-file');
+        const file = fileInput.files[0];
 
-      const { data, error } = await supabaseClient
-        .from('products')
-        .insert([
-          { 
-            name: name, 
-            price: price, 
-            category: category, 
-            image_url: imgUrl 
-          }
-        ]);
+        if (!file) {
+          alert('Please select an image file to upload.');
+          saveBtn.innerText = "Upload Image & Save Live Product";
+          saveBtn.disabled = false;
+          return;
+        }
 
-      saveBtn.innerText = "Save & Publish Live Across All Devices";
-      saveBtn.disabled = false;
+        // 1. Upload File to Supabase Storage Bucket
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
+        const filePath = `shoes/${fileName}`;
 
-      if (error) {
-        console.error('Error publishing product:', error);
-        alert('Failed to publish product to database.');
-      } else {
-        alert('Product successfully published! It is now visible on all phones and desktops.');
+        const { data: uploadData, error: uploadError } = await supabaseClient
+          .storage
+          .from('product-images')
+          .upload(filePath, file);
+
+        if (uploadError) {
+          throw uploadError;
+        }
+
+        // Get Public URL of uploaded image
+        const { data: publicUrlData } = supabaseClient
+          .storage
+          .from('product-images')
+          .getPublicUrl(filePath);
+
+        const imageUrl = publicUrlData.publicUrl;
+
+        // 2. Gather Selected Sizes & Colors
+        const selectedSizes = Array.from(document.querySelectorAll('input[name="admin-size"]:checked')).map(cb => cb.value);
+        const selectedColors = Array.from(document.querySelectorAll('input[name="admin-color"]:checked')).map(cb => cb.value);
+
+        const name = document.getElementById('new-p-name').value;
+        const price = parseFloat(document.getElementById('new-p-price').value);
+        const category = document.getElementById('new-p-cat').value;
+
+        // 3. Insert Product into DB
+        const { error: dbError } = await supabaseClient
+          .from('products')
+          .insert([
+            { 
+              name: name, 
+              price: price, 
+              category: category, 
+              image_url: imageUrl,
+              sizes: selectedSizes,
+              colors: selectedColors
+            }
+          ]);
+
+        if (dbError) throw dbError;
+
+        alert('Product & Image successfully uploaded! Available live across all devices.');
+        document.getElementById('add-product-form').reset();
         toggleAddProductForm();
         await fetchProductsFromSupabase();
+
+      } catch (err) {
+        console.error('Upload Error:', err);
+        alert('Failed to upload product. Make sure the storage bucket "product-images" is set up in Supabase.');
+      } finally {
+        saveBtn.innerText = "Upload Image & Save Live Product";
+        saveBtn.disabled = false;
       }
     }
 
-    // --- DELETE PRODUCT FROM SUPABASE ---
     async function deleteProduct(id) {
       if(confirm("Are you sure you want to delete this product across all devices?")) {
         const { error } = await supabaseClient
@@ -440,7 +491,6 @@
       }
     }
 
-    // Dark Mode
     function toggleDarkMode() {
       isDarkMode = !isDarkMode;
       if (isDarkMode) {
@@ -452,13 +502,9 @@
       }
     }
 
-    // Admin Auth
     function openAdminPortal() {
-      if (isAdminAuthenticated) {
-        switchView('admin');
-      } else {
-        document.getElementById('admin-login-modal').classList.remove('hidden');
-      }
+      if (isAdminAuthenticated) switchView('admin');
+      else document.getElementById('admin-login-modal').classList.remove('hidden');
     }
 
     function closeAdminLogin() {
@@ -478,7 +524,6 @@
       }
     }
 
-    // Toggle Views
     function switchView(view) {
       if (view === 'store') {
         document.getElementById('store-view').classList.remove('hidden');
@@ -493,7 +538,6 @@
       }
     }
 
-    // Hero Showcase Render
     function renderHeroShoe() {
       if (products.length > 0) {
         const p = products[0];
@@ -503,7 +547,6 @@
       }
     }
 
-    // Language Toggle
     function toggleLanguage() {
       currentLang = currentLang === "en" ? "am" : "en";
       document.getElementById('lang-label').innerText = currentLang === "en" ? "EN | አማ" : "አማ | EN";
@@ -513,7 +556,6 @@
         : 'በእርግጠኝነት <span class="text-kenzs-brown dark:text-amber-500 italic font-normal">ይራመዱ።</span>';
     }
 
-    // Categories
     function renderCategoryTabs() {
       const cats = ["All", "Sneakers", "Leather Shoes", "Boots", "Formal Shoes"];
       const container = document.getElementById('category-tabs');
@@ -530,7 +572,6 @@
       renderProducts();
     }
 
-    // Render Store Catalog
     function renderProducts() {
       const grid = document.getElementById('product-grid');
       const items = selectedCategory === "All" ? products : products.filter(p => p.category === selectedCategory);
@@ -540,32 +581,46 @@
         return;
       }
 
-      grid.innerHTML = items.map(p => `
-        <div class="bg-white dark:bg-neutral-900 rounded-2xl border border-kenzs-beige dark:border-neutral-800 overflow-hidden hover:shadow-xl transition flex flex-col justify-between relative group">
-          
-          <div class="aspect-[4/3] bg-kenzs-cream dark:bg-neutral-800 overflow-hidden relative">
-            <img src="${p.image_url || 'https://images.unsplash.com/photo-1614252235316-8c857d38b5f4'}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
-          </div>
+      grid.innerHTML = items.map(p => {
+        const sizesList = p.sizes && p.sizes.length > 0 ? p.sizes.join(', ') : 'Standard';
+        const colorsList = p.colors && p.colors.length > 0 ? p.colors.join(', ') : 'Standard';
 
-          <div class="p-6 space-y-3">
-            <span class="text-xs text-kenzs-gray dark:text-neutral-400 uppercase font-semibold">${p.category || 'Footwear'}</span>
-            <h3 class="font-serif text-lg font-bold text-kenzs-charcoal dark:text-white">${p.name}</h3>
+        return `
+          <div class="bg-white dark:bg-neutral-900 rounded-2xl border border-kenzs-beige dark:border-neutral-800 overflow-hidden hover:shadow-xl transition flex flex-col justify-between relative group">
             
-            <div class="flex items-center gap-2">
-              <span class="font-serif font-bold text-lg text-kenzs-brown dark:text-amber-500">${p.price.toLocaleString()} ETB</span>
+            <div class="aspect-[4/3] bg-kenzs-cream dark:bg-neutral-800 overflow-hidden relative">
+              <img src="${p.image_url || 'https://images.unsplash.com/photo-1614252235316-8c857d38b5f4'}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
             </div>
 
-            <div class="flex justify-between items-center pt-2">
-              <button onclick="addToCart('${p.id}')" class="w-full bg-kenzs-cream dark:bg-neutral-800 border border-kenzs-beige dark:border-neutral-700 py-2.5 rounded-xl text-xs font-semibold uppercase hover:bg-kenzs-brown hover:text-white dark:hover:bg-amber-600 transition">
-                Add To Cart
-              </button>
+            <div class="p-6 space-y-3">
+              <div class="flex justify-between items-center">
+                <span class="text-xs text-kenzs-gray dark:text-neutral-400 uppercase font-semibold">${p.category || 'Footwear'}</span>
+                <span class="text-[10px] bg-amber-500/10 text-amber-600 dark:text-amber-400 px-2 py-0.5 rounded font-bold uppercase">In Stock</span>
+              </div>
+
+              <h3 class="font-serif text-lg font-bold text-kenzs-charcoal dark:text-white">${p.name}</h3>
+              
+              <!-- SIZES & COLORS DISPLAY -->
+              <div class="text-xs space-y-1 text-neutral-500 dark:text-neutral-400 border-t border-neutral-100 dark:border-neutral-800 pt-2">
+                <p><strong class="text-neutral-700 dark:text-neutral-300">Sizes:</strong> ${sizesList}</p>
+                <p><strong class="text-neutral-700 dark:text-neutral-300">Colors:</strong> ${colorsList}</p>
+              </div>
+
+              <div class="flex items-center gap-2 pt-1">
+                <span class="font-serif font-bold text-lg text-kenzs-brown dark:text-amber-500">${p.price.toLocaleString()} ETB</span>
+              </div>
+
+              <div class="flex justify-between items-center pt-2">
+                <button onclick="addToCart('${p.id}')" class="w-full bg-kenzs-cream dark:bg-neutral-800 border border-kenzs-beige dark:border-neutral-700 py-2.5 rounded-xl text-xs font-semibold uppercase hover:bg-kenzs-brown hover:text-white dark:hover:bg-amber-600 transition">
+                  Add To Cart
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
     }
 
-    // Cart Management
     function addToCart(id) {
       const p = products.find(item => item.id == id);
       if(p) {
@@ -587,7 +642,8 @@
         <div class="flex items-center justify-between border-b border-neutral-200 dark:border-neutral-800 pb-3">
           <div>
             <p class="font-bold text-sm">${item.name}</p>
-            <p class="text-xs font-bold text-kenzs-brown dark:textamber-500">${item.price.toLocaleString()} ETB</p>
+            <p class="text-xs text-neutral-400">Size: ${item.sizes ? item.sizes.join('/') : 'Std'}</p>
+            <p class="text-xs font-bold text-kenzs-brown dark:text-amber-500">${item.price.toLocaleString()} ETB</p>
           </div>
           <button onclick="removeFromCart(${idx})" class="text-red-500 text-xs font-bold">Remove</button>
         </div>
@@ -608,7 +664,6 @@
       else drawer.classList.add('hidden');
     }
 
-    // Admin Operations
     function toggleAddProductForm() {
       document.getElementById('add-product-form').classList.toggle('hidden');
     }
@@ -627,6 +682,10 @@
             <div>
               <h4 class="font-bold text-white text-base">${p.name}</h4>
               <p class="text-xs text-neutral-400">${p.category}</p>
+              <div class="flex gap-4 text-[11px] text-amber-500/80 mt-1">
+                <span>Sizes: ${p.sizes && p.sizes.length ? p.sizes.join(', ') : 'None'}</span>
+                <span>Colors: ${p.colors && p.colors.length ? p.colors.join(', ') : 'None'}</span>
+              </div>
             </div>
           </div>
 
@@ -645,4 +704,4 @@
     }
   </script>
 </body>
-  </html>
+</html>
