@@ -642,7 +642,11 @@
 
     const AVAILABLE_SIZES = [39, 40, 41, 42, 43, 44, 45];
     const AVAILABLE_COLORS = ["Black", "Brown", "White", "Red", "Blue", "Green", "Navy", "Gray"];
-
+// Check this line in your code:
+const { data, error } = await supabase
+  .storage
+  .from('product-images') // Must match exact bucket name
+  .upload(`shoes/${fileName}`, file); // Make sure folder structure exists or remove 'shoes/'
     // AMHARIC TRANSLATION DICTIONARY
     const translations = {
       en: {
