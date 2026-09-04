@@ -1,793 +1,1243 @@
 <!DOCTYPE html>
-<html lang="en"
+<html lang="en" class="scroll-smooth">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>KENZS OFFICIAL — Premium Men's Footwear</title>
+  <title>Kenzs Official | Premium Men's Footwear</title>
   
-  <!-- Fonts -->
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Supabase JS Client CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
-  
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+
   <script>
     tailwind.config = {
+      darkMode: 'class',
       theme: {
         extend: {
           colors: {
-            brand: {
-              brown: '#8B5E3C',
-              darkBrown: '#4A3319',
-              lightBrown: '#C69C6D',
-              cream: '#FDFBF7',
-              beige: '#F4EFEA',
-              black: '#121212',
+            kenzs: {
+              white: "#FFFFFF",
+              cream: "#FBF9F5",
+              beige: "#F2ECE1",
+              brown: {
+                DEFAULT: "#5A3E2B",
+                light: "#8C684D",
+                dark: "#3B271A",
+              },
+              charcoal: "#1A1A1A",
+              gray: "#737373",
             }
           },
           fontFamily: {
-            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-            serif: ['"Playfair Display"', 'serif'],
+            serif: ["'Playfair Display'", "serif"],
+            sans: ["'Inter'", "sans-serif"],
           }
         }
       }
     }
   </script>
-
-  <!-- React & React DOM -->
-  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-  
-  <!-- Babel for JSX -->
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-
-  <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@latest"></script>
-
-  <!-- Supabase JS Client -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <style>
-    body {
-      background-color: #FDFBF7;
-      color: #121212;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-    }
-    .font-serif {
-      font-family: 'Playfair Display', serif;
-    }
-  </style>
 </head>
-<body>
-  <div id="root"></div>
+<body class="bg-kenzs-white dark:bg-neutral-950 text-kenzs-charcoal dark:text-neutral-100 font-sans antialiased selection:bg-kenzs-brown selection:text-white transition-colors duration-200">
 
-  <script type="text/babel">
-    const { useState, useEffect, useMemo } = React;
+  <!-- TOP BAR -->
+  <div class="bg-kenzs-charcoal text-white text-[11px] font-semibold py-2 px-4 flex justify-between items-center border-b border-neutral-800 sticky top-0 z-50">
+    <div class="flex items-center gap-2">
+      <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+      <span class="tracking-wider">KENZS OFFICIAL STORE ENGINE</span>
+    </div>
+    <div class="flex items-center gap-4">
+      <button onclick="toggleDarkMode()" class="flex items-center gap-1.5 hover:text-amber-400 transition text-neutral-300">
+        <i data-lucide="moon" class="w-3.5 h-3.5 hidden dark:block"></i>
+        <i data-lucide="sun" class="w-3.5 h-3.5 block dark:hidden"></i>
+        <span id="dark-mode-text">Dark Mode</span>
+      </button>
 
-    // --- SUPABASE CLIENT CONFIGURATION ---
-    // Replace these placeholder values with your Supabase Project details
-    const SUPABASE_URL = "https://your-supabase-url.supabase.co";
-    const SUPABASE_ANON_KEY = "your-supabase-anon-key";
+      <button onclick="switchView('store')" id="nav-btn-store" class="text-amber-400 font-bold underline">
+        Storefront
+      </button>
+      <button onclick="openAdminPortal()" id="nav-btn-admin" class="hover:text-amber-400 transition text-neutral-400">
+        Admin Portal🔒
+      </button>
+    </div>
+  </div>
+
+
+  <!-- ========================================== -->
+  <!-- 1. STOREFRONT VIEW                         -->
+  <!-- ========================================== -->
+  <div id="store-view">
+
+    <!-- Header -->
+    <header class="bg-kenzs-white/90 dark:bg-neutral-900/90 backdrop-blur-md border-b border-kenzs-beige dark:border-neutral-800 sticky top-[33px] z-40 transition-colors">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+        
+        <a href="#" class="flex flex-col">
+          <span class="font-serif text-2xl tracking-widest text-kenzs-charcoal dark:text-white font-bold uppercase">
+            KENZS
+          </span>
+          <span class="text-[9px] tracking-[0.3em] text-kenzs-brown uppercase font-medium -mt-1">
+            OFFICIAL
+          </span>
+        </a>
+
+        <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-kenzs-charcoal dark:text-neutral-300 tracking-wide uppercase">
+          <a href="#hero" class="hover:text-kenzs-brown transition">Home</a>
+          <a href="#new-arrivals" class="hover:text-kenzs-brown transition">New Arrivals</a>
+          <a href="#categories" class="hover:text-kenzs-brown transition">Categories</a>
+          <a href="#catalog" class="hover:text-kenzs-brown transition">Catalog</a>
+          <a href="#about" class="hover:text-kenzs-brown transition">About</a>
+          <a href="https://wa.me/251911432094?text=Hello%20Kenzs%20Official,%20I%20would%20like%20to%20order%20shoes." target="_blank" class="hover:text-emerald-500 transition text-emerald-600 font-bold flex items-center gap-1">
+            <i data-lucide="message-circle" class="w-4 h-4"></i> WhatsApp
+          </a>
+        </nav>
+
+        <div class="flex items-center gap-3">
+          <button onclick="toggleLanguage()" class="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full bg-kenzs-cream dark:bg-neutral-800 border border-kenzs-beige dark:border-neutral-700 text-kenzs-charcoal dark:text-white hover:bg-kenzs-beige transition">
+            <i data-lucide="globe" class="w-3.5 h-3.5 text-kenzs-brown"></i>
+            <span id="lang-label">EN | አማ</span>
+          </button>
+
+          <button onclick="toggleCartDrawer(true)" class="relative flex items-center gap-2 bg-kenzs-charcoal dark:bg-white text-white dark:text-neutral-900 px-4 py-2.5 rounded-full hover:bg-kenzs-brown dark:hover:bg-amber-500 transition shadow-md">
+            <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+            <span class="text-xs font-semibold tracking-wider uppercase hidden sm:inline">Cart</span>
+            <span id="cart-count-badge" class="bg-kenzs-brown dark:bg-amber-600 text-white text-[11px] font-bold px-2 py-0.5 rounded-full">0</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Announcement Banner -->
+    <div class="bg-amber-600 text-white py-2 px-4 text-center text-xs font-bold tracking-wider uppercase flex flex-wrap justify-center items-center gap-6">
+      <span class="flex items-center gap-1.5"><i data-lucide="truck" class="w-4 h-4"></i> FREE DELIVERY IN ADDIS ABABA</span>
+      <span class="hidden sm:inline">•</span>
+      <span class="flex items-center gap-1.5"><i data-lucide="shield-check" class="w-4 h-4"></i> PAY AFTER DELIVERY</span>
+      <span class="hidden sm:inline">•</span>
+      <span class="flex items-center gap-1.5"><i data-lucide="percent" class="w-4 h-4"></i> EXCLUSIVE DISCOUNTS AVAILABLE</span>
+    </div>
+
+    <!-- 1. HERO BANNER -->
+    <section id="hero" class="bg-kenzs-cream dark:bg-neutral-900/50 py-16 lg:py-24 border-b border-kenzs-beige dark:border-neutral-800">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        
+        <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+          <div class="inline-flex items-center gap-2 bg-amber-500/10 border border-amber-500/30 px-3.5 py-1.5 rounded-full text-xs font-bold text-amber-600 dark:text-amber-400 tracking-widest uppercase">
+            <span>✨ Premium Handcrafted Ethiopian Footwear</span>
+          </div>
+
+          <h1 id="hero-title" class="font-serif text-4xl sm:text-6xl font-bold text-kenzs-charcoal dark:text-white leading-[1.1]">
+            Unmatched Craft.<br /><span class="text-kenzs-brown dark:text-amber-500 italic font-normal">Uncompromised Style.</span>
+          </h1>
+
+          <p id="hero-desc" class="text-kenzs-gray dark:text-neutral-400 text-base sm:text-lg max-w-xl mx-auto lg:mx-0 leading-relaxed">
+            Step into handcrafted genuine leather footwear tailored for elegance, prestige, and all-day comfort.
+          </p>
+
+          <div class="pt-2 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+            <a href="#catalog" class="w-full sm:w-auto text-center bg-kenzs-brown text-white px-8 py-4 rounded-full font-semibold text-sm uppercase tracking-wider hover:bg-kenzs-brown-dark transition shadow-lg">
+              Shop Collection
+            </a>
+            <a href="https://wa.me/251911432094?text=Hello%20Kenzs%20Official,%20I%20want%20to%20order%20directly." target="_blank" class="w-full sm:w-auto text-center flex items-center justify-center gap-2 bg-emerald-600 text-white px-8 py-4 rounded-full font-semibold text-sm uppercase tracking-wider hover:bg-emerald-500 transition shadow-lg">
+              <i data-lucide="message-circle" class="w-4 h-4"></i>
+              <span>Order via WhatsApp</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="lg:col-span-5 relative">
+          <div class="relative mx-auto max-w-md lg:max-w-none">
+            <img id="hero-shoe-img" src="https://images.unsplash.com/photo-1614252235316-8c857d38b5f4" alt="Kenzs Official Shoe" class="rounded-2xl shadow-2xl object-cover w-full h-[420px] border-4 border-white dark:border-neutral-800" />
+            <div class="absolute bottom-6 left-6 right-6 bg-white/90 dark:bg-neutral-900/90 backdrop-blur-md p-4 rounded-xl border border-white/40 dark:border-neutral-700 shadow-lg flex items-center justify-between">
+              <div>
+                <p class="text-xs font-semibold text-kenzs-brown dark:text-amber-400 uppercase tracking-wider">Featured Pair</p>
+                <p id="hero-shoe-title" class="text-sm font-bold text-kenzs-charcoal dark:text-white">Loading...</p>
+              </div>
+              <span id="hero-shoe-price" class="text-sm font-serif font-bold text-kenzs-brown dark:text-amber-500">0 ETB</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 2. WHY CHOOSE US -->
+    <section class="py-12 bg-white dark:bg-neutral-950 border-b border-kenzs-beige dark:border-neutral-800">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          
+          <div class="flex items-center gap-4 p-4 rounded-2xl bg-kenzs-cream dark:bg-neutral-900 border border-kenzs-beige dark:border-neutral-800">
+            <div class="p-3.5 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded-xl">
+              <i data-lucide="users" class="w-7 h-7"></i>
+            </div>
+            <div>
+              <h4 class="font-bold text-sm text-kenzs-charcoal dark:text-white uppercase">300+ Trusted Customers</h4>
+              <p class="text-xs text-neutral-500 dark:text-neutral-400">Delivering quality across Ethiopia daily.</p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-4 p-4 rounded-2xl bg-kenzs-cream dark:bg-neutral-900 border border-kenzs-beige dark:border-neutral-800">
+            <div class="p-3.5 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded-xl">
+              <i data-lucide="award" class="w-7 h-7"></i>
+            </div>
+            <div>
+              <h4 class="font-bold text-sm text-kenzs-charcoal dark:text-white uppercase">100% Authentic Shoes</h4>
+              <p class="text-xs text-neutral-500 dark:text-neutral-400">Genuine leather & premium craftsmanship.</p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-4 p-4 rounded-2xl bg-kenzs-cream dark:bg-neutral-900 border border-kenzs-beige dark:border-neutral-800">
+            <div class="p-3.5 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded-xl">
+              <i data-lucide="truck" class="w-7 h-7"></i>
+            </div>
+            <div>
+              <h4 class="font-bold text-sm text-kenzs-charcoal dark:text-white uppercase">Fast & Free Delivery</h4>
+              <p class="text-xs text-neutral-500 dark:text-neutral-400">Doorstep dropoff with Pay After Delivery.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. CATEGORIES SECTION -->
+    <section id="categories" class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center space-y-2 mb-10">
+        <span class="text-xs font-bold text-amber-600 uppercase tracking-widest">Browse Collection</span>
+        <h2 class="font-serif text-3xl font-bold text-kenzs-charcoal dark:text-white">Shop by Category</h2>
+      </div>
+
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div onclick="filterCategory('Sneakers')" class="group cursor-pointer relative rounded-2xl overflow-hidden h-48 border border-neutral-200 dark:border-neutral-800">
+          <img src="https://images.unsplash.com/photo-1552346154-21d32810aba3" class="w-full h-full object-cover group-hover:scale-110 transition duration-500" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent flex items-end p-4">
+            <div>
+              <h3 class="text-white font-bold text-base">Sneakers</h3>
+              <p class="text-[10px] text-amber-400 uppercase font-semibold">Casual & Sport</p>
+            </div>
+          </div>
+        </div>
+
+        <div onclick="filterCategory('Leather Shoes')" class="group cursor-pointer relative rounded-2xl overflow-hidden h-48 border border-neutral-200 dark:border-neutral-800">
+          <img src="https://images.unsplash.com/photo-1614252235316-8c857d38b5f4" class="w-full h-full object-cover group-hover:scale-110 transition duration-500" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent flex items-end p-4">
+            <div>
+              <h3 class="text-white font-bold text-base">Leather Shoes</h3>
+              <p class="text-[10px] text-amber-400 uppercase font-semibold">Classic & Formal</p>
+            </div>
+          </div>
+        </div>
+
+        <div onclick="filterCategory('Boots')" class="group cursor-pointer relative rounded-2xl overflow-hidden h-48 border border-neutral-200 dark:border-neutral-800">
+          <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff" class="w-full h-full object-cover group-hover:scale-110 transition duration-500" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent flex items-end p-4">
+            <div>
+              <h3 class="text-white font-bold text-base">Boots</h3>
+              <p class="text-[10px] text-amber-400 uppercase font-semibold">Durable & Rugged</p>
+            </div>
+          </div>
+        </div>
+
+        <div onclick="filterCategory('Formal Shoes')" class="group cursor-pointer relative rounded-2xl overflow-hidden h-48 border border-neutral-200 dark:border-neutral-800">
+          <img src="https://images.unsplash.com/photo-1533867617858-e7b97e060509" class="w-full h-full object-cover group-hover:scale-110 transition duration-500" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent flex items-end p-4">
+            <div>
+              <h3 class="text-white font-bold text-base">Formal Shoes</h3>
+              <p class="text-[10px] text-amber-400 uppercase font-semibold">Prestige Executive</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. NEW ARRIVALS & CATALOG SECTION -->
+    <section id="catalog" class="py-16 bg-kenzs-cream/50 dark:bg-neutral-900/30 border-y border-kenzs-beige dark:border-neutral-800">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6">
+          <div>
+            <span id="new-arrivals" class="text-xs font-bold text-amber-600 uppercase tracking-widest">New Arrivals & Catalog</span>
+            <h2 class="font-serif text-3xl font-bold text-kenzs-charcoal dark:text-white">Explore All Footwear</h2>
+          </div>
+
+          <div class="flex items-center gap-2 overflow-x-auto pb-2" id="category-tabs"></div>
+        </div>
+
+        <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+      </div>
+    </section>
+
+    <!-- 5. BEST SELLERS SPOTLIGHT -->
+    <section class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="bg-neutral-900 text-white rounded-3xl p-8 lg:p-12 border border-neutral-800 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        <div class="lg:col-span-6 space-y-4">
+          <span class="bg-amber-500 text-black font-bold text-[10px] uppercase px-3 py-1 rounded-full">Top Seller Spotlight</span>
+          <h2 class="font-serif text-3xl sm:text-4xl font-bold">Ethiopian Artisan Genuine Leather Edition</h2>
+          <p class="text-neutral-400 text-sm leading-relaxed">
+            Engineered with reinforced sole stitching, premium high-grade leather, and custom comfort insoles. Verified choice of over 300 customers in Addis Ababa.
+          </p>
+          <div class="pt-2 flex gap-4">
+            <a href="#catalog" class="bg-amber-600 text-white px-6 py-3 rounded-full text-xs font-bold uppercase hover:bg-amber-500 transition">Order Best Seller</a>
+          </div>
+        </div>
+        <div class="lg:col-span-6">
+          <img src="https://images.unsplash.com/photo-1614252235316-8c857d38b5f4" class="rounded-2xl w-full h-80 object-cover shadow-2xl border border-neutral-800" />
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. CUSTOMER REVIEWS -->
+    <section class="py-16 bg-white dark:bg-neutral-950 border-t border-kenzs-beige dark:border-neutral-800">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+        <div class="text-center space-y-2">
+          <span class="text-xs font-bold text-amber-600 uppercase tracking-widest">Testimonials</span>
+          <h2 class="font-serif text-3xl font-bold text-kenzs-charcoal dark:text-white">What Our Customers Say</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="bg-kenzs-cream dark:bg-neutral-900 p-6 rounded-2xl border border-kenzs-beige dark:border-neutral-800 space-y-3">
+            <div class="flex text-amber-500 gap-1">
+              <i data-lucide="star" class="w-4 h-4 fill-amber-500"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-amber-500"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-amber-500"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-amber-500"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-amber-500"></i>
+            </div>
+            <p class="text-xs text-neutral-600 dark:text-neutral-300 italic">"The leather quality is incredible. Fast delivery in Merkato and fitting was perfect!"</p>
+            <p class="text-xs font-bold text-kenzs-charcoal dark:text-white uppercase">— Solomon T.</p>
+          </div>
+
+          <div class="bg-kenzs-cream dark:bg-neutral-900 p-6 rounded-2xl border border-kenzs-beige dark:border-neutral-800 space-y-3">
+            <div class="flex text-amber-500 gap-1">
+              <i data-lucide="star" class="w-4 h-4 fill-amber-500"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-amber-500"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-amber-500"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-amber-500"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-amber-500"></i>
+            </div>
+            <p class="text-xs text-neutral-600 dark:text-neutral-300 italic">"Loved the Pay After Delivery option. Showed up on time, shoes look even better in person."</p>
+            <p class="text-xs font-bold text-kenzs-charcoal dark:text-white uppercase">— Yonas M.</p>
+          </div>
+
+          <div class="bg-kenzs-cream dark:bg-neutral-900 p-6 rounded-2xl border border-kenzs-beige dark:border-neutral-800 space-y-3">
+            <div class="flex text-amber-500 gap-1">
+              <i data-lucide="star" class="w-4 h-4 fill-amber-500"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-amber-500"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-amber-500"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-amber-500"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-amber-500"></i>
+            </div>
+            <p class="text-xs text-neutral-600 dark:text-neutral-300 italic">"Bought a pair of formal leather shoes for work. Exceptional comfort and craft."</p>
+            <p class="text-xs font-bold text-kenzs-charcoal dark:text-white uppercase">— Dawit A.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. INSTAGRAM GALLERY -->
+    <section class="py-16 bg-kenzs-cream/40 dark:bg-neutral-900/40 border-t border-kenzs-beige dark:border-neutral-800">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 text-center">
+        <div>
+          <span class="text-xs font-bold text-amber-600 uppercase tracking-widest">Follow Our Style</span>
+          <h2 class="font-serif text-3xl font-bold text-kenzs-charcoal dark:text-white">Instagram @kenzsofficial1234</h2>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <a href="https://instagram.com/kenzsofficial1234" target="_blank" class="group relative rounded-2xl overflow-hidden aspect-square border border-neutral-200 dark:border-neutral-800">
+            <img src="https://images.unsplash.com/photo-1614252235316-8c857d38b5f4" class="w-full h-full object-cover group-hover:scale-110 transition duration-500" />
+            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white">
+              <i data-lucide="instagram" class="w-8 h-8"></i>
+            </div>
+          </a>
+
+          <a href="https://instagram.com/kenzsofficial1234" target="_blank" class="group relative rounded-2xl overflow-hidden aspect-square border border-neutral-200 dark:border-neutral-800">
+            <img src="https://images.unsplash.com/photo-1552346154-21d32810aba3" class="w-full h-full object-cover group-hover:scale-110 transition duration-500" />
+            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white">
+              <i data-lucide="instagram" class="w-8 h-8"></i>
+            </div>
+          </a>
+
+          <a href="https://instagram.com/kenzsofficial1234" target="_blank" class="group relative rounded-2xl overflow-hidden aspect-square border border-neutral-200 dark:border-neutral-800">
+            <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff" class="w-full h-full object-cover group-hover:scale-110 transition duration-500" />
+            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white">
+              <i data-lucide="instagram" class="w-8 h-8"></i>
+            </div>
+          </a>
+
+          <a href="https://instagram.com/kenzsofficial1234" target="_blank" class="group relative rounded-2xl overflow-hidden aspect-square border border-neutral-200 dark:border-neutral-800">
+            <img src="https://images.unsplash.com/photo-1533867617858-e7b97e060509" class="w-full h-full object-cover group-hover:scale-110 transition duration-500" />
+            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white">
+              <i data-lucide="instagram" class="w-8 h-8"></i>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. ABOUT US & FOOTER SECTION -->
+    <footer id="about" class="bg-neutral-900 text-white border-t border-neutral-800 pt-16 pb-12">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+          
+          <div class="space-y-4">
+            <h2 class="font-serif text-2xl font-bold tracking-widest text-amber-500">KENZS OFFICIAL</h2>
+            <p class="text-neutral-400 text-xs leading-relaxed">
+              Ethiopia's premier luxury footwear brand specializing in premium handcrafted men's leather shoes.
+            </p>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="font-bold text-xs uppercase text-amber-500 tracking-wider">Store Location</h3>
+            <p class="text-neutral-400 text-xs flex items-start gap-2">
+              <i data-lucide="map-pin" class="w-4 h-4 text-amber-500 shrink-0"></i>
+              <span>Addis Ababa Merkato, Ethiopia</span>
+            </p>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="font-bold text-xs uppercase text-amber-500 tracking-wider">Direct Contacts</h3>
+            <p class="text-neutral-400 text-xs space-y-1">
+              <span class="block">+251 911 432 094</span>
+              <span class="block">+251 777 729 125</span>
+              <span class="block">kenzsofficial7@gmail.com</span>
+            </p>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="font-bold text-xs uppercase text-amber-500 tracking-wider">Customer Care</h3>
+            <p class="text-amber-400 font-bold text-xs">FREE DELIVERY</p>
+            <p class="text-amber-400 font-bold text-xs">PAY AFTER DELIVERY</p>
+          </div>
+
+        </div>
+
+        <div class="border-t border-neutral-800 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-neutral-500">
+          <p>© 2026 Kenzs Official. All rights reserved.</p>
+          <div class="flex gap-6">
+            <a href="https://instagram.com/kenzsofficial1234" target="_blank" class="hover:text-amber-400">Instagram</a>
+            <a href="https://wa.me/251911432094" target="_blank" class="hover:text-amber-400">WhatsApp Support</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+
+  <!-- LIVE SUPPORT CHAT -->
+  <div id="chat-widget" class="fixed bottom-6 right-6 z-50">
+    <button onclick="toggleChatWindow()" class="bg-amber-600 hover:bg-amber-500 text-white p-4 rounded-full shadow-2xl flex items-center justify-center transition">
+      <i data-lucide="message-square" class="w-6 h-6"></i>
+    </button>
+
+    <div id="chat-window" class="hidden absolute bottom-16 right-0 w-80 sm:w-96 bg-neutral-900 border border-neutral-800 rounded-2xl shadow-2xl flex flex-col h-96 overflow-hidden">
+      <div class="bg-neutral-950 p-4 border-b border-neutral-800 flex justify-between items-center">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+          <div>
+            <h4 class="text-xs font-bold text-white uppercase tracking-wider">Kenzs Live Support</h4>
+            <p class="text-[10px] text-neutral-400">Online & Ready to help!</p>
+          </div>
+        </div>
+        <button onclick="toggleChatWindow()" class="text-neutral-400 hover:text-white"><i data-lucide="x" class="w-4 h-4"></i></button>
+      </div>
+
+      <div id="chat-messages" class="flex-1 p-4 overflow-y-auto space-y-3 text-xs">
+        <div class="bg-neutral-800 p-3 rounded-2xl rounded-tl-none text-neutral-200 max-w-[85%]">
+          👋 Welcome to Kenzs Official! How can we help you find the perfect pair today?
+        </div>
+      </div>
+
+      <div class="p-3 bg-neutral-950 border-t border-neutral-800 flex gap-2">
+        <input type="text" id="chat-input" placeholder="Type a message..." onkeypress="if(event.key==='Enter') sendChatMessage()" class="flex-1 bg-neutral-900 border border-neutral-800 p-2.5 rounded-xl text-xs text-white focus:outline-none" />
+        <button onclick="sendChatMessage()" class="bg-amber-600 hover:bg-amber-500 text-white px-3.5 py-2.5 rounded-xl"><i data-lucide="send" class="w-4 h-4"></i></button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ADMIN LOGIN MODAL -->
+  <div id="admin-login-modal" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="bg-neutral-900 border border-neutral-800 w-full max-w-md p-8 rounded-2xl shadow-2xl space-y-6 text-white">
+      <div class="text-center space-y-2">
+        <h3 class="font-serif text-2xl font-bold tracking-widest uppercase">ADMIN PORTAL</h3>
+        <p class="text-xs text-neutral-400">Please enter your master administrative passcode.</p>
+      </div>
+      <form onsubmit="handleAdminLogin(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs uppercase font-bold text-neutral-400 mb-2">Password</label>
+          <input type="password" id="admin-pass-input" placeholder="••••••••" required class="w-full bg-neutral-950 border border-neutral-800 p-3 rounded-xl text-sm text-white focus:outline-none focus:border-amber-500" />
+        </div>
+        <p id="admin-error-msg" class="text-xs text-red-500 hidden text-center font-bold">Incorrect Passcode!</p>
+        <div class="flex gap-3">
+          <button type="button" onclick="closeAdminLogin()" class="w-1/2 py-3 rounded-xl text-xs font-bold uppercase bg-neutral-800 text-neutral-300 hover:bg-neutral-700">Cancel</button>
+          <button type="submit" class="w-1/2 py-3 rounded-xl text-xs font-bold uppercase bg-amber-600 hover:bg-amber-500 text-white">Authenticate</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- ADMIN CONTROL CENTER -->
+  <div id="admin-view" class="hidden min-h-screen bg-neutral-950 text-neutral-100 flex flex-col md:flex-row">
     
-    // Fallback Mock Engine if Supabase keys aren't configured yet
-    const isSupabaseConfigured = !SUPABASE_URL.includes("your-supabase-url");
-    const supabase = isSupabaseConfigured ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+    <aside class="w-full md:w-64 bg-neutral-900 border-r border-neutral-800 p-6 space-y-8 flex-shrink-0">
+      <div>
+        <h2 class="font-serif text-xl font-bold tracking-widest text-white uppercase">KENZS</h2>
+        <p class="text-[10px] text-amber-500 font-semibold uppercase tracking-widest">Admin Control Center</p>
+      </div>
 
-    // Sample Default Data
-    const INITIAL_PRODUCTS = [
-      {
-        id: '1',
-        name: 'Chelsea Heritage Leather Boot',
-        category: 'Boots',
-        price: 5999,
-        discount_price: 4999,
-        description: 'Handcrafted full-grain leather boots designed for modern elegance and high endurance.',
-        images: ['https://images.unsplash.com/photo-1638247025967-b4e38f787b76?auto=format&fit=crop&q=80&w=800'],
-        sizes: [40, 41, 42, 43, 44],
-        colors: ['Dark Brown', 'Black'],
-        stock: 12,
-        sku: 'KENZ-BT-01',
-        is_featured: true,
-        is_bestseller: true,
-        is_new: false,
-      },
-      {
-        id: '2',
-        name: 'Monk Strap Royal Loafer',
-        category: 'Loafers',
-        price: 4500,
-        discount_price: null,
-        description: 'Sleek double monk strap crafted with premium calfskin leather for executive style.',
-        images: ['https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?auto=format&fit=crop&q=80&w=800'],
-        sizes: [39, 40, 41, 42, 43],
-        colors: ['Warm Brown', 'Tan'],
-        stock: 4,
-        sku: 'KENZ-LF-02',
-        is_featured: true,
-        is_bestseller: false,
-        is_new: true,
-      },
-      {
-        id: '3',
-        name: 'Urban Minimalist Leather Sneaker',
-        category: 'Sneakers',
-        price: 3800,
-        discount_price: 3200,
-        description: 'Clean silhouette crafted with rich Italian leather and cushioned rubber soles.',
-        images: ['https://images.unsplash.com/photo-1549298916-b41d501d3772?auto=format&fit=crop&q=80&w=800'],
-        sizes: [40, 41, 42, 43, 44, 45],
-        colors: ['White', 'Off-White'],
-        stock: 0,
-        sku: 'KENZ-SN-03',
-        is_featured: false,
-        is_bestseller: true,
-        is_new: true,
+      <nav class="space-y-2">
+        <button onclick="setAdminTab('inventory')" id="tab-btn-inventory" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-wider bg-amber-700 text-white">
+          <i data-lucide="package" class="w-4 h-4"></i> Inventory
+        </button>
+        <button onclick="setAdminTab('orders')" id="tab-btn-orders" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-wider bg-neutral-800 hover:bg-neutral-700 text-neutral-300">
+          <i data-lucide="shopping-cart" class="w-4 h-4"></i> Web Orders 📦
+        </button>
+        <button onclick="setAdminTab('finance')" id="tab-btn-finance" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-wider bg-neutral-800 hover:bg-neutral-700 text-neutral-300">
+          <i data-lucide="trending-up" class="w-4 h-4"></i> Finance Analytics 📊
+        </button>
+      </nav>
+
+      <div class="space-y-2 pt-4 border-t border-neutral-800">
+        <button onclick="switchView('store')" class="w-full py-2.5 rounded-xl border border-neutral-700 text-xs text-neutral-400 font-semibold uppercase hover:bg-neutral-800">
+          Exit Admin Mode
+        </button>
+      </div>
+    </aside>
+
+    <main class="flex-1 p-4 sm:p-6 lg:p-10 space-y-8 overflow-y-auto max-w-7xl">
+      
+      <!-- INVENTORY TAB -->
+      <div id="admin-tab-inventory" class="space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h1 class="text-2xl font-bold font-serif text-white">Product Inventory Engine</h1>
+            <p class="text-xs text-neutral-400">Manage published products with sizes, colors, discounts & multi-photo uploads.</p>
+          </div>
+          <button onclick="toggleAddProductForm()" class="flex items-center justify-center gap-2 bg-amber-600 hover:bg-amber-500 text-white px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider">
+            <i data-lucide="plus" class="w-4 h-4"></i> Add New Product
+          </button>
+        </div>
+
+        <!-- Add Product Form -->
+        <form id="add-product-form" onsubmit="handleCreateProduct(event)" class="hidden bg-neutral-900 p-6 rounded-2xl border border-neutral-800 space-y-6">
+          <h3 class="text-sm font-bold text-amber-500 uppercase tracking-wider">Publish New Item To Supabase DB</h3>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs uppercase text-neutral-400 font-semibold mb-1">Shoe Name</label>
+              <input type="text" id="new-p-name" placeholder="e.g. Royal Oxford Leather" required class="w-full bg-neutral-950 border border-neutral-800 p-3 rounded-xl text-sm text-white focus:outline-none" />
+            </div>
+
+            <div>
+              <label class="block text-xs uppercase text-neutral-400 font-semibold mb-1">Category</label>
+              <select id="new-p-cat" class="w-full bg-neutral-950 border border-neutral-800 p-3 rounded-xl text-sm text-white">
+                <option value="Sneakers">Sneakers</option>
+                <option value="Leather Shoes">Leather Shoes</option>
+                <option value="Boots">Boots</option>
+                <option value="Formal Shoes">Formal Shoes</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs uppercase text-neutral-400 font-semibold mb-1">Price (ETB)</label>
+              <input type="number" id="new-p-price" placeholder="7200" required class="w-full bg-neutral-950 border border-neutral-800 p-3 rounded-xl text-sm text-white focus:outline-none" />
+            </div>
+
+            <!-- DISCOUNT PERCENTAGE FIELD -->
+            <div>
+              <label class="block text-xs uppercase text-amber-400 font-bold mb-1">Discount Mode (% Off - Optional)</label>
+              <input type="number" id="new-p-discount" min="0" max="90" placeholder="e.g. 15 for 15% off" class="w-full bg-neutral-950 border border-amber-500/50 p-3 rounded-xl text-sm text-white focus:outline-none" />
+            </div>
+
+            <!-- MULTIPLE FILE UPLOADS -->
+            <div class="md:col-span-2">
+              <label class="block text-xs uppercase text-neutral-400 font-semibold mb-1">Shoe Photos (Select Up to 4 Files)</label>
+              <input type="file" id="new-p-files" accept="image/*" multiple required class="w-full bg-neutral-950 border border-neutral-800 p-2.5 rounded-xl text-xs text-neutral-300 file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-amber-600 file:text-white hover:file:bg-amber-500" />
+            </div>
+          </div>
+
+          <!-- SIZES SELECTION -->
+          <div>
+            <label class="block text-xs uppercase text-neutral-400 font-semibold mb-2">Available Sizes</label>
+            <div class="flex flex-wrap gap-2" id="size-checkboxes"></div>
+          </div>
+
+          <!-- COLORS SELECTION -->
+          <div>
+            <label class="block text-xs uppercase text-neutral-400 font-semibold mb-2">Available Colors</label>
+            <div class="flex flex-wrap gap-2" id="color-checkboxes"></div>
+          </div>
+
+          <button type="submit" id="btn-save-prod" class="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-wider">
+            Upload Images & Save Product
+          </button>
+        </form>
+
+        <div id="admin-inventory-list" class="space-y-4"></div>
+      </div>
+
+      <!-- ORDERS TAB -->
+      <div id="admin-tab-orders" class="hidden space-y-6">
+        <div>
+          <h1 class="text-2xl font-bold font-serif text-white">Customer Orders Dashboard</h1>
+          <p class="text-xs text-neutral-400">View direct website purchases & update delivery statuses.</p>
+        </div>
+
+        <div id="admin-orders-list" class="space-y-4"></div>
+      </div>
+
+      <!-- FINANCE TAB -->
+      <div id="admin-tab-finance" class="hidden space-y-6">
+        <div>
+          <h1 class="text-2xl font-bold font-serif text-white">Finance & Revenue Dashboard</h1>
+          <p class="text-xs text-neutral-400">Real-time revenue calculation breakdown for week, month, and year.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="bg-neutral-900 border border-neutral-800 p-6 rounded-2xl space-y-2">
+            <p class="text-xs font-bold uppercase text-amber-500">This Week Sales</p>
+            <p id="finance-week-rev" class="text-3xl font-serif font-bold text-emerald-400">0 ETB</p>
+            <p id="finance-week-count" class="text-xs text-neutral-400">0 Orders Completed</p>
+          </div>
+
+          <div class="bg-neutral-900 border border-neutral-800 p-6 rounded-2xl space-y-2">
+            <p class="text-xs font-bold uppercase text-amber-500">This Month Sales</p>
+            <p id="finance-month-rev" class="text-3xl font-serif font-bold text-emerald-400">0 ETB</p>
+            <p id="finance-month-count" class="text-xs text-neutral-400">0 Orders Completed</p>
+          </div>
+
+          <div class="bg-neutral-900 border border-neutral-800 p-6 rounded-2xl space-y-2">
+            <p class="text-xs font-bold uppercase text-amber-500">This Year Sales</p>
+            <p id="finance-year-rev" class="text-3xl font-serif font-bold text-emerald-400">0 ETB</p>
+            <p id="finance-year-count" class="text-xs text-neutral-400">0 Orders Completed</p>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+
+  <!-- SHOPPING CART DRAWER -->
+  <div id="cart-drawer" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex justify-end">
+    <div class="bg-white dark:bg-neutral-900 dark:text-white w-full max-w-md h-full flex flex-col justify-between shadow-2xl">
+      <div class="p-6 border-b border-kenzs-beige dark:border-neutral-800 flex justify-between items-center">
+        <h3 class="font-serif font-bold text-lg">Your Shopping Cart</h3>
+        <button onclick="toggleCartDrawer(false)"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+
+      <div id="cart-items-container" class="p-6 overflow-y-auto flex-1 space-y-4"></div>
+
+      <div class="p-6 border-t border-kenzs-beige dark:border-neutral-800 bg-kenzs-cream dark:bg-neutral-950 space-y-4">
+        <div class="flex justify-between items-center">
+          <span class="font-bold text-sm">Total Order Price:</span>
+          <span id="cart-total-price" class="font-serif font-bold text-lg text-kenzs-brown dark:text-amber-500">0 ETB</span>
+        </div>
+
+        <!-- DIRECT WEB CHECKOUT FORM -->
+        <div class="space-y-2 border-t border-neutral-200 dark:border-neutral-800 pt-3">
+          <p class="text-xs font-bold uppercase text-amber-600">Checkout Details (Pay After Delivery)</p>
+          <input type="text" id="cust-name" placeholder="Full Name" class="w-full p-2.5 text-xs bg-white dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-700 rounded-xl focus:outline-none" />
+          <input type="tel" id="cust-phone" placeholder="Phone Number" class="w-full p-2.5 text-xs bg-white dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-700 rounded-xl focus:outline-none" />
+          <input type="text" id="cust-address" placeholder="Delivery Address / City" class="w-full p-2.5 text-xs bg-white dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-700 rounded-xl focus:outline-none" />
+        </div>
+        
+        <button onclick="placeWebsiteOrder()" class="w-full bg-emerald-600 text-white py-3.5 rounded-xl font-bold uppercase text-xs tracking-wider hover:bg-emerald-500 transition">
+          Confirm Order (Pay After Delivery)
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- JAVASCRIPT STATE ENGINE -->
+  <script>
+    const SUPABASE_URL = "https://sjykaxehoveygeeueqpe.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_9e3zbaru3VYp5OayYPgjgg_6EUpkquA";
+
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const AVAILABLE_SIZES = [39, 40, 41, 42, 43, 44, 45];
+    const AVAILABLE_COLORS = ["Black", "Brown", "White", "Red", "Blue", "Green", "Navy", "Gray"];
+
+    let currentLang = "en";
+    let isDarkMode = false;
+    let isAdminAuthenticated = false;
+    let selectedCategory = "All";
+    let products = [];
+    let orders = [];
+    let cart = [];
+    let selectedOptions = {};
+
+    window.onload = async () => {
+      renderCategoryTabs();
+      renderAdminOptionCheckboxes();
+      await fetchProductsFromSupabase();
+      lucide.createIcons();
+    };
+
+    function renderAdminOptionCheckboxes() {
+      const sizesContainer = document.getElementById('size-checkboxes');
+      sizesContainer.innerHTML = AVAILABLE_SIZES.map(s => `
+        <label class="flex items-center gap-1.5 bg-neutral-950 border border-neutral-800 px-3 py-1.5 rounded-lg text-xs cursor-pointer hover:border-amber-500">
+          <input type="checkbox" name="admin-size" value="${s}" class="accent-amber-500" />
+          <span>${s}</span>
+        </label>
+      `).join('');
+
+      const colorsContainer = document.getElementById('color-checkboxes');
+      colorsContainer.innerHTML = AVAILABLE_COLORS.map(c => `
+        <label class="flex items-center gap-1.5 bg-neutral-950 border border-neutral-800 px-3 py-1.5 rounded-lg text-xs cursor-pointer hover:border-amber-500">
+          <input type="checkbox" name="admin-color" value="${c}" class="accent-amber-500" />
+          <span>${c}</span>
+        </label>
+      `).join('');
+    }
+
+    async function fetchProductsFromSupabase() {
+      const grid = document.getElementById('product-grid');
+      grid.innerHTML = `<p class="text-xs text-neutral-400 py-8 col-span-3 text-center">Loading latest products from cloud...</p>`;
+
+      const { data, error } = await supabaseClient
+        .from('products')
+        .select('*')
+        .order('id', { ascending: false });
+
+      if (error) {
+        grid.innerHTML = `<p class="text-xs text-red-500 py-8 col-span-3 text-center">Failed to load products.</p>`;
+        return;
       }
-    ];
 
-    // Main App Component
-    function App() {
-      const [view, setView] = useState('home'); // home, shop, product, cart, checkout, admin, orders, tracking
-      const [products, setProducts] = useState(INITIAL_PRODUCTS);
-      const [selectedProduct, setSelectedProduct] = useState(null);
-      const [cart, setCart] = useState([]);
-      const [wishlist, setWishlist] = useState([]);
-      const [orders, setOrders] = useState([]);
-      const [isAdmin, setIsAdmin] = useState(false);
-      const [searchQuery, setSearchQuery] = useState('');
-      const [selectedCategory, setSelectedCategory] = useState('All');
-
-      // Admin Settings State
-      const [settings, setSettings] = useState({
-        storeName: 'KENZS OFFICIAL',
-        whatsapp: '+251911000000',
-        phone: '+251911000000',
-        currency: 'ETB',
-        announcement: 'Pay After Delivery Nationwide • Premium Handcrafted Footwear'
+      products = data || [];
+      
+      products.forEach(p => {
+        selectedOptions[p.id] = {
+          size: (p.sizes && p.sizes.length > 0) ? p.sizes[0] : null,
+          color: (p.colors && p.colors.length > 0) ? p.colors[0] : null
+        };
       });
 
-      // Initialize Lucide Icons
-      useEffect(() => {
-        if (window.lucide) {
-          window.lucide.createIcons();
+      renderProducts();
+      renderAdminInventory();
+      renderHeroShoe();
+    }
+
+    function selectProductOption(prodId, type, val) {
+      if (!selectedOptions[prodId]) selectedOptions[prodId] = {};
+      selectedOptions[prodId][type] = val;
+
+      const group = document.querySelectorAll(`[data-opt-${type}="${prodId}"]`);
+      group.forEach(btn => {
+        if (btn.getAttribute('data-val') == val) {
+          btn.className = "px-2.5 py-1 text-xs rounded-md bg-amber-600 text-white font-bold";
+        } else {
+          btn.className = "px-2.5 py-1 text-xs rounded-md bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 border border-neutral-300 dark:border-neutral-700";
+        }
+      });
+    }
+
+    async function handleCreateProduct(e) {
+      e.preventDefault();
+      
+      const saveBtn = document.getElementById('btn-save-prod');
+      saveBtn.innerText = "Uploading Photos to Cloud Storage...";
+      saveBtn.disabled = true;
+
+      try {
+        const fileInput = document.getElementById('new-p-files');
+        const files = Array.from(fileInput.files);
+
+        if (files.length === 0) {
+          alert('Please select at least one image file.');
+          saveBtn.innerText = "Upload Images & Save Product";
+          saveBtn.disabled = false;
+          return;
+        }
+
+        let uploadedUrls = [];
+
+        for (let file of files) {
+          const fileExt = file.name.split('.').pop();
+          const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
+          const filePath = `shoes/${fileName}`;
+
+          const { error: uploadError } = await supabaseClient
+            .storage
+            .from('product-images')
+            .upload(filePath, file);
+
+          if (uploadError) throw uploadError;
+
+          const { data: publicUrlData } = supabaseClient
+            .storage
+            .from('product-images')
+            .getPublicUrl(filePath);
+
+          uploadedUrls.push(publicUrlData.publicUrl);
+        }
+
+        const selectedSizes = Array.from(document.querySelectorAll('input[name="admin-size"]:checked')).map(cb => cb.value);
+        const selectedColors = Array.from(document.querySelectorAll('input[name="admin-color"]:checked')).map(cb => cb.value);
+
+        const name = document.getElementById('new-p-name').value;
+        const price = parseFloat(document.getElementById('new-p-price').value);
+        const discount = parseFloat(document.getElementById('new-p-discount').value) || 0;
+        const category = document.getElementById('new-p-cat').value;
+
+        const { error: dbError } = await supabaseClient
+          .from('products')
+          .insert([
+            { 
+              name: name, 
+              price: price, 
+              discount_percent: discount,
+              category: category, 
+              image_url: uploadedUrls[0],
+              image_urls: uploadedUrls,
+              sizes: selectedSizes,
+              colors: selectedColors
+            }
+          ]);
+
+        if (dbError) throw dbError;
+
+        alert('Product with colors, discount & photos uploaded successfully!');
+        document.getElementById('add-product-form').reset();
+        toggleAddProductForm();
+        await fetchProductsFromSupabase();
+
+      } catch (err) {
+        console.error('Upload Error:', err);
+        alert('Upload failed. Please ensure storage bucket "product-images" is active.');
+      } finally {
+        saveBtn.innerText = "Upload Images & Save Product";
+        saveBtn.disabled = false;
+      }
+    }
+
+    async function placeWebsiteOrder() {
+      const name = document.getElementById('cust-name').value;
+      const phone = document.getElementById('cust-phone').value;
+      const address = document.getElementById('cust-address').value;
+
+      if (!name || !phone || !address) {
+        alert("Please fill in your name, phone number, and address!");
+        return;
+      }
+
+      if (cart.length === 0) {
+        alert("Your cart is empty!");
+        return;
+      }
+
+      const orderCode = 'KNZ-' + Math.floor(1000 + Math.random() * 9000);
+      const total = cart.reduce((sum, item) => sum + item.finalPrice, 0);
+
+      const { error } = await supabaseClient
+        .from('orders')
+        .insert([{
+          order_code: orderCode,
+          customer_name: name,
+          customer_phone: phone,
+          delivery_address: address,
+          items: cart,
+          total_price: total,
+          status: 'Pending',
+          created_at: new Date().toISOString()
+        }]);
+
+      if (error) {
+        alert("Failed to place order. Please try again.");
+      } else {
+        alert(`🎉 Order Placed Successfully!\n\nDelivery is FREE & you will Pay After Delivery!\nYour Order Code: ${orderCode}`);
+        cart = [];
+        updateCartUI();
+        toggleCartDrawer(false);
+      }
+    }
+
+    async function fetchAdminOrders() {
+      const container = document.getElementById('admin-orders-list');
+      container.innerHTML = `<p class="text-xs text-neutral-400">Loading orders...</p>`;
+
+      const { data, error } = await supabaseClient
+        .from('orders')
+        .select('*')
+        .order('id', { ascending: false });
+
+      if (error) {
+        container.innerHTML = `<p class="text-xs text-red-500">Failed to load orders.</p>`;
+        return;
+      }
+
+      orders = data || [];
+      calculateFinanceData();
+
+      if (orders.length === 0) {
+        container.innerHTML = `<div class="p-6 bg-neutral-900 rounded-2xl text-center text-neutral-400">No orders received yet.</div>`;
+        return;
+      }
+
+      container.innerHTML = orders.map(o => `
+        <div class="bg-neutral-900 border border-neutral-800 p-5 rounded-2xl space-y-3">
+          <div class="flex justify-between items-center">
+            <span class="font-mono text-amber-400 font-bold text-sm">${o.order_code}</span>
+            <select onchange="updateOrderStatus('${o.id}', this.value)" class="bg-neutral-950 border border-neutral-800 text-xs font-bold text-amber-400 p-2 rounded-xl">
+              <option value="Pending" ${o.status==='Pending'?'selected':''}>Pending</option>
+              <option value="Processing" ${o.status==='Processing'?'selected':''}>Processing</option>
+              <option value="Dispatched" ${o.status==='Dispatched'?'selected':''}>Dispatched</option>
+              <option value="Delivered" ${o.status==='Delivered'?'selected':''}>Delivered</option>
+            </select>
+          </div>
+          
+          <div class="text-xs space-y-1 text-neutral-300">
+            <p><strong>Customer:</strong> ${o.customer_name} (${o.customer_phone})</p>
+            <p><strong>Address:</strong> ${o.delivery_address}</p>
+            <p><strong>Items Ordered:</strong></p>
+            <ul class="list-disc pl-5 text-amber-400">
+              ${o.items ? o.items.map(i => `<li>${i.name} — Size: ${i.chosenSize || 'N/A'}, Color: ${i.chosenColor || 'N/A'} (${i.finalPrice} ETB)</li>`).join('') : ''}
+            </ul>
+            <p class="pt-1"><strong>Total:</strong> <span class="text-emerald-400 font-bold">${o.total_price.toLocaleString()} ETB</span></p>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function calculateFinanceData() {
+      const now = new Date();
+      const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+      const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+      const startOfYear = new Date(now.getFullYear(), 0, 1);
+
+      let weekRev = 0, weekCount = 0;
+      let monthRev = 0, monthCount = 0;
+      let yearRev = 0, yearCount = 0;
+
+      orders.forEach(o => {
+        const orderDate = o.created_at ? new Date(o.created_at) : new Date();
+        const price = o.total_price || 0;
+
+        if (orderDate >= oneWeekAgo) {
+          weekRev += price;
+          weekCount++;
+        }
+        if (orderDate >= startOfMonth) {
+          monthRev += price;
+          monthCount++;
+        }
+        if (orderDate >= startOfYear) {
+          yearRev += price;
+          yearCount++;
         }
       });
 
-      // Load products from Supabase if configured
-      useEffect(() => {
-        if (isSupabaseConfigured && supabase) {
-          fetchProductsFromSupabase();
-        }
-      }, []);
+      document.getElementById('finance-week-rev').innerText = `${weekRev.toLocaleString()} ETB`;
+      document.getElementById('finance-week-count').innerText = `${weekCount} Orders Total`;
 
-      const fetchProductsFromSupabase = async () => {
-        const { data, error } = await supabase.from('products').select('*');
-        if (!error && data && data.length > 0) {
-          setProducts(data);
-        }
-      };
+      document.getElementById('finance-month-rev').innerText = `${monthRev.toLocaleString()} ETB`;
+      document.getElementById('finance-month-count').innerText = `${monthCount} Orders Total`;
 
-      // Cart Calculations
-      const cartSubtotal = useMemo(() => {
-        return cart.reduce((acc, item) => {
-          const price = item.discount_price || item.price;
-          return acc + price * item.quantity;
-        }, 0);
-      }, [cart]);
+      document.getElementById('finance-year-rev').innerText = `${yearRev.toLocaleString()} ETB`;
+      document.getElementById('finance-year-count').innerText = `${yearCount} Orders Total`;
+    }
 
-      // Cart Operations
-      const addToCart = (product, size, color) => {
-        if (product.stock <= 0) return;
-        const existingIndex = cart.findIndex(
-          (i) => i.id === product.id && i.selectedSize === size && i.selectedColor === color
-        );
-        if (existingIndex > -1) {
-          const updated = [...cart];
-          updated[existingIndex].quantity += 1;
-          setCart(updated);
-        } else {
-          setCart([...cart, { ...product, selectedSize: size, selectedColor: color, quantity: 1 }]);
-        }
-        setView('cart');
-      };
+    async function updateOrderStatus(id, newStatus) {
+      await supabaseClient.from('orders').update({ status: newStatus }).eq('id', id);
+      alert("Order status updated!");
+      fetchAdminOrders();
+    }
 
-      const updateCartQty = (index, delta) => {
-        const updated = [...cart];
-        updated[index].quantity += delta;
-        if (updated[index].quantity <= 0) {
-          updated.splice(index, 1);
-        }
-        setCart(updated);
-      };
+    function toggleChatWindow() {
+      document.getElementById('chat-window').classList.toggle('hidden');
+    }
 
-      const toggleWishlist = (product) => {
-        if (wishlist.some(p => p.id === product.id)) {
-          setWishlist(wishlist.filter(p => p.id !== product.id));
-        } else {
-          setWishlist([...wishlist, product]);
-        }
-      };
+    function sendChatMessage() {
+      const input = document.getElementById('chat-input');
+      const text = input.value.trim();
+      if (!text) return;
 
-      // Order Handler
-      const handlePlaceOrder = (customerData) => {
-        const newOrder = {
-          id: 'ORD-' + Math.floor(100000 + Math.random() * 900000),
-          customer: customerData,
-          items: [...cart],
-          total: cartSubtotal,
-          status: 'New',
-          date: new Date().toLocaleDateString(),
-          paymentMethod: customerData.paymentMethod || 'Cash / Pay After Delivery'
+      const container = document.getElementById('chat-messages');
+      container.innerHTML += `
+        <div class="bg-amber-600 p-3 rounded-2xl rounded-tr-none text-white ml-auto max-w-[85%]">
+          ${text}
+        </div>
+      `;
+      input.value = '';
+      container.scrollTop = container.scrollHeight;
+
+      setTimeout(() => {
+        container.innerHTML += `
+          <div class="bg-neutral-800 p-3 rounded-2xl rounded-tl-none text-neutral-200 max-w-[85%]">
+            Thanks for reaching out! A Kenzs Official representative will respond shortly. You can also call us at +251 911 432 094 or +251 777 729 125.
+          </div>
+        `;
+        container.scrollTop = container.scrollHeight;
+      }, 1000);
+    }
+
+    function swapMainImage(cardId, newSrc) {
+      document.getElementById(`main-img-${cardId}`).src = newSrc;
+    }
+
+    function renderProducts() {
+      const grid = document.getElementById('product-grid');
+      const items = selectedCategory === "All" ? products : products.filter(p => p.category === selectedCategory);
+
+      if (items.length === 0) {
+        grid.innerHTML = `<p class="text-xs text-neutral-400 py-8 col-span-3 text-center">No products found in this category.</p>`;
+        return;
+      }
+
+      grid.innerHTML = items.map(p => {
+        const sizesList = (p.sizes && p.sizes.length > 0) ? p.sizes : AVAILABLE_SIZES;
+        const colorsList = (p.colors && p.colors.length > 0) ? p.colors : AVAILABLE_COLORS;
+        const gallery = p.image_urls && p.image_urls.length > 0 ? p.image_urls : [p.image_url];
+
+        const activeSize = selectedOptions[p.id]?.size || sizesList[0];
+        const activeColor = selectedOptions[p.id]?.color || colorsList[0];
+
+        const hasDiscount = p.discount_percent && p.discount_percent > 0;
+        const finalPrice = hasDiscount ? Math.round(p.price * (1 - p.discount_percent / 100)) : p.price;
+
+        return `
+          <div class="bg-white dark:bg-neutral-900 rounded-2xl border border-kenzs-beige dark:border-neutral-800 overflow-hidden hover:shadow-xl transition flex flex-col justify-between relative group">
+            
+            <div class="aspect-[4/3] bg-kenzs-cream dark:bg-neutral-800 overflow-hidden relative">
+              ${hasDiscount ? `
+                <span class="absolute top-3 left-3 z-10 bg-red-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider shadow">
+                  -${p.discount_percent}% OFF
+                </span>
+              ` : ''}
+
+              <img id="main-img-${p.id}" src="${gallery[0] || 'https://images.unsplash.com/photo-1614252235316-8c857d38b5f4'}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+            </div>
+
+            ${gallery.length > 1 ? `
+              <div class="flex gap-1.5 p-2 bg-neutral-100 dark:bg-neutral-950 overflow-x-auto">
+                ${gallery.map(imgUrl => `
+                  <img src="${imgUrl}" onclick="swapMainImage('${p.id}', '${imgUrl}')" class="w-10 h-10 object-cover rounded-md cursor-pointer border border-neutral-300 dark:border-neutral-700 hover:border-amber-500" />
+                `).join('')}
+              </div>
+            ` : ''}
+
+            <div class="p-6 space-y-4">
+              <div class="flex justify-between items-center">
+                <span class="text-xs text-kenzs-gray dark:text-neutral-400 uppercase font-semibold">${p.category || 'Footwear'}</span>
+                <span class="text-[10px] bg-amber-500/10 text-amber-600 dark:text-amber-400 px-2 py-0.5 rounded font-bold uppercase">In Stock</span>
+              </div>
+
+              <h3 class="font-serif text-lg font-bold text-kenzs-charcoal dark:text-white">${p.name}</h3>
+              
+              <!-- SELECT SIZE -->
+              <div class="space-y-1">
+                <p class="text-[11px] uppercase font-bold text-neutral-400">Select Size:</p>
+                <div class="flex flex-wrap gap-1.5">
+                  ${sizesList.map(s => `
+                    <button data-opt-size="${p.id}" data-val="${s}" onclick="selectProductOption('${p.id}', 'size', '${s}')" class="px-2.5 py-1 text-xs rounded-md ${activeSize == s ? 'bg-amber-600 text-white font-bold' : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 border border-neutral-300 dark:border-neutral-700'}">
+                      ${s}
+                    </button>
+                  `).join('')}
+                </div>
+              </div>
+
+              <!-- SELECT COLOR -->
+              <div class="space-y-1">
+                <p class="text-[11px] uppercase font-bold text-neutral-400">Select Color:</p>
+                <div class="flex flex-wrap gap-1.5">
+                  ${colorsList.map(c => `
+                    <button data-opt-color="${p.id}" data-val="${c}" onclick="selectProductOption('${p.id}', 'color', '${c}')" class="px-2.5 py-1 text-xs rounded-md ${activeColor == c ? 'bg-amber-600 text-white font-bold' : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 border border-neutral-300 dark:border-neutral-700'}">
+                      ${c}
+                    </button>
+                  `).join('')}
+                </div>
+              </div>
+
+              <!-- PRICE DISPLAY -->
+              <div class="flex items-center gap-3 pt-2 border-t border-neutral-100 dark:border-neutral-800">
+                <span class="font-serif font-bold text-lg text-kenzs-brown dark:text-amber-500">${finalPrice.toLocaleString()} ETB</span>
+                ${hasDiscount ? `<span class="line-through text-xs text-neutral-400 font-semibold">${p.price.toLocaleString()} ETB</span>` : ''}
+              </div>
+
+              <button onclick="addToCart('${p.id}')" class="w-full bg-kenzs-cream dark:bg-neutral-800 border border-kenzs-beige dark:border-neutral-700 py-3 rounded-xl text-xs font-semibold uppercase hover:bg-kenzs-brown hover:text-white dark:hover:bg-amber-600 transition">
+                Add To Cart
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function addToCart(id) {
+      const p = products.find(item => item.id == id);
+      if(p) {
+        const chosenSize = selectedOptions[p.id]?.size || (p.sizes ? p.sizes[0] : 'Std');
+        const chosenColor = selectedOptions[p.id]?.color || (p.colors ? p.colors[0] : 'Std');
+
+        const hasDiscount = p.discount_percent && p.discount_percent > 0;
+        const finalPrice = hasDiscount ? Math.round(p.price * (1 - p.discount_percent / 100)) : p.price;
+
+        const itemToAdd = {
+          ...p,
+          chosenSize: chosenSize,
+          chosenColor: chosenColor,
+          finalPrice: finalPrice
         };
 
-        // Deduct Stock
-        const updatedProducts = products.map(prod => {
-          const cartItem = cart.find(c => c.id === prod.id);
-          if (cartItem) {
-            return { ...prod, stock: Math.max(0, prod.stock - cartItem.quantity) };
-          }
-          return prod;
-        });
+        cart.push(itemToAdd);
+        updateCartUI();
+        toggleCartDrawer(true);
+      }
+    }
 
-        setProducts(updatedProducts);
-        setOrders([newOrder, ...orders]);
-        setCart([]);
+    function updateCartUI() {
+      document.getElementById('cart-count-badge').innerText = cart.length;
+      const total = cart.reduce((sum, item) => sum + item.finalPrice, 0);
+      document.getElementById('cart-total-price').innerText = `${total.toLocaleString()} ETB`;
 
-        if (customerData.isWhatsApp) {
-          // Generate WhatsApp Message
-          let msg = `*NEW ORDER - ${newOrder.id}*\n\n`;
-          msg += `*Name:* ${customerData.name}\n`;
-          msg += `*Phone:* ${customerData.phone}\n`;
-          msg += `*Address:* ${customerData.address}, ${customerData.city}\n\n`;
-          msg += `*Items:*\n`;
-          newOrder.items.forEach(item => {
-            msg += `- ${item.name} (${item.selectedSize} / ${item.selectedColor}) x${item.quantity} - ${item.discount_price || item.price} ${settings.currency}\n`;
-          });
-          msg += `\n*Total:* ${newOrder.total} ${settings.currency}\n`;
-          msg += `*Payment:* Pay After Delivery`;
-
-          const encoded = encodeURIComponent(msg);
-          window.open(`https://wa.me/${settings.whatsapp.replace('+', '')}?text=${encoded}`, '_blank');
-        }
-
-        alert(`Order Placed Successfully! Order ID: ${newOrder.id}`);
-        setView('home');
-      };
-
-      return (
-        <div className="min-h-screen flex flex-col justify-between">
+      document.getElementById('cart-items-container').innerHTML = cart.map((item, idx) => `
+        <div class="flex items-center justify-between border-b border-neutral-200 dark:border-neutral-800 pb-3">
           <div>
-            {/* Announcement Bar */}
-            <div className="bg-brand-darkBrown text-brand-beige text-xs py-2 px-4 text-center tracking-wide font-medium">
-              {settings.announcement}
-            </div>
-
-            {/* Navigation Header */}
-            <header className="bg-brand-cream border-b border-brand-beige sticky top-0 z-40 backdrop-blur-md bg-opacity-90">
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-                
-                {/* Brand Logo */}
-                <div className="cursor-pointer" onClick={() => setView('home')}>
-                  <h1 className="text-2xl tracking-widest font-serif font-bold text-brand-black">
-                    KENZS <span className="text-brand-brown font-sans font-light text-xs tracking-widest block">OFFICIAL</span>
-                  </h1>
-                </div>
-
-                {/* Main Navigation */}
-                <nav className="hidden md:flex space-x-8 text-sm font-medium text-brand-black">
-                  <button onClick={() => setView('home')} className="hover:text-brand-brown transition">Home</button>
-                  <button onClick={() => { setSelectedCategory('All'); setView('shop'); }} className="hover:text-brand-brown transition">Shop All</button>
-                  <button onClick={() => { setSelectedCategory('Boots'); setView('shop'); }} className="hover:text-brand-brown transition">Boots</button>
-                  <button onClick={() => { setSelectedCategory('Loafers'); setView('shop'); }} className="hover:text-brand-brown transition">Loafers</button>
-                  <button onClick={() => { setSelectedCategory('Sneakers'); setView('shop'); }} className="hover:text-brand-brown transition">Sneakers</button>
-                </nav>
-
-                {/* Action Icons */}
-                <div className="flex items-center space-x-5 text-brand-black">
-                  <button onClick={() => setView('shop')} className="hover:text-brand-brown">
-                    <i data-lucide="search" className="w-5 h-5"></i>
-                  </button>
-                  <button onClick={() => setView('wishlist')} className="hover:text-brand-brown relative">
-                    <i data-lucide="heart" className="w-5 h-5"></i>
-                    {wishlist.length > 0 && (
-                      <span className="absolute -top-2 -right-2 bg-brand-brown text-white text-xs w-4 h-4 rounded-full flex items-center justify-center">
-                        {wishlist.length}
-                      </span>
-                    )}
-                  </button>
-                  <button onClick={() => setView('cart')} className="hover:text-brand-brown relative">
-                    <i data-lucide="shopping-bag" className="w-5 h-5"></i>
-                    {cart.length > 0 && (
-                      <span className="absolute -top-2 -right-2 bg-brand-darkBrown text-white text-xs w-4 h-4 rounded-full flex items-center justify-center">
-                        {cart.length}
-                      </span>
-                    )}
-                  </button>
-                  <button onClick={() => setView(isAdmin ? 'admin' : 'admin-login')} className="hover:text-brand-brown text-xs bg-brand-beige py-1 px-3 rounded font-medium">
-                    {isAdmin ? 'Admin Panel' : 'Admin'}
-                  </button>
-                </div>
-              </div>
-            </header>
-
-            {/* PAGE CONTENT ROUTING */}
-            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-              
-              {/* HOME PAGE */}
-              {view === 'home' && (
-                <div className="space-y-16">
-                  {/* Hero Section */}
-                  <div className="relative bg-brand-beige rounded-2xl overflow-hidden p-8 sm:p-16 flex flex-col md:flex-row items-center justify-between min-h-[480px]">
-                    <div className="max-w-xl space-y-6 z-10">
-                      <span className="text-xs font-semibold tracking-widest text-brand-brown uppercase">Exclusive Collection</span>
-                      <h2 className="text-4xl sm:text-6xl font-serif font-bold text-brand-black leading-tight">
-                        Walk With Confidence.
-                      </h2>
-                      <p className="text-gray-600 text-base sm:text-lg">
-                        Premium men's footwear designed for every step. Modern craft meets unmatched luxury comfort.
-                      </p>
-                      <div className="flex space-x-4 pt-2">
-                        <button onClick={() => setView('shop')} className="bg-brand-black text-white px-8 py-3.5 rounded-none font-medium hover:bg-brand-brown transition">
-                          Shop Now
-                        </button>
-                        <button onClick={() => setView('shop')} className="border border-brand-black text-brand-black px-8 py-3.5 rounded-none font-medium hover:bg-brand-black hover:text-white transition">
-                          Explore Collection
-                        </button>
-                      </div>
-                    </div>
-                    <div className="mt-8 md:mt-0 w-full md:w-1/2 flex justify-center">
-                      <img 
-                        src="https://images.unsplash.com/photo-1638247025967-b4e38f787b76?auto=format&fit=crop&q=80&w=800" 
-                        alt="Hero Shoe" 
-                        className="rounded-xl shadow-2xl object-cover max-h-[380px] w-full"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Trust Highlights */}
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-6 py-6 border-y border-brand-beige text-center">
-                    <div>
-                      <h4 className="font-semibold text-brand-black text-sm">Pay After Delivery</h4>
-                      <p className="text-xs text-gray-500 mt-1">Inspect product before payment</p>
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-brand-black text-sm">Quality Guaranteed</h4>
-                      <p className="text-xs text-gray-500 mt-1">Handcrafted premium leather</p>
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-brand-black text-sm">Fast Dispatch</h4>
-                      <p className="text-xs text-gray-500 mt-1">Swift delivery nationwide</p>
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-brand-black text-sm">Secure Ordering</h4>
-                      <p className="text-xs text-gray-500 mt-1">Easy WhatsApp or Web Checkout</p>
-                    </div>
-                  </div>
-
-                  {/* Featured Collection */}
-                  <div>
-                    <div className="flex justify-between items-end mb-8">
-                      <div>
-                        <h3 className="text-2xl font-serif font-bold text-brand-black">Featured Products</h3>
-                        <p className="text-sm text-gray-500 mt-1">Curated selection for the modern gentleman</p>
-                      </div>
-                      <button onClick={() => setView('shop')} className="text-brand-brown text-sm font-semibold hover:underline">View All →</button>
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                      {products.filter(p => p.is_featured).map(product => (
-                        <ProductCard 
-                          key={product.id} 
-                          product={product} 
-                          onSelect={(p) => { setSelectedProduct(p); setView('product'); }}
-                          currency={settings.currency}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* SHOP PAGE */}
-              {view === 'shop' && (
-                <div>
-                  <div className="mb-8 flex flex-col md:flex-row gap-4 justify-between items-center">
-                    <div>
-                      <h2 className="text-3xl font-serif font-bold text-brand-black">All Footwear</h2>
-                      <p className="text-sm text-gray-500">Showing collection</p>
-                    </div>
-
-                    {/* Filters */}
-                    <div className="flex flex-wrap gap-3 w-full md:w-auto">
-                      <input 
-                        type="text" 
-                        placeholder="Search products..." 
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="border border-gray-300 px-4 py-2 text-sm rounded bg-white focus:outline-none focus:border-brand-brown flex-1"
-                      />
-                      <select 
-                        value={selectedCategory} 
-                        onChange={(e) => setSelectedCategory(e.target.value)}
-                        className="border border-gray-300 px-4 py-2 text-sm rounded bg-white focus:outline-none"
-                      >
-                        <option value="All">All Categories</option>
-                        <option value="Boots">Boots</option>
-                        <option value="Loafers">Loafers</option>
-                        <option value="Sneakers">Sneakers</option>
-                        <option value="Leather Shoes">Leather Shoes</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  {/* Grid */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {products
-                      .filter(p => selectedCategory === 'All' || p.category === selectedCategory)
-                      .filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()))
-                      .map(product => (
-                        <ProductCard 
-                          key={product.id} 
-                          product={product} 
-                          onSelect={(p) => { setSelectedProduct(p); setView('product'); }}
-                          currency={settings.currency}
-                        />
-                      ))}
-                  </div>
-                </div>
-              )}
-
-              {/* PRODUCT DETAILS PAGE */}
-              {view === 'product' && selectedProduct && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-12 py-6">
-                  {/* Image Gallery */}
-                  <div>
-                    <img 
-                      src={selectedProduct.images[0]} 
-                      alt={selectedProduct.name} 
-                      className="w-full h-[450px] object-cover rounded-xl shadow-md"
-                    />
-                  </div>
-
-                  {/* Product Info */}
-                  <div className="space-y-6">
-                    <div>
-                      <span className="text-xs font-semibold text-brand-brown uppercase">{selectedProduct.category}</span>
-                      <h2 className="text-3xl font-serif font-bold text-brand-black mt-1">{selectedProduct.name}</h2>
-                      <div className="mt-3 flex items-baseline space-x-3">
-                        {selectedProduct.discount_price ? (
-                          <>
-                            <span className="text-2xl font-bold text-brand-black">{selectedProduct.discount_price} {settings.currency}</span>
-                            <span className="text-lg text-gray-400 line-through">{selectedProduct.price} {settings.currency}</span>
-                          </>
-                        ) : (
-                          <span className="text-2xl font-bold text-brand-black">{selectedProduct.price} {settings.currency}</span>
-                        )}
-                      </div>
-                    </div>
-
-                    <p className="text-gray-600 text-sm leading-relaxed">{selectedProduct.description}</p>
-
-                    {/* Stock status */}
-                    <div>
-                      {selectedProduct.stock > 3 ? (
-                        <span className="inline-block bg-green-100 text-green-800 text-xs px-2.5 py-1 rounded font-medium">In Stock</span>
-                      ) : selectedProduct.stock > 0 ? (
-                        <span className="inline-block bg-amber-100 text-amber-800 text-xs px-2.5 py-1 rounded font-medium">LOW STOCK ({selectedProduct.stock} Left)</span>
-                      ) : (
-                        <span className="inline-block bg-red-100 text-red-800 text-xs px-2.5 py-1 rounded font-medium">SOLD OUT</span>
-                      )}
-                    </div>
-
-                    {/* Sizes Selection */}
-                    <div>
-                      <label className="text-xs font-bold text-brand-black uppercase block mb-2">Select Shoe Size (EU)</label>
-                      <div className="flex flex-wrap gap-2">
-                        {selectedProduct.sizes.map((size) => (
-                          <button key={size} className="border border-gray-300 hover:border-brand-black px-4 py-2 text-sm font-medium rounded transition focus:bg-brand-black focus:text-white">
-                            {size}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Actions */}
-                    <div className="space-y-3 pt-4">
-                      <button 
-                        disabled={selectedProduct.stock <= 0}
-                        onClick={() => addToCart(selectedProduct, selectedProduct.sizes[0], selectedProduct.colors[0])}
-                        className={`w-full py-4 rounded font-medium text-sm transition ${selectedProduct.stock > 0 ? 'bg-brand-black text-white hover:bg-brand-brown' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
-                      >
-                        {selectedProduct.stock > 0 ? 'Add To Cart' : 'Sold Out'}
-                      </button>
-                      <p className="text-xs text-center text-gray-500">Pay cash upon delivery nationwide</p>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* CART PAGE */}
-              {view === 'cart' && (
-                <div className="max-w-4xl mx-auto space-y-8">
-                  <h2 className="text-3xl font-serif font-bold text-brand-black">Your Shopping Cart</h2>
-
-                  {cart.length === 0 ? (
-                    <div className="text-center py-16 bg-brand-beige rounded-xl">
-                      <p className="text-gray-500">Your shopping cart is empty.</p>
-                      <button onClick={() => setView('shop')} className="mt-4 bg-brand-black text-white px-6 py-2 text-sm font-medium">Explore Products</button>
-                    </div>
-                  ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                      <div className="md:col-span-2 space-y-4">
-                        {cart.map((item, index) => (
-                          <div key={index} className="flex items-center justify-between border-b border-gray-200 py-4 bg-white p-4 rounded shadow-sm">
-                            <div className="flex items-center space-x-4">
-                              <img src={item.images[0]} className="w-16 h-16 object-cover rounded" />
-                              <div>
-                                <h4 className="font-bold text-sm text-brand-black">{item.name}</h4>
-                                <p className="text-xs text-gray-500">Size: {item.selectedSize} | Color: {item.selectedColor}</p>
-                                <span className="text-sm font-semibold">{item.discount_price || item.price} {settings.currency}</span>
-                              </div>
-                            </div>
-                            <div className="flex items-center space-x-3">
-                              <button onClick={() => updateCartQty(index, -1)} className="border px-2 py-1 text-xs">-</button>
-                              <span className="text-sm font-semibold">{item.quantity}</span>
-                              <button onClick={() => updateCartQty(index, 1)} className="border px-2 py-1 text-xs">+</button>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-
-                      {/* Summary */}
-                      <div className="bg-brand-beige p-6 rounded-xl space-y-4 h-fit">
-                        <h3 className="font-bold text-lg text-brand-black">Order Summary</h3>
-                        <div className="flex justify-between text-sm">
-                          <span>Subtotal</span>
-                          <span className="font-bold">{cartSubtotal} {settings.currency}</span>
-                        </div>
-                        <div className="flex justify-between text-sm">
-                          <span>Delivery</span>
-                          <span className="text-green-700 font-semibold">Pay After Delivery</span>
-                        </div>
-                        <div className="border-t border-gray-300 pt-3 flex justify-between font-bold text-base">
-                          <span>Total</span>
-                          <span>{cartSubtotal} {settings.currency}</span>
-                        </div>
-                        <button onClick={() => setView('checkout')} className="w-full bg-brand-black text-white py-3 font-medium text-sm hover:bg-brand-brown transition">
-                          Proceed To Checkout
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* CHECKOUT PAGE */}
-              {view === 'checkout' && (
-                <div className="max-w-2xl mx-auto bg-white p-8 rounded-xl shadow-sm border border-gray-100">
-                  <h2 className="text-2xl font-serif font-bold text-brand-black mb-6">Complete Order</h2>
-                  <form onSubmit={(e) => {
-                    e.preventDefault();
-                    const formData = new FormData(e.target);
-                    handlePlaceOrder({
-                      name: formData.get('name'),
-                      phone: formData.get('phone'),
-                      city: formData.get('city'),
-                      address: formData.get('address'),
-                      isWhatsApp: formData.get('checkoutType') === 'whatsapp'
-                    });
-                  }} className="space-y-4">
-                    <div>
-                      <label className="block text-xs font-bold uppercase mb-1">Full Name</label>
-                      <input required name="name" type="text" className="w-full border border-gray-300 p-3 text-sm rounded focus:outline-none focus:border-brand-brown" />
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-xs font-bold uppercase mb-1">Phone Number</label>
-                        <input required name="phone" type="tel" className="w-full border border-gray-300 p-3 text-sm rounded focus:outline-none focus:border-brand-brown" />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-bold uppercase mb-1">City</label>
-                        <input required name="city" type="text" defaultValue="Addis Ababa" className="w-full border border-gray-300 p-3 text-sm rounded focus:outline-none focus:border-brand-brown" />
-                      </div>
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold uppercase mb-1">Delivery Address</label>
-                      <textarea required name="address" rows="2" className="w-full border border-gray-300 p-3 text-sm rounded focus:outline-none focus:border-brand-brown"></textarea>
-                    </div>
-
-                    <div className="pt-4 border-t border-gray-200">
-                      <label className="block text-xs font-bold uppercase mb-2">Method of Checkout</label>
-                      <div className="space-y-2">
-                        <label className="flex items-center space-x-3 p-3 border rounded cursor-pointer hover:bg-brand-beige">
-                          <input type="radio" name="checkoutType" value="standard" defaultChecked />
-                          <span className="text-sm font-medium">Standard Web Checkout (Pay Cash After Delivery)</span>
-                        </label>
-                        <label className="flex items-center space-x-3 p-3 border rounded cursor-pointer hover:bg-brand-beige">
-                          <input type="radio" name="checkoutType" value="whatsapp" />
-                          <span className="text-sm font-medium">Order Direct via WhatsApp</span>
-                        </label>
-                      </div>
-                    </div>
-
-                    <button type="submit" className="w-full bg-brand-brown text-white py-4 font-bold rounded hover:bg-brand-darkBrown transition mt-6">
-                      Confirm Order ({cartSubtotal} {settings.currency})
-                    </button>
-                  </form>
-                </div>
-              )}
-
-              {/* ADMIN LOGIN */}
-              {view === 'admin-login' && (
-                <div className="max-w-md mx-auto bg-white p-8 rounded-xl border border-gray-200 shadow-sm">
-                  <h2 className="text-2xl font-serif font-bold text-center mb-6">Admin Portal</h2>
-                  <form onSubmit={(e) => {
-                    e.preventDefault();
-                    setIsAdmin(true);
-                    setView('admin');
-                  }} className="space-y-4">
-                    <div>
-                      <label className="block text-xs font-bold uppercase mb-1">Email</label>
-                      <input type="email" required defaultValue="admin@kenzs.com" className="w-full border p-3 text-sm rounded" />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold uppercase mb-1">Password</label>
-                      <input type="password" required defaultValue="password" className="w-full border p-3 text-sm rounded" />
-                    </div>
-                    <button type="submit" className="w-full bg-brand-black text-white py-3 rounded font-semibold text-sm">
-                      Login to Dashboard
-                    </button>
-                  </form>
-                </div>
-              )}
-
-              {/* ADMIN DASHBOARD */}
-              {view === 'admin' && isAdmin && (
-                <div className="space-y-8">
-                  <div className="flex justify-between items-center border-b pb-4">
-                    <div>
-                      <h2 className="text-2xl font-bold font-serif">Store Dashboard</h2>
-                      <p className="text-xs text-gray-500">Manage Products, Orders & Inventory</p>
-                    </div>
-                    <button onClick={() => setIsAdmin(false)} className="text-xs text-red-600 font-semibold border border-red-200 px-3 py-1.5 rounded">
-                      Log Out
-                    </button>
-                  </div>
-
-                  {/* Metrics */}
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div className="bg-white p-4 rounded border shadow-sm">
-                      <span className="text-xs text-gray-400 uppercase font-bold">Total Products</span>
-                      <p className="text-2xl font-bold mt-1">{products.length}</p>
-                    </div>
-                    <div className="bg-white p-4 rounded border shadow-sm">
-                      <span className="text-xs text-gray-400 uppercase font-bold">Total Orders</span>
-                      <p className="text-2xl font-bold mt-1">{orders.length}</p>
-                    </div>
-                    <div className="bg-white p-4 rounded border shadow-sm">
-                      <span className="text-xs text-gray-400 uppercase font-bold">Low Stock</span>
-                      <p className="text-2xl font-bold text-amber-600 mt-1">{products.filter(p => p.stock > 0 && p.stock <= 4).length}</p>
-                    </div>
-                    <div className="bg-white p-4 rounded border shadow-sm">
-                      <span className="text-xs text-gray-400 uppercase font-bold">Sold Out</span>
-                      <p className="text-2xl font-bold text-red-600 mt-1">{products.filter(p => p.stock === 0).length}</p>
-                    </div>
-                  </div>
-
-                  {/* Orders Management Table */}
-                  <div className="bg-white p-6 rounded border shadow-sm space-y-4">
-                    <h3 className="font-bold text-lg">Customer Orders</h3>
-                    {orders.length === 0 ? (
-                      <p className="text-xs text-gray-500">No orders received yet.</p>
-                    ) : (
-                      <div className="overflow-x-auto">
-                        <table className="w-full text-left text-sm">
-                          <thead>
-                            <tr className="border-b bg-gray-50 text-xs uppercase font-bold text-gray-500">
-                              <th className="p-3">Order ID</th>
-                              <th className="p-3">Customer</th>
-                              <th className="p-3">Total</th>
-                              <th className="p-3">Status</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {orders.map((o) => (
-                              <tr key={o.id} className="border-b">
-                                <td className="p-3 font-semibold">{o.id}</td>
-                                <td className="p-3">{o.customer.name} ({o.customer.phone})</td>
-                                <td className="p-3">{o.total} {settings.currency}</td>
-                                <td className="p-3">
-                                  <span className="bg-amber-100 text-amber-800 text-xs px-2 py-0.5 rounded font-semibold">{o.status}</span>
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
-
-            </main>
+            <p class="font-bold text-sm">${item.name}</p>
+            <p class="text-[11px] text-amber-600 dark:text-amber-400 font-semibold">Size: ${item.chosenSize} | Color: ${item.chosenColor}</p>
+            <p class="text-xs font-bold text-kenzs-brown dark:text-amber-500">${item.finalPrice.toLocaleString()} ETB</p>
           </div>
-
-          {/* Footer */}
-          <footer className="bg-brand-black text-brand-beige py-12 mt-20 border-t border-brand-darkBrown">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div>
-                <h3 className="font-serif text-xl font-bold tracking-widest text-white">KENZS OFFICIAL</h3>
-                <p className="text-xs text-gray-400 mt-2 leading-relaxed">
-                  Crafting modern excellence in men's footwear. High quality leather shoes, boots, and sneakers designed for confidence.
-                </p>
-              </div>
-              <div>
-                <h4 className="font-semibold text-sm text-white mb-3">Customer Support</h4>
-                <p className="text-xs text-gray-400">Phone: {settings.phone}</p>
-                <p className="text-xs text-gray-400 mt-1">WhatsApp: {settings.whatsapp}</p>
-                <p className="text-xs text-gray-400 mt-1">Pay After Delivery Available</p>
-              </div>
-              <div>
-                <h4 className="font-semibold text-sm text-white mb-3">Brand Promise</h4>
-                <p className="text-xs text-gray-400 leading-relaxed">
-                  Every pair is checked for craftsmanship before dispatch. Modern aesthetics tailored for high distinction.
-                </p>
-              </div>
-            </div>
-            <div className="text-center text-xs text-gray-600 mt-12 border-t border-gray-900 pt-6">
-              © 2026 KENZS OFFICIAL. All rights reserved.
-            </div>
-          </footer>
+          <button onclick="removeFromCart(${idx})" class="text-red-500 text-xs font-bold">Remove</button>
         </div>
-      );
+      `).join('');
     }
 
-    // Reusable Product Card Component
-    function ProductCard({ product, onSelect, currency }) {
-      return (
-        <div 
-          onClick={() => onSelect(product)} 
-          className="group cursor-pointer bg-white rounded-xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition"
-        >
-          <div className="relative overflow-hidden bg-gray-100 h-64">
-            <img 
-              src={product.images[0]} 
-              alt={product.name} 
-              className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
-            />
-            {product.stock === 0 && (
-              <span className="absolute top-3 left-3 bg-red-600 text-white text-[10px] font-bold px-2 py-1 rounded tracking-wider uppercase">
-                Sold Out
-              </span>
-            )}
-            {product.discount_price && product.stock > 0 && (
-              <span className="absolute top-3 left-3 bg-brand-brown text-white text-[10px] font-bold px-2 py-1 rounded tracking-wider uppercase">
-                Sale
-              </span>
-            )}
-          </div>
-          <div className="p-5">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-brand-brown">{product.category}</span>
-            <h3 className="font-semibold text-brand-black text-base mt-1 group-hover:text-brand-brown transition truncate">{product.name}</h3>
-            <div className="mt-2 flex items-baseline space-x-2">
-              {product.discount_price ? (
-                <>
-                  <span className="font-bold text-brand-black text-sm">{product.discount_price} {currency}</span>
-                  <span className="text-xs text-gray-400 line-through">{product.price} {currency}</span>
-                </>
-              ) : (
-                <span className="font-bold text-brand-black text-sm">{product.price} {currency}</span>
-              )}
-            </div>
-          </div>
-        </div>
-      );
+    function removeFromCart(index) {
+      cart.splice(index, 1);
+      updateCartUI();
     }
 
-    // Render React Application
-    const root = ReactDOM.createRoot(document.getElementById('root'));
-    root.render(<App />);
+    function setAdminTab(tab) {
+      document.getElementById('admin-tab-inventory').classList.add('hidden');
+      document.getElementById('admin-tab-orders').classList.add('hidden');
+      document.getElementById('admin-tab-finance').classList.add('hidden');
+
+      document.getElementById('tab-btn-inventory').className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-wider bg-neutral-800 hover:bg-neutral-700 text-neutral-300";
+      document.getElementById('tab-btn-orders').className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-wider bg-neutral-800 hover:bg-neutral-700 text-neutral-300";
+      document.getElementById('tab-btn-finance').className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-wider bg-neutral-800 hover:bg-neutral-700 text-neutral-300";
+
+      if (tab === 'inventory') {
+        document.getElementById('admin-tab-inventory').classList.remove('hidden');
+        document.getElementById('tab-btn-inventory').className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-wider bg-amber-700 text-white";
+      } else if (tab === 'orders') {
+        document.getElementById('admin-tab-orders').classList.remove('hidden');
+        document.getElementById('tab-btn-orders').className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-wider bg-amber-700 text-white";
+        fetchAdminOrders();
+      } else if (tab === 'finance') {
+        document.getElementById('admin-tab-finance').classList.remove('hidden');
+        document.getElementById('tab-btn-finance').className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-wider bg-amber-700 text-white";
+        fetchAdminOrders();
+      }
+    }
+
+    function openAdminPortal() { if (isAdminAuthenticated) switchView('admin'); else document.getElementById('admin-login-modal').classList.remove('hidden'); }
+    function closeAdminLogin() { document.getElementById('admin-login-modal').classList.add('hidden'); }
+
+    function handleAdminLogin(e) {
+      e.preventDefault();
+      if (document.getElementById('admin-pass-input').value === 'admin123') {
+        isAdminAuthenticated = true;
+        closeAdminLogin();
+        switchView('admin');
+      } else {
+        document.getElementById('admin-error-msg').classList.remove('hidden');
+      }
+    }
+
+    function switchView(view) {
+      if (view === 'store') {
+        document.getElementById('store-view').classList.remove('hidden');
+        document.getElementById('admin-view').classList.add('hidden');
+      } else {
+        document.getElementById('store-view').classList.add('hidden');
+        document.getElementById('admin-view').classList.remove('hidden');
+      }
+    }
+
+    function toggleDarkMode() {
+      isDarkMode = !isDarkMode;
+      document.documentElement.classList.toggle('dark');
+      document.getElementById('dark-mode-text').innerText = isDarkMode ? "Light Mode" : "Dark Mode";
+    }
+
+    function toggleLanguage() {
+      currentLang = currentLang === "en" ? "am" : "en";
+      document.getElementById('lang-label').innerText = currentLang === "en" ? "EN | አማ" : "አማ | EN";
+    }
+
+    function renderCategoryTabs() {
+      const cats = ["All", "Sneakers", "Leather Shoes", "Boots", "Formal Shoes"];
+      document.getElementById('category-tabs').innerHTML = cats.map(c => `
+        <button onclick="filterCategory('${c}')" class="px-4 py-2 rounded-full text-xs font-semibold tracking-wider uppercase transition whitespace-nowrap ${selectedCategory === c ? 'bg-kenzs-brown dark:bg-amber-600 text-white' : 'bg-kenzs-cream dark:bg-neutral-800 border border-kenzs-beige dark:border-neutral-700'}">
+          ${c}
+        </button>
+      `).join('');
+    }
+
+    function filterCategory(cat) {
+      selectedCategory = cat;
+      renderCategoryTabs();
+      renderProducts();
+    }
+
+    function renderHeroShoe() {
+      if (products.length > 0) {
+        const p = products[0];
+        document.getElementById('hero-shoe-img').src = p.image_url || "https://images.unsplash.com/photo-1614252235316-8c857d38b5f4";
+        document.getElementById('hero-shoe-title').innerText = p.name;
+        document.getElementById('hero-shoe-price').innerText = `${p.price.toLocaleString()} ETB`;
+      }
+    }
+
+    function toggleCartDrawer(open) {
+      document.getElementById('cart-drawer').classList.toggle('hidden', !open);
+    }
+
+    function toggleAddProductForm() {
+      document.getElementById('add-product-form').classList.toggle('hidden');
+    }
+
+    function renderAdminInventory() {
+      const container = document.getElementById('admin-inventory-list');
+      if (products.length === 0) {
+        container.innerHTML = `<div class="p-6 bg-neutral-900 rounded-2xl text-center text-neutral-400">No products in database.</div>`;
+        return;
+      }
+
+      container.innerHTML = products.map(p => `
+        <div class="bg-neutral-900 border border-neutral-800 p-4 rounded-2xl flex items-center justify-between">
+          <div class="flex items-center gap-4">
+            <img src="${p.image_url || 'https://images.unsplash.com/photo-1614252235316-8c857d38b5f4'}" class="w-14 h-14 rounded-xl object-cover" />
+            <div>
+              <h4 class="font-bold text-white text-sm">${p.name}</h4>
+              <p class="text-xs text-neutral-400">${p.price.toLocaleString()} ETB ${p.discount_percent ? `<span class="text-emerald-400 font-bold">(${p.discount_percent}% OFF)</span>` : ''}</p>
+            </div>
+          </div>
+          <button onclick="deleteProduct('${p.id}')" class="bg-red-950/80 text-red-400 border border-red-800/60 px-3 py-1.5 rounded-xl text-xs font-bold">Remove</button>
+        </div>
+      `).join('');
+    }
+
+    async function deleteProduct(id) {
+      if(confirm("Delete product?")) {
+        await supabaseClient.from('products').delete().eq('id', id);
+        await fetchProductsFromSupabase();
+      }
+    }
   </script>
 </body>
 </html>
+                                                                                                                             </html>
